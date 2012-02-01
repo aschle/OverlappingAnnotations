@@ -1,0 +1,62 @@
+<html>
+	<head>
+	<link rel="stylesheet" type="text/css" href="test.css" />
+	<script type="text/javascript" src="jquery-1.7.1.min.js"></script>
+	
+	<script type="text/javascript">
+	
+	$(document).ready(function() {
+
+
+		var page = $("#page");
+		var page_top = page.position().top;
+		var page_left = page.position().left;	
+	
+
+		$(".annotation").each(function (i){
+		
+		console.log(i);
+		
+		$("body").append('<div class="special" id="special'+i+'">&nbsp;</div>');
+		
+		var annotation_top = $(this).position().top;
+		var annotation_height = $(this).height();
+
+		$("#special"+i).css({"top":(annotation_top+page_top-300+1), "left":page_left-300, "height":annotation_height});		
+		
+		});		
+		
+	});
+	
+	</script>
+	</head>
+	<body>
+
+<div id="special">
+&nbsp;
+</div>
+
+
+<div id="page">
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+<br />
+
+Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy <span class="annotation" style="background-color: green;">eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea</span> takimata sanctus est Lorem ipsum dolor sit amet.
+<br />
+
+<span class="annotation">Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zril delenit augue duis dolore te feugait nulla facilisi. 
+
+<span class="annotation">
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. 
+</span>
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr.
+
+</span>  
+	
+	</div>
+	</body>	
+</html>
+
