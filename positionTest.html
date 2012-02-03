@@ -1,0 +1,78 @@
+<div
+onmouseup="alert(getCharPosition(this));"
+onmousedown="prepare(this)">Hello, World</div>
+
+<script type="text/javascript">
+var getCharPosition=(function(){
+
+function getSel(){
+var sel=null;
+if(
+typeof document.selection!="undefined" &&
+document.selection &&
+document.selection.type=="Text"
+){
+sel=document.selection;
+} else if(
+window.getSelection &&
+window.getSelection().rangeCount>0
+){
+sel=window.getSelection();
+}
+return sel;
+}
+
+function createRangeFromSel(sel){
+var rng=null;
+if(sel.createRange) {
+rng=sel.createRange();
+} else if(sel.getRangeAt) {
+rng=sel.getRangeAt(0);
+if(rng.toString()=="") rng=null;
+}
+return rng;
+}
+
+return function(el){
+var sel=getSel(), rng, r2, i=-1;
+if(sel){
+rng=createRangeFromSel(sel);
+if(rng){
+
+if(rng.parentElement) {
+if(rng.parentElement()==el){
+r2=document.body.createTextRange();
+r2.moveToElementText(el);
+r2.collapse(true);
+r2.setEndPoint("EndToStart", rng);
+i=r2.text.length;
+}
+} else {
+if(
+rng.startContainer &&
+rng.endContainer &&
+rng.startContainer==rng.endContainer &&
+rng.startContainer==rng.commonAncestorContainer &&
+rng.commonAncestorContainer.parentNode==el
+){
+
+//make sure your DIV does not have any inner element,
+//otherwise more code is required in order to filter
+//text nodes and count chars
+
+i=rng.startOffset;
+}
+}
+}
+}
+return i;
+};
+
+})();
+
+function prepare(el){
+if(el.normalize) {
+el.normalize();
+}
+}
+</script>
