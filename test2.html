@@ -1,0 +1,26 @@
+<html>
+	<head>
+	<link rel="stylesheet" type="text/css" href="test.css" />
+	<script type="text/javascript" src="jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="js/selection.js"></script>
+
+	<script type='text/javascript' src='js/steal.js'></script>
+	<script type='text/javascript'>
+	
+	$(document).ready(function() {
+		
+		$("#page").mouseup(function(){
+		
+			$("#page").selection(1,5);
+		});		
+	});
+	
+	</script>
+	</head>
+	<body>
+
+<div id="page">Some new text<br />Some new text<br />Some new text<br />Some new text<br /><p>Some new text</p>
+	</div>
+	</body>	
+</html>
+
