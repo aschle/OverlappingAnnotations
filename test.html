@@ -8,22 +8,23 @@
 	$(document).ready(function() {
 	
 	
-		$('#resetbutton').click(function(){
-			db.transaction(function(tx){
-              			tx.executeSql("DROP TABLE atom", [], null, null);
-              		});
+				$('#resetbutton').click(function(){
               
-         	});
+              db.transaction(function(tx){
+              	tx.executeSql("DROP TABLE atom", [], null, null);
+              });
+              
+         });
          
          
-         	$('#resetbutton').hover(function(){
+         $('#resetbutton').hover(function(){
                          // Maus auf Button -> Farbe ändern
                          $(this).css({'background-color':'#BF3030', 'opacity': '0.6'});
-          			}, function(){
+          }, function(){
                          // Maus nicht mehr auf Button -> Farbe zurücksetzen
                          $(this).css({'background-color': '#CCC', 'opacity': '1'});
 ; 
-          	});
+          });
 	
 
 		db = openDatabase("Annotations", "0.1", "DB for storing Annotations.", 5 * 1024 * 1024);
@@ -32,7 +33,7 @@
   		db.transaction(function(tx) {
     	tx.executeSql('CREATE TABLE IF NOT EXISTS ' + 
                   'atom(ID INTEGER PRIMARY KEY ASC, begin INTEGER, end INTEGER, category INTEGER, subcategory INTEGER)', []);
-  	});
+  });
 	
 
 		

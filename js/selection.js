@@ -1,4 +1,4 @@
-steal('jquery','jquery/dom/range').then(function($){
+$(document).ready(function(){
 var convertType = function(type){
 	return  type.replace(/([a-z])([a-z]+)/gi, function(all,first,  next){
 			  return first+next.toLowerCase()	
