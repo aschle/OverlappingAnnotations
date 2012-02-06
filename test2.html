@@ -21,21 +21,13 @@
 							
 							
 
-							
-	function render(){
-		// for (atom in annotations){
-			// $("#page").selection(0, 5);
-			$().wrapSelection().addClass("selected");
-			
-			
-		//}
-	}
+	
 							
 	
 $(document).ready(function(){
   $('#page').bind("mouseup", function(){
-	  console.log("bind"); 
-      console.log($().wrapSelection());
+	  console.log("MouseUP:");
+	  var selection = $('#page').wrapSelection().addClass("selected");
   });	
 });
 	
@@ -63,7 +55,10 @@ $(document).ready(function(){
 		Reset DB
 	</div>
 	
-	<div id="page">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</div>
+	<div id="page">
+		<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.<br />At vero eos et accusam et justo duo dolores et ea rebum.</p><p>Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna liquyam erat, sed diam voluptua.</p><p>At vero eos et accusam et justo duo dolores et ea rebum.</p>		
+	</div>
+	
 	</body>	
 </html>
 

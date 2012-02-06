@@ -46,6 +46,7 @@
 	$.fn.wrapSelection = function(options) {
 		var range = $.fn.range;
 		var selectClass = 'sel_' + new Date().getTime();// Unique Class, created on each highlight
+		console.log("selectClass", selectClass);
 		var defaults = {
 			fitToWord: true,
 			wrapRange: false,
@@ -59,24 +60,21 @@
 
 		// build main options before element iteration
 		var opts = $.extend({}, defaults, options);
-		
 		setWrapRange(this, opts.wrapRange);
-		
-		console.log(range);
 
 		if (range.startContainer && range.endContainer){
+
 			if(opts.fitToWord) FitToWord();
 
 			SplitText();
 			var myCount = doWrap();
 			if (myCount) range.ClearAllRanges();
 			else range.ClearVariables();
-			
+
 			// return opts.selectClass objects
 			return $('.' + opts.selectClass);
 		}
 		else{
-			console.log("else empty");
 			return $([]);// return empty node
 		};
 
@@ -219,7 +217,9 @@
 
 			//myNodes is arranged by level, so everything at the same level can be surrounded by a <span>
 			var myNodesSurrounded = 0;
+			
 			for (var i = 0; i < iLength; i++) {
+				console.log("i schleife", i);
 				if (!myNodes[i][0]) continue;
 				var myParent = myNodes[i][0].parentNode;
 				var myParentName = myParent.nodeName;
@@ -228,12 +228,25 @@
 					myParent.insertBefore(mySpan, myNodes[i][0]); //Firefox has bugs if we don't attach the span first; we can't just append it because we don't know where it goes in the parent
 					Spans.push(mySpan);
 				}
+
 				for (var j = 0, jLength = myNodes[i].length; j < jLength; j++) {
+					console.log("j schleife", j);
 					//this works assuming there aren't any block-level elements contained in the lower element; so it should work for P, but not for UL
 					if (myParentName == 'DIV') {
-						if (myNodes[i][j].nodeType != 1) continue;
+						
+						console.log("parent is a div");
+						console.log(myNodes[i][j].nodeType);
+						
+						if (myNodes[i][j].nodeType != 1) {
+							console.log("inside if");
+							continue;}
+						
+						console.log("after if");
+						
 						var myChildNodes = myNodes[i][j].childNodes;
+						console.log("myChildNodes", myChildNodes);
 						var mySpan = makeSpanElement();
+						
 						while (myChildNodes.length > 0) mySpan.appendChild(myChildNodes[0]);
 						myNodes[i][j].appendChild(mySpan); //it's OK to do here because we're replacing the whole thing
 						Spans.push(mySpan);
