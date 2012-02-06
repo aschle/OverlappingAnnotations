@@ -3,10 +3,12 @@
 	<link rel="stylesheet" type="text/css" href="test.css" />
 	<script type="text/javascript" src="jquery-1.7.1.min.js"></script>
 
-	<script type="text/javascript" src="js/selection.js"></script>
-	<script type="text/javascript" src="js/range.js"></script>
-	<script type="text/javascript" src="js/compare.js"></script>
+	<!-- <script type="text/javascript" src="js/selection.js"></script> -->
+	<!--<script type="text/javascript" src="js/range.js"></script> -->
+	<!-- <script type="text/javascript" src="js/compare.js"></script> -->
+	<script type="text/javascript" src="js/jquery.wrapSelection.js"></script>
 	<script type='text/javascript'>
+		
 	<!--	http://stackoverflow.com/questions/3223682/change-css-of-selected-text-using-javascript/3224513#3224513
 			http://stackoverflow.com/questions/5577756/selection-position-of-selected-text-of-div-using-javascript	
 	-->
@@ -21,45 +23,47 @@
 
 							
 	function render(){
-		for (atom in annotations){
-			$("#page").selection(annotations[atom].start, annotations[atom].end);
-			console.log(annotations[atom]);
-			var sel = document.getSelection();
-			// http://archive.plugins.jquery.com/project/wrapSelection
-		}
+		// for (atom in annotations){
+			// $("#page").selection(0, 5);
+			$().wrapSelection().addClass("selected");
+			
+			
+		//}
 	}
 							
 	
-	$(document).ready(function() {
+$(document).ready(function(){
+  $('#page').bind("mouseup", function(){
+	  console.log("bind"); 
+      console.log($().wrapSelection());
+  });	
+});
 	
-			$('#resetbutton').click(function(){
-				render();      
-   		});
-	
-			var divText = $("#page").text();
-			var lenDivText = divText.length;
-			console.log(lenDivText);
+			//var divText = $("#page").text();
+			//var lenDivText = divText.length;
+			//console.log(lenDivText);
 			
-			$("#page").mouseup(function(){
-				var sel = $(this).selection();
-				console.log(sel);
-			});
+			//$("#page").mouseup(function(){
+				//var sel = $(this).selection();
+				//console.log(sel);
+			//});
 		
 			//$("#page").mouseup(function(){
 			//	var selection = document.getSelection();
 			//	console.log(selection);
 			
 			//});		
-	});
 	 
 	</script>
 	</head>
+	
+	
 	<body>
 	<div id="resetbutton">
-Reset DB
-</div>
-<div id="page">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy <span class="annotation" style="background-color: green;">eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea</span> takimata sanctus est Lorem ipsum dolor sit amet.</div>
+		Reset DB
+	</div>
+	
+	<div id="page">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</div>
 	</body>	
 </html>
 
