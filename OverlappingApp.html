@@ -1,0 +1,117 @@
+<html>
+	<head>
+	<link rel="stylesheet/less" type="text/css" href="css/styles.less" />
+	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+
+	<!--
+	The jQuery selectionPlugin is copied from the JavaSriptMVC Project
+	[http://javascriptmvc.com/]. It's an easy way to get/set the boundaries
+	as indexies of selected text. It works with all elements, also 
+	across multiple elements. Now every jQuery object has th additionally
+	function .selection() and .selection(start, end). To get the selection
+	function running, it depends on range.js and compare.js.
+	-->
+	<script type="text/javascript" src="js/selectionPlugin/selection.js"></script>
+	<script type="text/javascript" src="js/selectionPlugin/range.js"></script>
+	<script type="text/javascript" src="js/selectionPlugin/compare.js"></script>
+	
+	<!--
+	The jQuery wrapSelection Plugin [http://archive.plugins.jquery.com/project/wrapSelection]
+	makes it possible to easily wrap an span element around an selected
+	text. It also works with selections, which are spread across multiple
+	elements, so it's generating the affordable amount of span tags,
+	which can be styled with CSS. To avoid conflicts betweet the two
+	plugins the Range in wrapSelection is now calles WSrange.
+	-->
+	<script type="text/javascript" src="js/wrapSelectionPlugin/jquery.wrapSelection.js"></script>
+	
+	<!--
+	Less ads dynamic behaviour to CSS, to use variables, mixins, operations
+	and functions.
+	-->
+	<script type="text/javascript" src="js/less-1.2.1.min.js"></script>
+	
+	
+	<script type='text/javascript'>
+		
+		var categoriesList = [];
+		var atomsList = []; 
+		
+		
+		function render(){
+			
+			var span = $("#textFrame").wrapSelection();
+			var page = $("#textFrame");
+			var content = $("#content");
+			var id = span.attr("class");
+			
+			// add div (vertical bar) -> styled later on
+			$("body").append('<div class="special" id="special_'+id+'">&nbsp;</div>');
+			
+			// position for calculation
+			var page_top = page.position().top;
+			var page_left = page.position().left;
+			var page_height = page.height()/2;
+			
+			var content_top = content.position().top;
+			var content_left = content.position().left;
+			var content_height = content.height()/2;
+			
+			var bar_top = span.position().top;
+			var bar_left = page_left - 400 + 60;
+			var bar_height = span.height();
+			
+			
+			// differet calcualtion if selection was across multiple elements
+			if (span.length > 1){
+				var lastSpan = span.last();
+				var lastSpan_top = lastSpan.position().top;
+				var lastSpan_height = lastSpan.height();
+				bar_height = lastSpan_top - bar_top + lastSpan_height;
+			}
+			
+			// change the style of the added bar			
+			$("#special_"+id).css({"top":(content_top-470+(page_top-300)+bar_top+1), "left":bar_left + 500, "height":bar_height});
+			
+		}
+		
+		function addAtom(element){
+			
+			var selectedText = element.selection();
+			atomList.add();
+			
+		};
+			
+	$(document).ready(function(){
+		
+		$("#textFrame").mouseup(function(){
+			addAtom($(this));	
+		});	
+	});
+	
+
+		
+		
+	 
+	</script>
+	</head>
+	<body>
+		<div id="content">
+			<div id="menu">
+				<div class="category">
+					Kategory A
+				</div>
+				<div class="category">
+					Kategory B
+				</div>
+				<div class="category">
+					Kategory C
+				</div>
+			</div>
+			<div id="textFrame">
+				<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.<br />At vero eos et accusam et justo duo dolores et ea rebum.</p><p>Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna liquyam erat, sed diam voluptua.</p><p>At vero eos et accusam et justo duo dolores et ea rebum.</p><p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et.</p>	
+			</div>
+		</div>
+	</body>	
+</html>
+
