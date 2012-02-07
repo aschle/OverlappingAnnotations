@@ -1,5 +1,8 @@
 @bgcolor:#888;
 
+@content-width:1000px;
+@content-height: 950px;
+
 html {
 	min-height:101%;
 }
@@ -13,25 +16,38 @@ body {
 #content {
 	background-color:@bgcolor;
 	position: absolute;
-	width: 1000px;
-	height: 950px;
+	width: @content-width;
+	height: @content-height;
 	top:500px;
 	left: 50%;
 	margin-top: -470px;
-	margin-left: -500px;
+	margin-left: -(@content-width/2);
 	background-color: #FFF;
 }
 
 #menu {
 	position: relative;
-		left: 50%;
+	padding-left: 100px;
 }
 
 .category {
 	background: #999;
+	border-bottom-right-radius: 7px;
+	border-top-left-radius: 7px;
 	float: left;
-	height: 50px;
-	width: 150px;
+	height: 120px;
+	margin: 20px 10px 20px 0;
+	padding: 0 0 12px 8px;
+	position: relative;
+	width: 15%;
+}
+
+h4 {
+	color: #333333;
+	font-size:14px;
+	margin: 0.6em 0 0.2em;
+	position: relative;
+	z-index: 10;
 }
 
 #textFrame {
@@ -51,6 +67,7 @@ body {
 	padding-bottom: 30px;
 	text-align: justify;
 	line-height: 30px;
+	z-index: 1;
 }
 
 .special {

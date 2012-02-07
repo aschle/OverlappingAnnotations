@@ -34,80 +34,95 @@
 	
 	<script type='text/javascript'>
 		
-		var categoriesList = [];
-		var atomsList = []; 
+		$(document).ready(function(){
 		
+			var atomList = []; 
 		
-		function render(){
+			$("#textFrame").mouseup(function(){
+				addAtom($(this), atomList);
+			});	
+		});	
+		
+		function render(list){
 			
-			var span = $("#textFrame").wrapSelection();
-			var page = $("#textFrame");
-			var content = $("#content");
-			var id = span.attr("class");
+			// before the bars are rendered, the old ones have to be removed
+			$(".special").remove();
 			
-			// add div (vertical bar) -> styled later on
-			$("body").append('<div class="special" id="special_'+id+'">&nbsp;</div>');
+			// iterate all atoms and display them as bars
+			for(atom in list){
+				
+				console.log("render", atom);
+				
+				var originalTextFrame = $("#textFrame").clone();
+				var selectedAtom = $("#textFrame").selection(list[atom]["start"], list[atom]["end"]);
+				
 			
-			// position for calculation
-			var page_top = page.position().top;
-			var page_left = page.position().left;
-			var page_height = page.height()/2;
+				// add span to selected text
+				var span = $("#textFrame").wrapSelection();
+				var page = $("#textFrame");
+				var content = $("#content");
+				var id = span.attr("class");
 			
-			var content_top = content.position().top;
-			var content_left = content.position().left;
-			var content_height = content.height()/2;
+				// add div (vertical bar) -> styled later on
+				$("body").append('<div class="special" id="special_'+id+'">&nbsp;</div>');
 			
-			var bar_top = span.position().top;
-			var bar_left = page_left - 400 + 60;
-			var bar_height = span.height();
+				// position for calculation
+				var page_top = page.position().top;
+				var page_left = page.position().left;
+				var page_height = page.height() - page.css("margin-top");
+				
+				var content_top = content.position().top;
+				var content_left = content.position().left;
+				var content_height = content.height() - content.css("margin-top");
+				
+				var bar_top = span.position().top;
+				var bar_left = content_left;
+				var bar_height = span.height();
 			
 			
-			// differet calcualtion if selection was across multiple elements
-			if (span.length > 1){
-				var lastSpan = span.last();
-				var lastSpan_top = lastSpan.position().top;
-				var lastSpan_height = lastSpan.height();
-				bar_height = lastSpan_top - bar_top + lastSpan_height;
+				// differet calcualtion if selection was across multiple elements
+				if (span.length > 1){
+					var lastSpan = span.last();
+					var lastSpan_top = lastSpan.position().top;
+					var lastSpan_height = lastSpan.height();
+					bar_height = lastSpan_top - bar_top + lastSpan_height;
+				}
+				
+				// change the style of the added bar			
+				$("#special_"+id).css({"top":(content_top-470+(page_top-300)+bar_top+1), "left":bar_left + 500, "height":bar_height});
+				
+				// remove the span
+				page.innerHTML = originalTextFrame.innerHTML;
 			}
-			
-			// change the style of the added bar			
-			$("#special_"+id).css({"top":(content_top-470+(page_top-300)+bar_top+1), "left":bar_left + 500, "height":bar_height});
-			
 		}
 		
-		function addAtom(element){
+		function addAtom(element, list){
 			
 			var selectedText = element.selection();
-			atomList.add();
-			
+			list.push({"start":selectedText.start, "end":selectedText.end, "category": 1, "subcategory": 1});
+			render(list);		
 		};
 			
-	$(document).ready(function(){
-		
-		$("#textFrame").mouseup(function(){
-			addAtom($(this));	
-		});	
-	});
-	
 
-		
-		
-	 
+	
 	</script>
+	
+	
 	</head>
 	<body>
 		<div id="content">
-			<div id="menu">
+			<!--<div id="menu">
 				<div class="category">
-					Kategory A
+					<h4>Kategory A</h4>
 				</div>
 				<div class="category">
-					Kategory B
+					<h4>Kategory B</h4>
 				</div>
 				<div class="category">
-					Kategory C
+					<h4>Kategory C</h4>
 				</div>
 			</div>
+			-->
 			<div id="textFrame">
 				<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.<br />At vero eos et accusam et justo duo dolores et ea rebum.</p><p>Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna liquyam erat, sed diam voluptua.</p><p>At vero eos et accusam et justo duo dolores et ea rebum.</p><p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et.</p>	
 			</div>
