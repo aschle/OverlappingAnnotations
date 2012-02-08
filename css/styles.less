@@ -1,3 +1,7 @@
+@categoryA:#A61300;
+@categoryB:#04819E;
+@categoryC:#5C9900;
+ 
 @bgcolor:#888;
 
 @content-width:1000px;
@@ -22,12 +26,14 @@ body {
 	left: 50%;
 	margin-top: -470px;
 	margin-left: -(@content-width/2);
-	background-color: #FFF;
 }
 
 #menu {
 	position: relative;
 	padding-left: 100px;
+	z-index: 10;
+	left: 50%;
+	margin-left: -(@content-width/2);
 }
 
 .category {
@@ -35,19 +41,48 @@ body {
 	border-bottom-right-radius: 7px;
 	border-top-left-radius: 7px;
 	float: left;
-	height: 120px;
-	margin: 20px 10px 20px 0;
+	height: 50px;
+	margin: 40px 20px 20px 0;
 	padding: 0 0 12px 8px;
 	position: relative;
-	width: 15%;
+	width: 10%;
 }
 
-h4 {
+.hover {
+	background:#777;
+}
+
+h3 {
 	color: #333333;
-	font-size:14px;
+	font-size:16px;
 	margin: 0.6em 0 0.2em;
 	position: relative;
 	z-index: 10;
+	text-shadow: 0px 1px 1px #555;
+}
+
+.categoryA {
+	color:@categoryA;
+}
+
+.categoryB {
+	color:@categoryB;
+}
+
+.categoryC {
+	color:@categoryC;
+}
+
+.category_A {
+	background:@categoryA;
+}
+
+.category_B {
+	background:@categoryB;
+}
+
+.category_C {
+	background:@categoryC;
 }
 
 #textFrame {
@@ -73,8 +108,7 @@ h4 {
 .special {
 	width: 10px;
 	border-radius: 5px;
-	background-color: #BF3030;
-	opacity: 0.6; 
+	opacity: 0.8; 
 	position: absolute;
 	z-index: 2;
 }

@@ -37,11 +37,27 @@
 		var atomList = [];
 		var columnBars = [];
 		
+		var savedClick;
+		
 		$(document).ready(function(){
 		
+			$(".category").click(function(){
+				addAtom(this.id);
+			});
+			
+			$(".category").hover(
+			function () {
+				$(this).addClass("hover");},
+			function () {
+				$(this).removeClass("hover");}
+			);
+			
 			$("#textFrame").mouseup(function(){
-				addAtom($(this));
-			});	
+				
+				// save the click
+				var selectedText = $("#textFrame").selection();
+				savedClick = {"start":selectedText.start, "end":selectedText.end, "category": 0, "subcategory": 0}
+			});
 		});	
 		
 		function render(){
@@ -99,10 +115,14 @@
 				
 				var offset = (left*5) + ((left+1)*10);
 						
-				$("#special_"+id).css({"top":(content_top-470+(page_top-300)+bar_top+1), "left":bar_left - 350 - offset, "height":bar_height});
+				$("#special_"+id).css({"top":(content_top-470+(page_top-300)+bar_top+1), "left":bar_left - 330 - offset, "height":bar_height});
+				$("#special_"+id).addClass("category_"+atomList[atom]["category"]);
 
 				// remove the span
 				page.innerHTML = originalTextFrame.innerHTML;
+				
+				// forget the saved click
+				savedClick = null;
 			}
 		}
 		
@@ -155,37 +175,31 @@
 			return true;			
 		}
 		
-		function addAtom(element){
-			
-			var selectedText = element.selection();
+		function addAtom(id){
 			
 			// add new atom to the atomList
-			atomList.push({"start":selectedText.start, "end":selectedText.end, "category": 1, "subcategory": 1});
-			
+			atomList.push({"start":savedClick["start"], "end":savedClick["end"], "category":id, "subcategory":0});
 			// render all bars again
 			render();		
 		};
-			
-
 	
 	</script>
 	
 	
 	</head>
 	<body>
+		<div id="menu">
+			<div id="A" class="category">
+				<h3 class="categoryA">Kategory A</h4>
+			</div>
+			<div id ="B" class="category">
+				<h3 class="categoryB">Kategory B</h4>
+			</div>
+			<div id="C" class="category">
+				<h3 class="categoryC">Kategory C</h4>
+			</div>
+		</div>
 		<div id="content">
-			<!--<div id="menu">
-				<div class="category">
-					<h4>Kategory A</h4>
-				</div>
-				<div class="category">
-					<h4>Kategory B</h4>
-				</div>
-				<div class="category">
-					<h4>Kategory C</h4>
-				</div>
-			</div>-->
-
 			<div id="textFrame">
 				<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.<br />At vero eos et accusam et justo duo dolores et ea rebum.</p><p>Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna liquyam erat, sed diam voluptua.</p><p>At vero eos et accusam et justo duo dolores et ea rebum.</p><p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et.</p>	
 			</div>
