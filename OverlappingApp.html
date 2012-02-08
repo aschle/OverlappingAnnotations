@@ -39,8 +39,6 @@
 		
 		$(document).ready(function(){
 		
-			
-		
 			$("#textFrame").mouseup(function(){
 				addAtom($(this));
 			});	
@@ -54,10 +52,7 @@
 			
 			// iterate all atoms and display them as bars
 			for(atom in atomList){
-				
-				console.log("\n");
-				console.log("render", atom);
-				
+								
 				// remember the original content of the textFrame for late on
 				var originalTextFrame = $("#textFrame").clone();
 				
@@ -100,14 +95,12 @@
 				// change the style of the added bar	
 				// TODO: bar_left needs to be calculated in the right way
 				
-				var left = findColumn(bar_top, bar_height);
-				console.log("spalte", left);
-				console.log("alleSpalten", columnBars);
+				var left = parseInt(findColumn(bar_top, bar_height));
 				
-				var offset = left * 5 + (left+1)* 10; 
+				var offset = (left*5) + ((left+1)*10);
 						
 				$("#special_"+id).css({"top":(content_top-470+(page_top-300)+bar_top+1), "left":bar_left - 350 - offset, "height":bar_height});
-				
+
 				// remove the span
 				page.innerHTML = originalTextFrame.innerHTML;
 			}
@@ -138,21 +131,28 @@
 		
 		// use a sorted list to make the function more efficient
 		function fitsInColumn(top, height, column){
+			
 			var column = columnBars[column];
 			
 			for (x in column){
+				
 				var bar = column[x];
 				
-				if (((top >= bar["top"]) && (top <= bar["top"]+bar["height"])) || ((top+height <= bar["top"]+bar["height"]) && (top+height >= bar["top"]))){
-					return false;
+				var B_top = top;
+				var B_end = top+height;
+				var A_top = bar["top"];
+				var A_end = bar["top"] + bar["height"];
+				
+				
+				
+				if (B_end < A_top || B_top > A_end){
+					continue;
 				}
 				else {
-					return true;
+					return false;
 				}
 			}
-			
-			console.log("columnFits", column);
-			return false;			
+			return true;			
 		}
 		
 		function addAtom(element){
@@ -174,7 +174,7 @@
 	</head>
 	<body>
 		<div id="content">
-			<div id="menu">
+			<!--<div id="menu">
 				<div class="category">
 					<h4>Kategory A</h4>
 				</div>
@@ -184,7 +184,7 @@
 				<div class="category">
 					<h4>Kategory C</h4>
 				</div>
-			</div>
+			</div>-->
 
 			<div id="textFrame">
 				<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.<br />At vero eos et accusam et justo duo dolores et ea rebum.</p><p>Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna liquyam erat, sed diam voluptua.</p><p>At vero eos et accusam et justo duo dolores et ea rebum.</p><p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et.</p>	
