@@ -141,6 +141,8 @@
 						columnBars[column].push({"top":top, "height":height});
 						return column;
 					}
+					else {
+					}
 				}
 				
 				// open a new column
@@ -149,7 +151,7 @@
 			}		
 		}
 		
-		// use a sorted list to make the function more efficient
+		// use a sorted list to make the function more efficient?
 		function fitsInColumn(top, height, column){
 			
 			var column = columnBars[column];
@@ -169,6 +171,7 @@
 					continue;
 				}
 				else {
+					// before return, chekc if it was a "real" overlap
 					return false;
 				}
 			}
