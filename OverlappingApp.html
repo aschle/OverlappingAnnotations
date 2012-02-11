@@ -35,14 +35,67 @@
 	<script type='text/javascript'>
 		
 		var atomList = [];
-		var columnBars = [];
+		var columnList = [];
+
+		var overlapTop = 0;
+		var overlapBottom = 0;
 		
-		var savedClick;
+		var savedClick;	
+		
+		function addAtomToAtomList(category){
+			
+			// remember the original content of the textFrame,
+			// to easyly remove the span(s) later on
+			var originalTextFrame = $("#textFrame").clone();
+			
+			// get the selection to wrap a span around it
+			var startPosInText = savedClick["start"];
+			var endPosInText = savedClick["end"];
+			var selectedAtom = $("#textFrame").selection(startPosInText, endPosInText);
+			
+			// add a span to selected text (when multiple elements
+			//are crossed, more than one span is added) 
+			var span = $("#textFrame").wrapSelection();
+			
+			var barTop = span.position().top;
+			var barHeight = span.height();
+					
+			// differet calcualtion if selection was across
+			// multiple elements, so we have more that one span
+			if (span.length > 1){
+				var lastSpan = span.last();
+				var lastSpanTop = lastSpan.position().top;
+				var lastSpanHeight = lastSpan.height();
+				barHeight = lastSpanTop - barTop + lastSpanHeight;
+			}
+			
+			// remove the span(s) -> reset the text
+			var page = $("#textFrame");
+			page.innerHTML = originalTextFrame.innerHTML;
+
+			atomList.push({
+				"start":startPosInText,
+				"end":endPosInText,
+				"category":category,
+				"subcategory":0,
+				"barTop":barTop,
+				"barHeight":barHeight
+				});
+		}
 		
 		$(document).ready(function(){
 		
 			$(".category").click(function(){
-				addAtom(this.id);
+
+				// add new atom to the atomList, with category and
+				// subcategory
+				// TODO: look after subcategory
+				addAtomToAtomList(this.id);
+				
+				// render all bars again and display them
+				reset();
+				render();
+				//display();
 			});
 			
 			$(".category").hover(
@@ -56,135 +109,206 @@
 				
 				// save the click
 				var selectedText = $("#textFrame").selection();
-				savedClick = {"start":selectedText.start, "end":selectedText.end, "category": 0, "subcategory": 0}
+				savedClick = {
+					"start":selectedText.start,
+					"end":selectedText.end
+					};
 			});
-		});	
-		
-		function render(){
+		});
+			
+		/*
+		The reset function removes all existing Bars, also all needed
+		global variables need to be reset, because they are going to be
+		recalculated.
+		*/
+		function reset(){
 			
 			// before the bars are rendered, the old ones have to be removed
 			$(".special").remove();
+			
+			// all calculated global variables have to be reset
 			columnBars = [];
-			
-			// iterate all atoms and display them as bars
-			for(atom in atomList){
-								
-				// remember the original content of the textFrame for late on
-				var originalTextFrame = $("#textFrame").clone();
-				
-				var selectedAtom = $("#textFrame").selection(atomList[atom]["start"], atomList[atom]["end"]);
-				
-			
-				// add span to selected text
-				var span = $("#textFrame").wrapSelection();
-				
-				var page = $("#textFrame");
-				var content = $("#content");
-				
-				var id = span.attr("class");
-			
-				// add div (vertical bar) -> styled later on
-				$("body").append('<div class="special" id="special_'+id+'">&nbsp;</div>');
-			
-				// position for calculation
-				var page_top = page.position().top;
-				var page_left = page.position().left;
-				var page_height = page.height() - page.css("margin-top");
-				
-				var content_top = content.position().top;
-				var content_left = content.position().left;
-				var content_height = content.height() - content.css("margin-top");
-				
-				var bar_top = span.position().top;
-				var bar_left = content_left;
-				var bar_height = span.height();
-			
-			
-				// differet calcualtion if selection was across multiple elements
-				if (span.length > 1){
-					var lastSpan = span.last();
-					var lastSpan_top = lastSpan.position().top;
-					var lastSpan_height = lastSpan.height();
-					bar_height = lastSpan_top - bar_top + lastSpan_height;
-				}
-				
-				// change the style of the added bar	
-				// TODO: bar_left needs to be calculated in the right way
-				
-				var left = parseInt(findColumn(bar_top, bar_height));
-				
-				var offset = (left*5) + ((left+1)*10);
-						
-				$("#special_"+id).css({"top":(content_top-470+(page_top-300)+bar_top+1), "left":bar_left - 330 - offset, "height":bar_height});
-				$("#special_"+id).addClass("category_"+atomList[atom]["category"]);
-
-				// remove the span
-				page.innerHTML = originalTextFrame.innerHTML;
-				
-				// forget the saved click
-				savedClick = null;
-			}
+			overlapTop = 0;
+			overlapBottom = 0;
+			savedClick = null;
 		}
 		
-		function findColumn(top, height){
-			
-			// if it is the first one
-			if (columnBars.length == 0){
-				columnBars.push([{"top":top, "height":height}]);
-				return 0;
-			}
-			else {
-			
-				for(column in columnBars){
-				
-					if(fitsInColumn(top, height, column) == true){
-						columnBars[column].push({"top":top, "height":height});
-						return column;
-					}
-					else {
-					}
-				}
-				
-				// open a new column
-				columnBars.push([{"top":top, "height":height}]);
-				return (columnBars.length - 1);
-			}		
+		/*
+		Helper function for render(). Adds a new colum to columnList.
+		*/
+		function addNewColumnToColumnList(id, column){
+			columnList.push([{
+				"id":id,
+				"overlapTop":0,
+				"overlapBottom":0,
+				"column":column
+				}]);
 		}
 		
-		// use a sorted list to make the function more efficient?
-		function fitsInColumn(top, height, column){
+		/*
+		Helper function for render(). Adds a new bar to an existing column.
+		*/
+		function addNewBarToColumn(id, column, overlapTop, overlapBottom){	
+			columnList[column].push({
+				"id":id,
+				"overlapTop":overlapTop,
+				"overlapBottom":overlapBottom,
+				"column":column
+				});
+		}
+		
+		/*
+		Helper function for render().
+		Tests if an atom fits into a column.
+		*/
+		function fitsInColumn(atom, column){
 			
-			var column = columnBars[column];
+			var currentColumn = columnList[column];
+			var currentAtom = atomList[atom];
 			
-			for (x in column){
+			// that is the atom which should fit into the active column
+			var bTop = currentAtom["barTop"];
+			var bEnd = bTop + currentAtom["barHeight"];
+			
+			for (x in currentColumn){
 				
-				var bar = column[x];
+				var bar = currentColumn[x];
 				
-				var B_top = top;
-				var B_end = top+height;
-				var A_top = bar["top"];
-				var A_end = bar["top"] + bar["height"];
+				// that is the iterating bar in the columnList
+				var aTop = atomList[bar["id"]]["barTop"];
+				var aEnd = aTop + atomList[bar["id"]]["barHeight"];
 				
-				
-				
-				if (B_end < A_top || B_top > A_end){
+				if (bEnd < aTop || bTop > aEnd){
 					continue;
 				}
 				else {
-					// before return, chekc if it was a "real" overlap
-					return false;
+					// before return, check if it was a "real" overlap
+					// if the letter positions where overlapping!
+					var bStartPos = currentAtom["start"];
+					var bEndPos = currentAtom["end"];
+					var aStartPos = atomList[bar["id"]]["start"];
+					var aEndPos = atomList[bar["id"]]["end"];
+					
+					if (bEndPos < aStartPos || bStartPos > aEndPos){
+						
+						console.log("Pseudo-Overlap!");
+						
+						// what exactly is overlapping?
+						
+						// TODO: hier weitermachen !!!
+						
+						if (bEnd > aTop && bEnd < aEnd && bTop < aTop){
+							overlapBottom = 1;
+							bar["overlapTop"] = 1;
+							console.log("BT");
+						}
+						
+						if (B_top > A_top && B_top < A_end && B_end > A_end){
+							overlapTop = 1;
+							bar["overlapBottom"]= 1;	
+							console.log("TB");					
+						}
+						
+						continue;
+					}
+					
+					return false;					
 				}
 			}
 			return true;			
 		}
 		
-		function addAtom(id){
+		/*
+		The render function iterates all atoms, and recalculates the
+		position of the corresponding bar, its column and also dealing
+		with pseudo overlaps.
+		*/
+		function render(){
 			
-			// add new atom to the atomList
-			atomList.push({"start":savedClick["start"], "end":savedClick["end"], "category":id, "subcategory":0});
-			// render all bars again
-			render();		
-		};
+			for(atom in atomList){
+								
+				// if it is the first one
+				if (columnList.length == 0){
+					addNewColumnToColumnList(atom, 0);
+				}
+				else {
+				
+					for(column in columnList){
+						
+						overlapTop = 0;
+						overlapBottom = 0;
+					
+						if(fitsInColumn(atom, column) == true){
+							addNewBarToColumn(atom, column);
+							continue;
+						}
+					}
+					
+					// open a new column
+					addNewColumnToColumnList(atom, column + 1);
+				}	
+			}
+			
+			console.log("AlistAfterrender", atomList);
+			console.log("ClistAfterrender", columnList);
+		}
+		
+		
+			
+		/*function display(){
+				
+			var page = $("#textFrame");
+			var content = $("#content");
+			
+			// position for calculation
+			var page_top = page.position().top;
+			var page_left = page.position().left;
+			var page_height = page.height() - page.css("margin-top");
+			
+			var content_top = content.position().top;
+			var content_left = content.position().left;
+			var content_height = content.height() - content.css("margin-top");
+			
+			var bar_top = span.position().top;
+			var bar_left = content_left;
+			var bar_height = span.height();
+		
+		
+			// differet calcualtion if selection was across multiple elements
+			if (span.length > 1){
+				var lastSpan = span.last();
+				var lastSpan_top = lastSpan.position().top;
+				var lastSpan_height = lastSpan.height();
+				bar_height = lastSpan_top - bar_top + lastSpan_height;
+			}
+						
+			for (column in columnBars){
+				for (bar in column){
+					
+					
+					// add div (vertical bar) -> styled later on
+					$("body").append('<div class="special" id="special_'+bar["id"]+'">&nbsp;</div>');	
+					
+					var offset = (bar["column"]*5) + ((bar["column"]+1)*10);
+				
+					var cssTop = content_top-470+(page_top-300)+bar_top+1;
+					var cssLeft = bar_left - 330 - offset;
+					var cssHeight = bar_height;
+					
+					if (bar["overlapTop"] == 1){
+						cssTop = cssTop + 10;
+						cssHeight = cssHeight - 10;
+					}
+					
+					if (bar["overlapBottom"] == 1){
+						cssHeight = cssHeight - 10;
+					}
+							
+					$("#special_"+id).css({"top":cssTop, "left":cssLeft, "height":cssHeight});
+					$("#special_"+id).addClass("category_"+bar["category"]);
+				}
+			}	
+		}*/
 	
 	</script>
 	
