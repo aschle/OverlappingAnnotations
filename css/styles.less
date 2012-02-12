@@ -2,30 +2,26 @@
 @categoryB:#04819E;
 @categoryC:#5C9900;
  
-@bgcolor:#888;
 
-@content-width:1000px;
-@content-height: 950px;
+@container_width:960px;
+
 
 html {
 	min-height:101%;
 }
 
 body {
-	background-color:@bgcolor;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 1.2em;
+	background:white;
+	font: 14px/21px "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #444;
+	-webkit-font-smoothing: antialiased;
 }
 
-#content {
-	background-color:@bgcolor;
-	position: absolute;
-	width: @content-width;
-	height: @content-height;
-	top:500px;
-	left: 50%;
-	margin-top: -470px;
-	margin-left: -(@content-width/2);
+#container {
+	position: relative;
+	width: @container_width;
+	margin: 0 auto;
+	padding: 0;
 }
 
 #menu {
