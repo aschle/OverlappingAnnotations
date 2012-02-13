@@ -1,96 +1,70 @@
 <html>
 	<head>
-	<link rel="stylesheet/less" type="text/css" href="css/styles.less" />
-	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
-
-	<!--
-	The jQuery selectionPlugin is copied from the JavaSriptMVC Project
-	[http://javascriptmvc.com/]. It's an easy way to get/set the boundaries
-	as indexies of selected text. It works with all elements, also 
-	across multiple elements. Now every jQuery object has th additionally
-	function .selection() and .selection(start, end). To get the selection
-	function running, it depends on range.js and compare.js.
-	-->
-	<script type="text/javascript" src="js/selectionPlugin/selection.js"></script>
-	<script type="text/javascript" src="js/selectionPlugin/range.js"></script>
-	<script type="text/javascript" src="js/selectionPlugin/compare.js"></script>
-	
-	<!--
-	The jQuery wrapSelection Plugin [http://archive.plugins.jquery.com/project/wrapSelection]
-	makes it possible to easily wrap an span element around an selected
-	text. It also works with selections, which are spread across multiple
-	elements, so it's generating the affordable amount of span tags,
-	which can be styled with CSS. To avoid conflicts betweet the two
-	plugins the Range in wrapSelection is now calles WSrange.
-	-->
-	<script type="text/javascript" src="js/wrapSelectionPlugin/jquery.wrapSelection.js"></script>
-	
-	<!--
-	Less ads dynamic behaviour to CSS, to use variables, mixins, operations
-	and functions.
-	-->
-	<script type="text/javascript" src="js/less-1.2.1.min.js"></script>
-	
-	
-	<script type='text/javascript'>
+		<title>
+			Overlapping Annotations
+		</title>
 		
-		var atomList = [];
-		var columnList = [];
+		<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
 		
-		var savedClick;
+		<!--
+		The jQuery selectionPlugin is copied from the JavaSriptMVC Project
+		[http://javascriptmvc.com/]. It's an easy way to get/set the boundaries
+		as indexies of selected text. It works with all elements, also 
+		across multiple elements. Now every jQuery object has th additionally
+		function .selection() and .selection(start, end). To get the selection
+		function running, it depends on range.js and compare.js.
+		-->
+		<script type="text/javascript" src="js/selectionPlugin/selection.js"></script>
+		<script type="text/javascript" src="js/selectionPlugin/range.js"></script>
+		<script type="text/javascript" src="js/selectionPlugin/compare.js"></script>
 		
-		var overlapTop;
-		var overlapBottom;
+		<!--
+		The jQuery wrapSelection Plugin [http://archive.plugins.jquery.com/project/wrapSelection]
+		makes it possible to easily wrap an span element around an selected
+		text. It also works with selections, which are spread across multiple
+		elements, so it's generating the affordable amount of span tags,
+		which can be styled with CSS. To avoid conflicts betweet the two
+		plugins the Range in wrapSelection is now calles WSrange.
+		-->
+		<script type="text/javascript" src="js/wrapSelectionPlugin/jquery.wrapSelection.js"></script>
 		
-		function addAtomToAtomList(category){
-			
-			// remember the original content of the textFrame,
-			// to easyly remove the span(s) later on
-			var originalTextFrame = $("#textFrame").clone();
-			
-			// get the selection to wrap a span around it
-			var startPosInText = savedClick["start"];
-			var endPosInText = savedClick["end"];
-			var selectedAtom = $("#textFrame").selection(startPosInText, endPosInText);
-			
-			// add a span to selected text (when multiple elements
-			//are crossed, more than one span is added) 
-			var span = $("#textFrame").wrapSelection();
-			
-			var barTop = span.position().top;
-			var barHeight = span.height();
-					
-			// differet calcualtion if selection was across
-			// multiple elements, so we have more that one span
-			if (span.length > 1){
-				var lastSpan = span.last();
-				var lastSpanTop = lastSpan.position().top;
-				var lastSpanHeight = lastSpan.height();
-				barHeight = lastSpanTop - barTop + lastSpanHeight;
-			}
-			
-			// remove the span(s) -> reset the text
-			var page = $("#textFrame");
-			page.innerHTML = originalTextFrame.innerHTML;
-
-			atomList.push({
-				"start":Number(startPosInText),
-				"end":Number(endPosInText),
-				"category":String(category),
-				"subcategory":0,
-				"barTop":Number(barTop),
-				"barHeight":Number(barHeight)
-				});
-		}
+		<!--
+		My own written stuff for concept bars.-->
+		<script type="text/javascript" src="js/conceptBars/bars.js"></script>
+		
+		
+		<link rel="stylesheet" type="text/css" href="skeleton/base.css" />
+		<link rel="stylesheet" type="text/css" href="skeleton/layout.css" />
+		<link rel="stylesheet" type="text/css" href="skeleton/skeleton.css" />
+		<link rel="stylesheet" type="text/css" href="layout.css" />
+		
+		<script type='text/javascript'>
 		
 		$(document).ready(function(){
-		
-			$(".category").click(function(){
+			
+			console.log($("#text").position().top);
+			
+			$("li").hover(
+				function () {
+					$(this).addClass("hover");},
+				function () {
+					$(this).removeClass("hover");}
+			);
+			
+
+			$("li").click(function(){
+				
+				console.log("Klick");
 
 				// add new atom to the atomList, with category and
 				// subcategory
 				// TODO: look after subcategory
-				addAtomToAtomList(this.id);
+				var category = $(this).parent().parent().attr('id');
+				var subcategory = 0;
+				
+				console.log(category);
+
+				addAtomToAtomList(category);
 				
 				// render all bars again and display them
 				reset();
@@ -98,241 +72,101 @@
 				display();
 			});
 			
-			$(".category").hover(
-			function () {
-				$(this).addClass("hover");},
-			function () {
-				$(this).removeClass("hover");}
-			);
-			
-			$("#textFrame").mouseup(function(){
+			$("#text").mouseup(function(){
+				
+				console.log("mouseUP");
 				
 				// save the click
-				var selectedText = $("#textFrame").selection();
+				var selectedText = $("#text").selection();
 				savedClick = {
 					"start":selectedText.start,
 					"end":selectedText.end
 					};
 			});
 		});
-			
-		/*
-		The reset function removes all existing Bars, also all needed
-		global variables need to be reset, because they are going to be
-		recalculated.
-		*/
-		function reset(){
-			
-			// before the bars are rendered, the old ones have to be removed
-			$(".special").remove();
-			
-			// all calculated global variables have to be reset
-			columnList = [];
-			savedClick = null;
-			overlapTop = 0;
-			overlapBottom = 0;
-		}
-		
-		/*
-		Helper function for render(). Adds a new colum to columnList.
-		*/
-		function addNewColumnToColumnList(id, column){
-			columnList.push([{
-				"id":Number(id),
-				"overlapTop":Boolean(0),
-				"overlapBottom":Boolean(0),
-				"column":Number(column)
-				}]);
-		}
-		
-		/*
-		Helper function for render(). Adds a new bar to an existing column.
-		*/
-		function addNewBarToColumn(id, column){	
-			columnList[column].push({
-				"id":Number(id),
-				"overlapTop":Boolean(overlapTop),
-				"overlapBottom":Boolean(overlapBottom),
-				"column":Number(column)
-				});
-			
-			overlapTop = false;
-			overlapBottom = false;
-		}
-		
-		/*
-		Helper function for render().
-		Tests if an atom fits into a column.
-		*/
-		function fitsInColumn(atom, column){	
-			
-			var currentColumn = columnList[column];
-			var currentAtom = atomList[atom];
-			
-			// that is the atom which should fit into the active column
-			var bTop = currentAtom["barTop"];
-			var bEnd = bTop + currentAtom["barHeight"];
-			
-			for (x in currentColumn){
-				
-				var bar = currentColumn[x];
-				
-				// that is the iterating bar in the columnList
-				var aTop = atomList[bar["id"]]["barTop"];
-				var aEnd = aTop + atomList[bar["id"]]["barHeight"];
-				
-				if (bEnd < aTop || bTop > aEnd){
-					console.log("No Overlap!");
-					continue;
-				}
-				else {
-					// before return, check if it was a "real" overlap
-					// if the letter positions where overlapping!
-					var bStartPos = currentAtom["start"];
-					var bEndPos = currentAtom["end"];
-					var aStartPos = atomList[bar["id"]]["start"];
-					var aEndPos = atomList[bar["id"]]["end"];
-					
-					if (bEndPos < aStartPos || bStartPos > aEndPos){
-						
-						console.log("Pseudo-Overlap!");
-						
-						// what exactly is overlapping?						
-						if (bEnd > aTop && bEnd < aEnd && bTop < aTop){
-							overlapBottom = true;
-							bar["overlapTop"] = true;
-						}
-						if (bTop > aTop && bTop < aEnd && bEnd > aEnd){
-							overlapTop = true;
-							bar["overlapBottom"]= true;					
-						}
-						
-						continue;
-					}
-					
-					console.log("Overlap!");
-					
-					return false;					
-				}
-			}
-			return true;			
-		}
-		
-		/*
-		The render function iterates all atoms, and recalculates the
-		position of the corresponding bar, its column and also dealing
-		with pseudo overlaps.
-		*/
-		function render(){
-			
-			
-			
-			for(atom in atomList){
-				
-				var added = false;
-				
-				var overlapTop = 0;
-				var overlapBottom = 0;
-								
-				// if it is the first one
-				if (columnList.length == 0){
-					addNewColumnToColumnList(atom, 0);
-				}
-				else {
-				
-					for(column in columnList){
-					
-						if(fitsInColumn(atom, column) == true){
-							addNewBarToColumn(atom, column);
-							added = true;
-							break;
-						}
-					}
-					
-					// open a new column
-					if (added == false){
-						addNewColumnToColumnList(atom, Number(column) + 1);
-					}
-				}	
-			}
-			
-			console.log("AlistAfterrender", atomList);
-			console.log("ClistAfterrender", columnList);
-		}
-			
-		function display(){
-			
-			var page = $("#textFrame");
-			var content = $("#content");
-			
-			// position for calculation
-			var pageTop = page.position().top;
-			var pageLeft = page.position().left;
-			var pageHeight = page.height() - page.css("margin-top");
-			
-			var contentTop = content.position().top;
-			var contentLeft = content.position().left;
-			var contentHeight = content.height() - content.css("margin-top");
-			
-			for (i in columnList){
-				for (j in columnList[i]){
-					
-					var bar = columnList[i][j];
-					
-					var barTop = atomList[bar["id"]]["barTop"];
-					var barLeft = contentLeft;
-					var barHeight = atomList[bar["id"]]["barHeight"];
-					
-					// add div (vertical bar) -> styled later on
-					$("body").append('<div class="special" id="barID_'+bar["id"]+'">&nbsp;</div>');	
-					
-					console.log("column:", bar["column"]);
-					console.log("first", Number(bar["column"])*5);
-					console.log("second", ((Number(bar["column"])+1)*10));
-					
-					var offset = (Number(bar["column"])*5) + ((Number(bar["column"])+1)*10);
-					console.log("offset", offset);
-				
-					var cssTop = contentTop-470+(pageTop-300)+barTop+1;
-					var cssLeft = barLeft - 330 - offset;
-					var cssHeight = barHeight;
-					
-					if (bar["overlapTop"] == true){
-						cssTop = cssTop + 12;
-						cssHeight = cssHeight - 12;
-					}
-					
-					if (bar["overlapBottom"] == true){
-						cssHeight = cssHeight - 12;
-					}
-
-					$("#barID_"+bar["id"]).css({"top":cssTop, "left":cssLeft, "height":cssHeight});
-					$("#barID_"+bar["id"]).addClass("category_"+atomList[bar["id"]]["category"]);
-				}
-			}				
-		}
-	
-	</script>
-	
-	
+		</script>
 	</head>
-	<body>
-		<div id="menu">
-			<div id="A" class="category">
-				<h3 class="categoryA">Kategory A</h4>
-			</div>
-			<div id ="B" class="category">
-				<h3 class="categoryB">Kategory B</h4>
-			</div>
-			<div id="C" class="category">
-				<h3 class="categoryC">Kategory C</h4>
-			</div>
-		</div>
-		<div id="content">
-			<div id="textFrame">
-				<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.<br />At vero eos et accusam et justo duo dolores et ea rebum.</p><p>Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna liquyam erat, sed diam voluptua.</p><p>At vero eos et accusam et justo duo dolores et ea rebum.</p><p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et.</p>	
-			</div>
-		</div>
-	</body>	
-</html>
 
+	<body>		
+		
+		<div class="container">
+			
+				<div class="sixteen columns" style="margin-bottom: 8px; margin-top: 8px;">
+						<h2 style="display:inline">overlap</h2>
+						<h5 style="display:inline; margin-left:8px;">visualizing overlapping annotations in text.</h5>
+				</div>
+				
+				
+				
+				<div class="sixteen columns" id="body">
+				
+					<div class="four columns alpha">
+						...
+					</div>
+				
+					<div class="twelve columns omega">
+						
+						<div class="six columns alpha">
+							<div class="category three columns alpha" id="A">
+								<h5>Category A</h5>
+								<ul>
+									<li>Subcategory 1</li>
+									<li>Subcategory 2</li>
+									<li>Subcategory 3</li>
+								</ul>							
+							</div>
+							<div class="category three columns omega" id="B">
+								<h5>Category B</h5>
+								<ul>
+									<li>Subcategory 1</li>
+									<li>Subcategory 2</li>
+									<li>Subcategory 3</li>
+									<li>Subcategory 3</li>
+								</ul>
+							</div>
+						</div>
+						
+						<div class="six columns omega">
+							
+							<div class="category three columns alpha" id="C">
+								<h5>Category C</h5>
+								<ul>
+									<li>Subcategory 1</li>
+									<li>Subcategory 2</li>
+								</ul>
+							</div>
+							
+							<div class="category three columns omega" id="D">
+								<h5>Category D</h5>
+								<ul>
+									<li>Subcategory 1</li>
+									<li>Subcategory 2</li>
+									<li>Subcategory 3</li>
+									<li>Subcategory 4</li>
+									<li>Subcategory 5</li>
+								</ul>
+							</div>											
+						</div>															
+					</div>
+				</div>
+				
+				<div class="sixteen columns">
+					
+					<div class="four columns alpha">
+						...
+					</div>
+					
+					<!-- This is the div for the text, which is going to be annotated.-->
+					<div class="twelve columns omega">
+						<h2>Text Heading</h2>
+						<div id="text">
+							<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.</p>
+							<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna liquyam erat, sed diam voluptua.</p>
+							<p>At vero eos et accusam et justo duo dolores et ea rebum. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et.</p>
+						</div>
+					</div>
+				</div>
+		</div>
+		
+	</body>
+</html>
