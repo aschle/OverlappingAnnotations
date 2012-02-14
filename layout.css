@@ -32,7 +32,7 @@ html {
 }
 
 /* Color for hovering words. */
-#text span:hover {
+.word_split span:hover {
 	background: #DDD; 
 }
 
