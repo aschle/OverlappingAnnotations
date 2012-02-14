@@ -29,11 +29,15 @@ html {
 
 #text {
 	text-align: justify;
+	
 }
 
-/* Color for hovering words. */
+/* Color for hovering words. The paading is used, to make the background
+ * of the hovered word the same size as the mouse selected text.*/
 .word_split span:hover {
-	background: #DDD; 
+	background: #DDD;
+	padding-top: 0.2em;
+	padding-bottom: 0.2em;
 }
 
 #body {

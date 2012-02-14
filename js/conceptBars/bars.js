@@ -11,7 +11,7 @@ function addAtomToAtomList(category){
 	// remember the original content of the textFrame,
 	// to easyly remove the span(s) later on
 	var originalTextFrame = $("#text").clone();
-	
+		
 	// get the selection to wrap a span around it
 	var startPosInText = savedClick["start"];
 	var endPosInText = savedClick["end"];
@@ -23,10 +23,8 @@ function addAtomToAtomList(category){
 	
 	var barTop = span.position().top;
 	var barHeight = span.height();
-	
-	console.log("left", span.position().left, "top", span.position().top, "position", span.position(), "span", span);
 			
-	// differet calcualtion if selection was across
+	// different calcualtion if selection was across
 	// multiple elements, so we have more that one span
 	if (span.length > 1){
 		var lastSpan = span.last();
@@ -37,8 +35,8 @@ function addAtomToAtomList(category){
 	
 	// remove the span(s) -> reset the text
 	var page = $("#text");
-	page.innerHTML = originalTextFrame.innerHTML;
-
+	page.html(originalTextFrame.html());
+	
 	atomList.push({
 		"start":Number(startPosInText),
 		"end":Number(endPosInText),
