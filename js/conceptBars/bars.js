@@ -1,49 +1,41 @@
 var atomList = [];
 var columnList = [];
+var boxList = [];
 
-var savedClick;
-
-var overlapTop;
-var overlapBottom;
-
-function addAtomToAtomList(category){
+function addBoxToBoxList(start, end){
 	
 	// remember the original content of the textFrame,
 	// to easyly remove the span(s) later on
 	var originalTextFrame = $("#text").clone();
+	
+	var startLetter = $("#text").selection(start, Number(start)+1);
+	var startLetterSpan = $("#text").wrapSelection();
+	
+	var endLetter = $("#text").selection(Number(end)-1, end);
+	var endLetterSpan = $("#text").wrapSelection();
 		
-	// get the selection to wrap a span around it
-	var startPosInText = savedClick["start"];
-	var endPosInText = savedClick["end"];
-	var selectedAtom = $("#text").selection(startPosInText, endPosInText);
+	var topLeft = {"x": startLetterSpan.position().left, "y":startLetterSpan.position().top};
+	var bottomRight = {"x": Number(endLetterSpan.position().left)+Number(endLetterSpan.width()), "y": Number(endLetterSpan.position().top)+Number(endLetterSpan.height())};
 	
-	// add a span to selected text (when multiple elements
-	//are crossed, more than one span is added) 
-	var span = $("#text").wrapSelection();
-	
-	var barTop = span.position().top;
-	var barHeight = span.height();
-			
-	// different calcualtion if selection was across
-	// multiple elements, so we have more that one span
-	if (span.length > 1){
-		var lastSpan = span.last();
-		var lastSpanTop = lastSpan.position().top;
-		var lastSpanHeight = lastSpan.height();
-		barHeight = lastSpanTop - barTop + lastSpanHeight;
-	}
-	
+	boxList.push = {"start":topLeft, "end":bottomRight};
+		
 	// remove the span(s) -> reset the text
 	var page = $("#text");
 	page.html(originalTextFrame.html());
 	
+	// add div (vertical bar) -> styled later on
+	$("body").append('<div class="atom" id="atomID_'+boxList.length +'">&nbsp;</div>');	
+	
+	$("#atomID_"+boxList.length).css({"top":topLeft["y"], "left":topLeft["x"], "height":bottomRight["y"] - topLeft["y"]});	
+}
+
+function addAtomToAtomList(category, start, end){
+			
 	atomList.push({
-		"start":Number(startPosInText),
-		"end":Number(endPosInText),
+		"start":Number(start),
+		"end":Number(end),
 		"category":String(category),
 		"subcategory":0,
-		"barTop":Number(barTop),
-		"barHeight":Number(barHeight)
 		});
 }
 
@@ -60,19 +52,17 @@ function reset(){
 	
 	// all calculated global variables have to be reset
 	columnList = [];
-	savedClick = null;
-	overlapTop = 0;
-	overlapBottom = 0;
+	boxList = [];
 }
 
 /*
 Helper function for render(). Adds a new colum to columnList.
 */
-function addNewColumnToColumnList(id, column){
+function addNewColumnToColumnList(id, column, barTop, barHeight){
 	columnList.push([{
 		"id":Number(id),
-		"overlapTop":Boolean(0),
-		"overlapBottom":Boolean(0),
+		"barTop":Number(barTop),
+		"barHeight":Number(barHeight),
 		"column":Number(column)
 		}]);
 }
@@ -80,30 +70,26 @@ function addNewColumnToColumnList(id, column){
 /*
 Helper function for render(). Adds a new bar to an existing column.
 */
-function addNewBarToColumn(id, column){	
+function addNewBarToColumn(id, column, barTop, barHeight){	
 	columnList[column].push({
 		"id":Number(id),
-		"overlapTop":Boolean(overlapTop),
-		"overlapBottom":Boolean(overlapBottom),
+		"barTop":Number(barTop),
+		"barHeight":Number(barHeight),
 		"column":Number(column)
 		});
-	
-	overlapTop = false;
-	overlapBottom = false;
 }
 
 /*
 Helper function for render().
 Tests if an atom fits into a column.
 */
-function fitsInColumn(atom, column){	
+function fitsInColumn(atom, column, bTop, bHeight){	
 	
 	var currentColumn = columnList[column];
 	var currentAtom = atomList[atom];
 	
 	// that is the atom which should fit into the active column
-	var bTop = currentAtom["barTop"];
-	var bEnd = bTop + currentAtom["barHeight"];
+	var bEnd = bTop + bHeight;
 	
 	for (x in currentColumn){
 		
@@ -118,67 +104,62 @@ function fitsInColumn(atom, column){
 			continue;
 		}
 		return false;
-		
-		// TEST FOR PSEUDO-OVERLAPS (not used anymore)
-		//else {
-			//// before return, check if it was a "real" overlap
-			//// if the letter positions where overlapping!
-			//var bStartPos = currentAtom["start"];
-			//var bEndPos = currentAtom["end"];
-			//var aStartPos = atomList[bar["id"]]["start"];
-			//var aEndPos = atomList[bar["id"]]["end"];
-			
-			//if (bEndPos < aStartPos || bStartPos > aEndPos){
-				
-				//console.log("Pseudo-Overlap!");
-				
-				//// what exactly is overlapping?						
-				//if (bEnd > aTop && bEnd < aEnd && bTop < aTop){
-					//overlapBottom = true;
-					//bar["overlapTop"] = true;
-				//}
-				//if (bTop > aTop && bTop < aEnd && bEnd > aEnd){
-					//overlapTop = true;
-					//bar["overlapBottom"]= true;					
-				//}
-				
-				//continue;
-			//}
-			
-			//console.log("Overlap!");
-			
-			//return false;					
-		//}
 	}
 	return true;			
 }
 
 /*
 The render function iterates all atoms, and recalculates the
-position of the corresponding bar, its column and also dealing
-with pseudo overlaps.
+position of the corresponding bar and its column.
 */
 function render(){
-	
-	
-	
+		
 	for(atom in atomList){
 		
-		var added = false;
+		var currentAtom = atomList[atom];
+
+		// remember the original content of the textFrame,
+		// to easyly remove the span(s) later on
+		var originalTextFrame = $("#text").clone();
+			
+		// get the selection to wrap a span around it
+		var startPosInText = currentAtom["start"];
+		var endPosInText = currentAtom["end"];
+				
+		var selectedAtom = $("#text").selection(startPosInText, endPosInText);
 		
-		var overlapTop = 0;
-		var overlapBottom = 0;
+		// add a span to selected text (when multiple elements
+		//are crossed, more than one span is added) 
+		var span = $("#text").wrapSelection();
+		
+		var barTop = span.position().top;
+		var barHeight = span.height();
+				
+		// different calcualtion if selection was across
+		// multiple elements, so we have more that one span
+		if (span.length > 1){
+			var lastSpan = span.last();
+			var lastSpanTop = lastSpan.position().top;
+			var lastSpanHeight = lastSpan.height();
+			barHeight = lastSpanTop - barTop + lastSpanHeight;
+		}
+		
+		// remove the span(s) -> reset the text
+		var page = $("#text");
+		page.html(originalTextFrame.html());
+			
+		var added = false;
 						
 		// if it is the first one
 		if (columnList.length == 0){
-			addNewColumnToColumnList(atom, 0);
+			addNewColumnToColumnList(atom, 0, barTop, barHeight);
 		}
 		else {
 		
 			for(column in columnList){
 			
-				if(fitsInColumn(atom, column) == true){
-					addNewBarToColumn(atom, column);
+				if(fitsInColumn(atom, column, barTop, barHeight) == true){
+					addNewBarToColumn(atom, column, barTop, barHeight);
 					added = true;
 					break;
 				}
@@ -186,13 +167,10 @@ function render(){
 			
 			// open a new column
 			if (added == false){
-				addNewColumnToColumnList(atom, Number(column) + 1);
+				addNewColumnToColumnList(atom, Number(column) + 1, barTop, barHeight);
 			}
 		}	
 	}
-	
-	console.log("AlistAfterrender", atomList);
-	console.log("ClistAfterrender", columnList);
 }
 	
 function display(){
@@ -209,9 +187,9 @@ function display(){
 			
 			var bar = columnList[i][j];
 			
-			var barTop = atomList[bar["id"]]["barTop"];
-			var barLeft = containerLeft + textLeft;
-			var barHeight = atomList[bar["id"]]["barHeight"];
+			var barTop = bar["barTop"];
+			var barLeft = containerLeft + textLeft -10;
+			var barHeight = bar["barHeight"];
 			
 			// add div (vertical bar) -> styled later on
 			$("body").append('<div class="bar" id="barID_'+bar["id"]+'">&nbsp;</div>');	
@@ -222,17 +200,14 @@ function display(){
 			var cssLeft = barLeft - offset - 8;
 			var cssHeight = barHeight;
 			
-			if (bar["overlapTop"] == true){
-				cssTop = cssTop + 12;
-				cssHeight = cssHeight - 12;
-			}
-			
-			if (bar["overlapBottom"] == true){
-				cssHeight = cssHeight - 12;
-			}
-
 			$("#barID_"+bar["id"]).css({"top":cssTop, "left":cssLeft, "height":cssHeight});
 			$("#barID_"+bar["id"]).addClass(atomList[bar["id"]]["category"]);
 		}
-	}				
+	}
+	
+	$("div.bar").mouseover(function(){
+		console.log("MOUSEOVER BAR", $(this));
+		
+		// display the corresponding text
+	});			
 }

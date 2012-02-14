@@ -47,12 +47,37 @@
 		<link rel="stylesheet" type="text/css" href="layout.css" />
 		
 		<script type='text/javascript'>
+			
+			var savedClick;
+			
+			// Start Element, while selecting text.
+			var startElement;
+			var endElement;
+			
+			var selecting = false;
 		
 		$(document).ready(function(){
+			
+			// deals with STRG+ and STRG- and STRG0
+			$(window).keydown(function(event) {
+			  if(event.ctrlKey && event.keyCode == 189) { 
+				console.log("Hey! Ctrl+- event captured!");
+				event.preventDefault(); 
+			  }
+			  if(event.ctrlKey && event.keyCode == 187) { 
+				console.log("Hey! Ctrl++ event captured!");
+				event.preventDefault(); 
+			  }
+			  if(event.ctrlKey && event.keyCode == 48) { 
+				console.log("Hey! Ctrl++ event captured!");
+				event.preventDefault(); 
+			  }
+			});
 			
 			// hover-effect for single words
 			$(".word_split").lettering('words');
 			
+			// hover-effect on subcategories
 			$("li").hover(
 				function () {
 					$(this).addClass("hover");},
@@ -60,33 +85,93 @@
 					$(this).removeClass("hover");}
 			);
 			
-
-			$("li").click(function(){
-				
-				console.log("Klick");
-
+			// creating a new annotation
+			$("li").click(function(){	
+								
 				// add new atom to the atomList, with category and
 				// subcategory
 				// TODO: look after subcategory
 				var category = $(this).parent().parent().attr('id');
 				var subcategory = 0;
 
-				addAtomToAtomList(category);
+				addAtomToAtomList(category, savedClick["start"], savedClick["end"]);
+				
+				// creating a corresponding boy, which highlights the text
+				// belonging to a bar
+				addBoxToBoxList(savedClick["start"], savedClick["end"]);
 				
 				// render all bars again and display them
+				savedClick = null;
 				reset();
 				render();
 				display();
 			});
 			
-			$("#text").mouseup(function(){
-								
+			// for saving the start/end positions of the selected tex
+			$("#text").mouseup(function(){			
+				
 				// save the click
 				var selectedText = $("#text").selection();
 				savedClick = {
 					"start":selectedText.start,
 					"end":selectedText.end
 					};
+			});
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			$("#text .word_split span").mousedown(function(){
+				
+				console.log("wordSplit mouseDown");
+				
+				if(startElement && endElement){
+					startElement.removeClass("permanentHover");
+					endElement.removeClass("permanentHover");
+				}	
+				
+				selecting = true;
+				startElement = $(this);
+				// TDOD: this has to be removed! Again after choosing
+				// a category!
+				$(this).addClass("permanentHover");
+			});
+			
+			$("#text .word_split span").mouseup(function(){
+				
+				console.log("wordSplit mouseUp");
+				
+				selecting = false;
+				endElement = $(this);
+				// TDOD: this has to be removed! Again after choosing
+				// a category!
+				$(this).addClass("permanentHover");
+			});	
+			
+			$("html").click(function(){
+				
+				console.log("html click");
+				
+				if(!selecting && startElement && endElement){
+					startElement.removeClass("permanentHover");
+					endElement.removeClass("permanentHover");
+				}	
+			});
+			
+			$("#body").mousedown(function(){
+				
+				console.log("body mouseDown");
+				if (startElement && endElement){
+					startElement.removeClass("permanentHover");
+					endElement.removeClass("permanentHover");
+				}
 			});
 		});
 		</script>
