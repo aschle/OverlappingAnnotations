@@ -29,6 +29,14 @@
 		<script type="text/javascript" src="js/wrapSelectionPlugin/jquery.wrapSelection.js"></script>
 		
 		<!--
+		This jQuery plugin can be found on github. 
+		[https://github.com/davatron5000/Lettering.js] Its used for
+		getting a hovering effect on single words, to make selections
+		easier for the user.
+		-->
+		<script type="text/javascript" src="js/jquery.lettering-0.6.1.min.js"></script>
+		
+		<!--
 		My own written stuff for concept bars.-->
 		<script type="text/javascript" src="js/conceptBars/bars.js"></script>
 		
@@ -42,7 +50,8 @@
 		
 		$(document).ready(function(){
 			
-			console.log($("#text").position().top);
+			// hover-effect for single words
+			$("#text").lettering('words');
 			
 			$("li").hover(
 				function () {
@@ -61,8 +70,6 @@
 				// TODO: look after subcategory
 				var category = $(this).parent().parent().attr('id');
 				var subcategory = 0;
-				
-				console.log(category);
 
 				addAtomToAtomList(category);
 				
@@ -73,9 +80,7 @@
 			});
 			
 			$("#text").mouseup(function(){
-				
-				console.log("mouseUP");
-				
+								
 				// save the click
 				var selectedText = $("#text").selection();
 				savedClick = {

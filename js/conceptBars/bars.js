@@ -23,6 +23,8 @@ function addAtomToAtomList(category){
 	
 	var barTop = span.position().top;
 	var barHeight = span.height();
+	
+	console.log("left", span.position().left, "top", span.position().top, "position", span.position(), "span", span);
 			
 	// differet calcualtion if selection was across
 	// multiple elements, so we have more that one span
@@ -117,35 +119,38 @@ function fitsInColumn(atom, column){
 			console.log("No Overlap!");
 			continue;
 		}
-		else {
-			// before return, check if it was a "real" overlap
-			// if the letter positions where overlapping!
-			var bStartPos = currentAtom["start"];
-			var bEndPos = currentAtom["end"];
-			var aStartPos = atomList[bar["id"]]["start"];
-			var aEndPos = atomList[bar["id"]]["end"];
+		return false;
+		
+		// TEST FOR PSEUDO-OVERLAPS (not used anymore)
+		//else {
+			//// before return, check if it was a "real" overlap
+			//// if the letter positions where overlapping!
+			//var bStartPos = currentAtom["start"];
+			//var bEndPos = currentAtom["end"];
+			//var aStartPos = atomList[bar["id"]]["start"];
+			//var aEndPos = atomList[bar["id"]]["end"];
 			
-			if (bEndPos < aStartPos || bStartPos > aEndPos){
+			//if (bEndPos < aStartPos || bStartPos > aEndPos){
 				
-				console.log("Pseudo-Overlap!");
+				//console.log("Pseudo-Overlap!");
 				
-				// what exactly is overlapping?						
-				if (bEnd > aTop && bEnd < aEnd && bTop < aTop){
-					overlapBottom = true;
-					bar["overlapTop"] = true;
-				}
-				if (bTop > aTop && bTop < aEnd && bEnd > aEnd){
-					overlapTop = true;
-					bar["overlapBottom"]= true;					
-				}
+				//// what exactly is overlapping?						
+				//if (bEnd > aTop && bEnd < aEnd && bTop < aTop){
+					//overlapBottom = true;
+					//bar["overlapTop"] = true;
+				//}
+				//if (bTop > aTop && bTop < aEnd && bEnd > aEnd){
+					//overlapTop = true;
+					//bar["overlapBottom"]= true;					
+				//}
 				
-				continue;
-			}
+				//continue;
+			//}
 			
-			console.log("Overlap!");
+			//console.log("Overlap!");
 			
-			return false;					
-		}
+			//return false;					
+		//}
 	}
 	return true;			
 }
