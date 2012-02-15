@@ -107,3 +107,14 @@ html {
 	position: absolute;
 	z-index: 2;
 }
+
+.atom{
+	position: absolute;
+	z-index: -1;
+}
+
+#text .hoverBox {
+	background: #DDD;
+	padding-top: 0.3em;
+	padding-bottom: 0.3em;
+}

@@ -75,7 +75,7 @@
 			});
 			
 			// hover-effect for single words
-			$(".word_split").lettering('words');
+			// $(".word_split").lettering('words');
 			
 			// hover-effect on subcategories
 			$("li").hover(
@@ -95,11 +95,7 @@
 				var subcategory = 0;
 
 				addAtomToAtomList(category, savedClick["start"], savedClick["end"]);
-				
-				// creating a corresponding boy, which highlights the text
-				// belonging to a bar
-				addBoxToBoxList(savedClick["start"], savedClick["end"]);
-				
+								
 				// render all bars again and display them
 				savedClick = null;
 				reset();

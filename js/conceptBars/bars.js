@@ -2,31 +2,54 @@ var atomList = [];
 var columnList = [];
 var boxList = [];
 
-function addBoxToBoxList(start, end){
-	
+/*
+Create a box belonging to the textatom, which is only active while
+* hovering a bar.
+*/
+function createBox(start, end){
+		
 	// remember the original content of the textFrame,
 	// to easyly remove the span(s) later on
 	var originalTextFrame = $("#text").clone();
 	
 	var startLetter = $("#text").selection(start, Number(start)+1);
-	var startLetterSpan = $("#text").wrapSelection();
+	var startLetterSpan = $("#text").wrapSelection({
+		fitToWord: false
+	});
 	
 	var endLetter = $("#text").selection(Number(end)-1, end);
-	var endLetterSpan = $("#text").wrapSelection();
-		
+	var endLetterSpan = $("#text").wrapSelection({
+		fitToWord: false
+	});
+	
 	var topLeft = {"x": startLetterSpan.position().left, "y":startLetterSpan.position().top};
 	var bottomRight = {"x": Number(endLetterSpan.position().left)+Number(endLetterSpan.width()), "y": Number(endLetterSpan.position().top)+Number(endLetterSpan.height())};
 	
-	boxList.push = {"start":topLeft, "end":bottomRight};
+	console.log(topLeft, bottomRight);
+	
+	boxList.push({
+		"start":topLeft,
+		"end":bottomRight
+		});
 		
 	// remove the span(s) -> reset the text
 	var page = $("#text");
 	page.html(originalTextFrame.html());
 	
-	// add div (vertical bar) -> styled later on
-	$("body").append('<div class="atom" id="atomID_'+boxList.length +'">&nbsp;</div>');	
+	// add div (box) -> styled later on
+	$("body").append('<div class="atom" id="atomID_'+(boxList.length-1) +'">&nbsp;</div>');
 	
-	$("#atomID_"+boxList.length).css({"top":topLeft["y"], "left":topLeft["x"], "height":bottomRight["y"] - topLeft["y"]});	
+	var left = getDisplayXBox(topLeft["x"]);
+
+	$("#atomID_"+(boxList.length-1)).css({
+		"top":topLeft["y"],
+		"left":left,
+		"height":bottomRight["y"] - topLeft["y"],
+		"width":bottomRight["x"]-topLeft["x"],
+		"display":"none"
+	});
+	
+	$("#atomID_"+(boxList.length-1)).addClass(atomList[boxList.length-1]["category"]);
 }
 
 function addAtomToAtomList(category, start, end){
@@ -48,7 +71,8 @@ recalculated.
 function reset(){
 	
 	// before the bars are rendered, the old ones have to be removed
-	$(".special").remove();
+	$(".bar").remove();
+	$(".atom").remove();
 	
 	// all calculated global variables have to be reset
 	columnList = [];
@@ -83,23 +107,18 @@ function addNewBarToColumn(id, column, barTop, barHeight){
 Helper function for render().
 Tests if an atom fits into a column.
 */
-function fitsInColumn(atom, column, bTop, bHeight){	
-	
-	var currentColumn = columnList[column];
-	var currentAtom = atomList[atom];
-	
+function fitsInColumn(atom, column, currentAtomTop, currentAtomHeight){
+			
 	// that is the atom which should fit into the active column
-	var bEnd = bTop + bHeight;
+	var currentAtomEnd = currentAtomTop + currentAtomHeight;
 	
-	for (x in currentColumn){
-		
-		var bar = currentColumn[x];
-		
+	for (x in columnList[column]){
+						
 		// that is the iterating bar in the columnList
-		var aTop = atomList[bar["id"]]["barTop"];
-		var aEnd = aTop + atomList[bar["id"]]["barHeight"];
+		var barInColumnTop = columnList[column][x]["barTop"];
+		var barInColumnEnd = barInColumnTop + columnList[column][x]["barHeight"];
 		
-		if (bEnd < aTop || bTop > aEnd){
+		if (currentAtomEnd < barInColumnTop || currentAtomTop > barInColumnEnd){
 			console.log("No Overlap!");
 			continue;
 		}
@@ -110,23 +129,25 @@ function fitsInColumn(atom, column, bTop, bHeight){
 
 /*
 The render function iterates all atoms, and recalculates the
-position of the corresponding bar and its column.
+position of the corresponding bar and its column, also its hovering box.
 */
 function render(){
 		
+	// *** calculating the bars
 	for(atom in atomList){
+				
+		var start = atomList[atom]["start"];
+		var end = atomList[atom]["end"];
 		
-		var currentAtom = atomList[atom];
-
+		// *** calculating the corresponding box
+		// createBox(start, end);
+		
 		// remember the original content of the textFrame,
 		// to easyly remove the span(s) later on
 		var originalTextFrame = $("#text").clone();
 			
-		// get the selection to wrap a span around it
-		var startPosInText = currentAtom["start"];
-		var endPosInText = currentAtom["end"];
-				
-		var selectedAtom = $("#text").selection(startPosInText, endPosInText);
+		// get the selection to wrap a span around it		
+		$("#text").selection(start, end);
 		
 		// add a span to selected text (when multiple elements
 		//are crossed, more than one span is added) 
@@ -147,7 +168,9 @@ function render(){
 		// remove the span(s) -> reset the text
 		var page = $("#text");
 		page.html(originalTextFrame.html());
-			
+		
+		
+		// *** Adding the bar to the columnList
 		var added = false;
 						
 		// if it is the first one
@@ -174,6 +197,59 @@ function render(){
 }
 	
 function display(){
+		
+	for (i in columnList){
+		for (j in columnList[i]){
+			
+			var bar = columnList[i][j];
+						
+			var barLeft = getDisplayXBar(bar["left"]);
+			var offset = (Number(bar["column"])*5) + ((Number(bar["column"])+1)*10);
+		
+			var cssTop = bar["barTop"];
+			var cssLeft = barLeft - offset - 18;
+			var cssHeight = bar["barHeight"];
+			
+			var id = bar["id"];
+			
+			$("body").append('<div class="bar" id="barID_'+id+'">&nbsp;</div>');	
+			$("#barID_"+id).css({"top":cssTop, "left":cssLeft, "height":cssHeight});
+			$("#barID_"+id).addClass(atomList[id]["category"]);
+		}
+	}
+	
+	var content;
+	
+	$("div.bar").hover(
+		function () {
+			
+			content = $("#text").clone();
+			
+			var bar = $(this);
+			var stringArray = bar.attr("id").split("_");
+			var id = stringArray[1];
+			
+			var start= atomList[id]["start"];
+			var end = atomList[id]["end"];
+			
+			var selection = $("#text").selection(start, end);
+			var span = $("#text").wrapSelection({
+				fitToWord: true
+			});
+			
+			span.attr("id", "boxID_"+id);
+			span.addClass("hoverBox");
+			span.addClass(atomList[id]["category"]);
+		},
+			
+		function () {
+			var page = $("#text");
+			page.html(content.html());	
+		}
+	);
+}
+
+function getDisplayXBar (x){
 	
 	var text = $("#text");
 	var container = $(".container");
@@ -182,32 +258,17 @@ function display(){
 	var textLeft = text.position().left;	
 	var containerLeft = container.position().left;
 	
-	for (i in columnList){
-		for (j in columnList[i]){
-			
-			var bar = columnList[i][j];
-			
-			var barTop = bar["barTop"];
-			var barLeft = containerLeft + textLeft -10;
-			var barHeight = bar["barHeight"];
-			
-			// add div (vertical bar) -> styled later on
-			$("body").append('<div class="bar" id="barID_'+bar["id"]+'">&nbsp;</div>');	
-			
-			var offset = (Number(bar["column"])*5) + ((Number(bar["column"])+1)*10);
-		
-			var cssTop = barTop;
-			var cssLeft = barLeft - offset - 8;
-			var cssHeight = barHeight;
-			
-			$("#barID_"+bar["id"]).css({"top":cssTop, "left":cssLeft, "height":cssHeight});
-			$("#barID_"+bar["id"]).addClass(atomList[bar["id"]]["category"]);
-		}
-	}
+	return containerLeft + textLeft;
+}
+
+function getDisplayXBox (x){
 	
-	$("div.bar").mouseover(function(){
-		console.log("MOUSEOVER BAR", $(this));
-		
-		// display the corresponding text
-	});			
+	var text = $("#text");
+	var container = $(".container");
+	
+	// position for calculation
+	var textLeft = text.position().left;	
+	var containerLeft = container.position().left;
+	
+	return containerLeft + x;
 }
