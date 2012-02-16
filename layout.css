@@ -1,13 +1,14 @@
-html {
-	min-height:101%;
-}
+/* to always have a scrollbar on the right*/
+html {min-height:101%;}
 
+/*categorie boxes in the menu*/
 .category {
 	background: #DDD;
 	border-bottom-right-radius: 7px;
 	border-top-left-radius: 7px;
 }
 
+/*heading of a categorie*/
 .category h5 {
 	margin-left: 8px;
 	margin-right: 8px;
@@ -15,35 +16,31 @@ html {
 	margin-bottom: 4px;
 }
 
+/*make the subcategories look nice*/
 .category ul {
 	padding-left: 8px;
 	padding-top: 8px;
 	padding-right: 8px;
 }
 
+/*subcategories*/
 .category li {
 	padding-left: 4px;
 	background: #FFF;
 	border-radius: 7px;
 }
 
+/*blocksatz*/
 #text {
 	text-align: justify;
-	
 }
 
-/* Color for hovering words. The paading is used, to make the background
- * of the hovered word the same size as the mouse selected text.*/
+/* Color for hovering words.*/
 .word_split span:hover {
 	background: #DDD;
-	/*padding-top: 0.2em;
-	padding-bottom: 0.2em;*/
 }
 
-.permanentHover {
-	background: #DDD;
-}
-
+/*get borders for the menu*/
 #body {
 	border-top: 1px solid #DDD;
 	border-bottom: 1px solid #DDD;
@@ -52,55 +49,25 @@ html {
 	margin-bottom: 8px;
 }
 
-#A h5{
-	border-bottom: 8px solid #FF9000;
-}
+/*underlining the categories*/
+#A h5{border-bottom: 8px solid #FF9000;}
+#B h5{border-bottom: 8px solid #A101A6;}
+#C h5{border-bottom: 8px solid #A3B92E;}
+#D h5{border-bottom: 8px solid #0A64A4;}
 
-#B h5{
-	border-bottom: 8px solid #A101A6;
-}
+/*hovering the subcategories*/
+#A .hover {background: rgba(255, 144, 0, 0.4) !important;}
+#B .hover {background: rgba(161, 1, 166, 0.4) !important;}
+#C .hover {background: rgba(163, 185, 46, 0.4) !important;}
+#D .hover {background: rgba(10, 100, 164, 0.4) !important;}
 
-#C h5{
-	border-bottom: 8px solid #A3B92E;
-}
+/*background color*/
+.A {background: #FF9000;}
+.B {background: #A101A6;}
+.C {background: #A3B92E;}
+.D {background: #0A64A4;}
 
-#D h5{
-	border-bottom: 8px solid #0A64A4;
-}
-
-#A .hover {
-	background: rgba(255, 144, 0, 0.4) !important;
-}
-
-#B .hover {
-	background: rgba(161, 1, 166, 0.4) !important;
-}
-
-#C .hover {
-	background: rgba(163, 185, 46, 0.4) !important;
-}
-
-#D .hover {
-	background: rgba(10, 100, 164, 0.4) !important;
-}
-
-.A {
-	background: #FF9000;
-}
-
-.B {
-	background: #A101A6;
-}
-
-.C {
-	background: #A3B92E;
-}
-
-.D {
-	background: #0A64A4;
-}
-
-
+/*bars on the left*/
 .bar{
 	width: 10px;
 	border-radius: 5px; 
@@ -108,13 +75,45 @@ html {
 	z-index: 2;
 }
 
-.atom{
-	position: absolute;
-	z-index: -1;
+/*styling the text atoms, when hovering the bars*/
+#text span.hover {
+    padding-bottom: 0.1em;
+    padding-left: 2px;
+    padding-right: 2px;
+    background: #CCC;
 }
 
-#text .hoverBox {
-	background: #DDD;
-	padding-top: 0.3em;
-	padding-bottom: 0.3em;
+#text span.hover.top {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+#text span.hover.topBottom {
+    border-bottom-right-radius: 6px;
+}
+
+#text span.hover.spaceBottomRight {
+    padding-bottom: 40px;
+    padding-right: 39px !important;
+}
+
+#text span.hover.middleTop {
+    border-top-left-radius: 6px;
+}
+
+#text span.hover.middleBottom {
+    border-bottom-right-radius: 6px;
+}
+
+#text span.hover.bottom {
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius:6px;
+}
+
+#text span.hover.bottomTop {
+    border-top-left-radius:6px;
+}
+
+#text span.hover.single {
+    border-radius:6px;
 }

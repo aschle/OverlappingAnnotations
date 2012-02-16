@@ -222,31 +222,32 @@ function display(){
 	
 	$("div.bar").hover(
 		function () {
-			
-			content = $("#text").clone();
-			
-			var bar = $(this);
-			var stringArray = bar.attr("id").split("_");
-			var id = stringArray[1];
-			
-			var start= atomList[id]["start"];
-			var end = atomList[id]["end"];
-			
-			var selection = $("#text").selection(start, end);
-			var span = $("#text").wrapSelection({
-				fitToWord: true
-			});
-			
-			span.attr("id", "boxID_"+id);
-			span.addClass("hoverBox");
-			span.addClass(atomList[id]["category"]);
+			wrapAllLines($(this));
 		},
 			
 		function () {
-			var page = $("#text");
-			page.html(content.html());	
+	
 		}
 	);
+}
+
+function getwrapCase(spans){
+	
+	if(spans)
+	
+}
+
+function wrapAllLines(bar){
+	
+	var id = bar.attr("id").split("_")[1];
+	var atom = atomList[id];
+	$("#text").selection(atom["start"], atom["end"]);
+	var span = $("#text").wrapSelection();
+	
+	span.wraplines();
+	
+	var spanLines = $("span[class^='wrap_line_']");
+	
 }
 
 function getDisplayXBar (x){
