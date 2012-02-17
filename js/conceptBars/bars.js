@@ -1,56 +1,5 @@
 var atomList = [];
 var columnList = [];
-var boxList = [];
-
-/*
-Create a box belonging to the textatom, which is only active while
-* hovering a bar.
-*/
-function createBox(start, end){
-		
-	// remember the original content of the textFrame,
-	// to easyly remove the span(s) later on
-	var originalTextFrame = $("#text").clone();
-	
-	var startLetter = $("#text").selection(start, Number(start)+1);
-	var startLetterSpan = $("#text").wrapSelection({
-		fitToWord: false
-	});
-	
-	var endLetter = $("#text").selection(Number(end)-1, end);
-	var endLetterSpan = $("#text").wrapSelection({
-		fitToWord: false
-	});
-	
-	var topLeft = {"x": startLetterSpan.position().left, "y":startLetterSpan.position().top};
-	var bottomRight = {"x": Number(endLetterSpan.position().left)+Number(endLetterSpan.width()), "y": Number(endLetterSpan.position().top)+Number(endLetterSpan.height())};
-	
-	console.log(topLeft, bottomRight);
-	
-	boxList.push({
-		"start":topLeft,
-		"end":bottomRight
-		});
-		
-	// remove the span(s) -> reset the text
-	var page = $("#text");
-	page.html(originalTextFrame.html());
-	
-	// add div (box) -> styled later on
-	$("body").append('<div class="atom" id="atomID_'+(boxList.length-1) +'">&nbsp;</div>');
-	
-	var left = getDisplayXBox(topLeft["x"]);
-
-	$("#atomID_"+(boxList.length-1)).css({
-		"top":topLeft["y"],
-		"left":left,
-		"height":bottomRight["y"] - topLeft["y"],
-		"width":bottomRight["x"]-topLeft["x"],
-		"display":"none"
-	});
-	
-	$("#atomID_"+(boxList.length-1)).addClass(atomList[boxList.length-1]["category"]);
-}
 
 function addAtomToAtomList(category, start, end){
 			
@@ -62,7 +11,6 @@ function addAtomToAtomList(category, start, end){
 		});
 }
 
-	
 /*
 The reset function removes all existing Bars, also all needed
 global variables need to be reset, because they are going to be
@@ -75,7 +23,6 @@ function reset(){
 	
 	// all calculated global variables have to be reset
 	columnList = [];
-	boxList = [];
 }
 
 /*
@@ -253,9 +200,26 @@ function applyWrapCase(spanLines){
 	spanLines.last().addClass("bottom");
 	
 	// special treatment for "Absätze"
-	var lastIndex = 0;
+	var last = null;
 	spanLines.each(function(index){
-		// TODO: hier weitermachen
+		
+		var classString = $(this).attr("class");
+		
+		if(classString.indexOf('0') && last != null){
+			
+			var max = Number($("#text").position().left) + Number($("#text").width());
+			var rigth = last.position().left + last.width();
+			var offsetX = max - rigth;
+			var offsetY = $("p").css("margin-bottom");
+			
+			console.log(offsetY);
+			
+			last.css("padding-right", offsetX);
+			last.css("padding-bottom", offsetY);
+			last.css("padding-bottom", "+="+1);
+		}
+		
+		last = $(this);
 	});
 	
 	// Case 3: A | 2 lines | >2 lines
