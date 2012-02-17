@@ -72,9 +72,8 @@ html {min-height:101%;}
 
 /*styling the text atoms, when hovering the bars*/
 #text span.hover {
-    padding-bottom: 0.1em;
-    /*padding-left: 2px;
-    padding-right: 2px;*/
+	padding-top: 0.3em;
+    padding-bottom: 0.3em;
     background: #CCC;
 }
 
@@ -111,4 +110,14 @@ html {min-height:101%;}
 
 #text span.hover.single {
     border-radius:6px;
+}
+
+#text span.hover.singleLeft {
+    border-top-left-radius:6px;
+    border-bottom-left-radius:6px;
+}
+
+#text span.hover.singleRight {
+    border-top-right-radius:6px;
+    border-bottom-right-radius:6px;
 }

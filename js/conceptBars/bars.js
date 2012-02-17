@@ -72,7 +72,6 @@ function reset(){
 	
 	// before the bars are rendered, the old ones have to be removed
 	$(".bar").remove();
-	$(".atom").remove();
 	
 	// all calculated global variables have to be reset
 	columnList = [];
@@ -138,9 +137,6 @@ function render(){
 				
 		var start = atomList[atom]["start"];
 		var end = atomList[atom]["end"];
-		
-		// *** calculating the corresponding box
-		// createBox(start, end);
 		
 		// remember the original content of the textFrame,
 		// to easyly remove the span(s) later on
@@ -235,38 +231,112 @@ function display(){
 function applyWrapCase(spanLines){
 	
 	var len = spanLines.length;
-	var startLeft = spanLines[0].position().left;
-	var endLeft = spanLines[spanLines.length - 1].position().left
+	var start = spanLines.first().position().left;
+	var end = spanLines.last().position().left + spanLines.last().width();
 	
-	// Case 1: one line -> single
+	spanLines.addClass("hover");
+		
+	// Case 1: 1 line -> single
 	if(len == 1){
-		console.log("single");
-		spanLines.addClass("hover single");
+		spanLines.addClass("single");
+		return;
+	}
+		
+	// Case 2: 2 lines -> single
+	if(len == 2 && start > end){
+		spanLines.first().addClass("singleLeft");
+		spanLines.last().addClass("singleRight");
+		return;
 	}
 	
-	// Case 2: two lines -> single
-	if(len == 2){
-		console.log("single");
-		if(startLeft > endLeft{
-			spanLines.addClass("hover single");
+	spanLines.first().addClass("top");
+	spanLines.last().addClass("bottom");
+	
+	// special treatment for "Absätze"
+	var lastIndex = 0;
+	spanLines.each(function(index){
+		// TODO: hier weitermachen
+	});
+	
+	// Case 3: A | 2 lines | >2 lines
+	// do not need anymore
+	
+	// Case 4: B | 2 lines | 3 lines | >3 lines
+	if (minMaxCase(start, end) == 'B'){				
+		if(len == 2){
+			spanLines.first().addClass("topBottom");
+			return;
 		}
+		spanLines.last().prev().addClass("middleBottom");
+	} 
+	
+	// Case 5: C | 2 lines | 3 lines | >3 lines
+	if(minMaxCase(start, end) == 'C'){
+		if(len == 2){
+			spanLines.last().addClass("bottomTop");
+			return;
+		}
+		spanLines.first().next().addClass("middleTop");
+	}
+	
+	// Case 6: D | 2 lines | 3 lines | 4 lines | >4 lines
+	if(minMaxCase(start, end) == 'D'){
+		if(len == 2){
+			spanLines.first().addClass("topBottom");
+			spanLines.last().addClass("bottomTop");
+			return;
+		}
+		
+		spanLines.first().next().addClass("middleTop");
+		spanLines.last().prev().addClass("middleBottom");
 	}
 }
 
-function wrapAllLines(bar){
+function minMaxCase (start, end){
 	
+	var min = $("#text").position().left; 
+	var max = $("#text").position().left + $("#text").width();
+		
+	// Case A
+	//  __
+	// |__|
+	if (start == min && end == max){
+		return 'A';
+	}
+	
+	// Case B:
+	//	___
+	// |  _|
+	// |_|
+	if(start == min && end < max){
+		return 'B';
+	}
+	
+	// Case C:
+	//   __
+	// _|  |
+	//|____|
+	if(start > min && end == max){
+		return 'C';
+	}
+	
+	// Case D:
+	//    ___
+	//  _|  _|
+	// |___|
+	if(start > min && end < max){
+		return 'D';
+	}
+}
+
+
+function wrapAllLines(bar){
 	var id = bar.attr("id").split("_")[1];
 	var atom = atomList[id];
 	$("#text").selection(atom["start"], atom["end"]);
 	var spans = $("#text").wrapSelection();
-	
 	spans.wraplines();
-	
-	var spanLines = $("span[class^='wrap_line_']");
-	
-	console.log("spans", spans, "lines", spanLines);
-	
-	applyWrapCase(spanLines);
+	applyWrapCase($("span[class^='wrap_line_']"));
 }
 
 function getDisplayXBar (x){
