@@ -35,11 +35,6 @@ html {min-height:101%;}
 	text-align: justify;
 }
 
-/* Color for hovering words.*/
-.word_split span:hover {
-	background: #DDD;
-}
-
 /*get borders for the menu*/
 #body {
 	border-top: 1px solid #DDD;
@@ -78,8 +73,8 @@ html {min-height:101%;}
 /*styling the text atoms, when hovering the bars*/
 #text span.hover {
     padding-bottom: 0.1em;
-    padding-left: 2px;
-    padding-right: 2px;
+    /*padding-left: 2px;
+    padding-right: 2px;*/
     background: #CCC;
 }
 

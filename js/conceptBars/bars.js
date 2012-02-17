@@ -218,7 +218,7 @@ function display(){
 		}
 	}
 	
-	var content;
+	var originalContent = $("#text").clone();
 	
 	$("div.bar").hover(
 		function () {
@@ -226,15 +226,31 @@ function display(){
 		},
 			
 		function () {
-	
+			var content = $("#text");
+			content.html(originalContent.html());
 		}
 	);
 }
 
-function getwrapCase(spans){
+function applyWrapCase(spanLines){
 	
-	if(spans)
+	var len = spanLines.length;
+	var startLeft = spanLines[0].position().left;
+	var endLeft = spanLines[spanLines.length - 1].position().left
 	
+	// Case 1: one line -> single
+	if(len == 1){
+		console.log("single");
+		spanLines.addClass("hover single");
+	}
+	
+	// Case 2: two lines -> single
+	if(len == 2){
+		console.log("single");
+		if(startLeft > endLeft{
+			spanLines.addClass("hover single");
+		}
+	}
 }
 
 function wrapAllLines(bar){
@@ -242,12 +258,15 @@ function wrapAllLines(bar){
 	var id = bar.attr("id").split("_")[1];
 	var atom = atomList[id];
 	$("#text").selection(atom["start"], atom["end"]);
-	var span = $("#text").wrapSelection();
+	var spans = $("#text").wrapSelection();
 	
-	span.wraplines();
+	spans.wraplines();
 	
 	var spanLines = $("span[class^='wrap_line_']");
 	
+	console.log("spans", spans, "lines", spanLines);
+	
+	applyWrapCase(spanLines);
 }
 
 function getDisplayXBar (x){
