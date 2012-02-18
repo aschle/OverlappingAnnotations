@@ -175,13 +175,17 @@ function display(){
 	);
 }
 
-function applyWrapCase(spanLines){
+/*
+ * */
+function applyWrapCase(spanLines, category){
 	
 	var len = spanLines.length;
 	var start = spanLines.first().position().left;
 	var end = spanLines.last().position().left + spanLines.last().width();
 	
 	spanLines.addClass("hover");
+	spanLines.addClass(category);
+	spanLines.addClass("light");
 		
 	// Case 1: 1 line -> single
 	if(len == 1){
@@ -201,18 +205,17 @@ function applyWrapCase(spanLines){
 	
 	// special treatment for "Absätze"
 	var last = null;
+	
 	spanLines.each(function(index){
 		
 		var classString = $(this).attr("class");
-		
-		if(classString.indexOf('0') && last != null){
+				
+		if((classString.indexOf('1') != -1) && (last != null)){
 			
 			var max = Number($("#text").position().left) + Number($("#text").width());
 			var rigth = last.position().left + last.width();
 			var offsetX = max - rigth;
-			var offsetY = $("p").css("margin-bottom");
-			
-			console.log(offsetY);
+			var offsetY = $("p").css("margin-bottom");			
 			
 			last.css("padding-right", offsetX);
 			last.css("padding-bottom", offsetY);
@@ -255,7 +258,8 @@ function applyWrapCase(spanLines){
 		spanLines.last().prev().addClass("middleBottom");
 	}
 }
-
+/*
+ * */
 function minMaxCase (start, end){
 	
 	var min = $("#text").position().left; 
@@ -293,14 +297,15 @@ function minMaxCase (start, end){
 	}
 }
 
-
+/*
+ * */
 function wrapAllLines(bar){
 	var id = bar.attr("id").split("_")[1];
 	var atom = atomList[id];
 	$("#text").selection(atom["start"], atom["end"]);
 	var spans = $("#text").wrapSelection();
 	spans.wraplines();
-	applyWrapCase($("span[class^='wrap_line_']"));
+	applyWrapCase($("span[class^='wrap_line_']"), atom["category"]);
 }
 
 function getDisplayXBar (x){

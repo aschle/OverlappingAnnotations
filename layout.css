@@ -62,6 +62,12 @@ html {min-height:101%;}
 .C {background: #A3B92E;}
 .D {background: #0A64A4;}
 
+/*hovering the bars, showing the textatoms*/
+.A.light {background: rgba(255, 144, 0, 0.4) !important;}
+.B.light {background: rgba(161, 1, 166, 0.4) !important;}
+.C.light {background: rgba(163, 185, 46, 0.4) !important;}
+.D.light {background: rgba(10, 100, 164, 0.4) !important;}
+
 /*bars on the left*/
 .bar{
 	width: 10px;
@@ -72,9 +78,8 @@ html {min-height:101%;}
 
 /*styling the text atoms, when hovering the bars*/
 #text span.hover {
-	padding-top: 0.3em;
-    padding-bottom: 0.3em;
-    background: #CCC;
+	padding-top: 0.13em;
+    padding-bottom: 0.13em;
 }
 
 #text span.hover.top {
