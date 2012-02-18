@@ -219,7 +219,7 @@ function applyWrapCase(spanLines, category){
 			
 			last.css("padding-right", offsetX);
 			last.css("padding-bottom", offsetY);
-			last.css("padding-bottom", "+="+1);
+			last.css("padding-bottom", "+="+3);
 		}
 		
 		last = $(this);
@@ -234,7 +234,8 @@ function applyWrapCase(spanLines, category){
 			spanLines.first().addClass("topBottom");
 			return;
 		}
-		spanLines.last().prev().addClass("middleBottom");
+		/*last().prev() is not working ?-| */
+		spanLines.slice(spanLines.length - 2, spanLines.length - 1).addClass("middleBottom");
 	} 
 	
 	// Case 5: C | 2 lines | 3 lines | >3 lines
@@ -248,6 +249,7 @@ function applyWrapCase(spanLines, category){
 	
 	// Case 6: D | 2 lines | 3 lines | 4 lines | >4 lines
 	if(minMaxCase(start, end) == 'D'){
+		console.log("len", len);
 		if(len == 2){
 			spanLines.first().addClass("topBottom");
 			spanLines.last().addClass("bottomTop");
@@ -255,7 +257,8 @@ function applyWrapCase(spanLines, category){
 		}
 		
 		spanLines.first().next().addClass("middleTop");
-		spanLines.last().prev().addClass("middleBottom");
+		/*last().prev() is not working ?-| */
+		spanLines.slice(spanLines.length - 2, spanLines.length - 1).addClass("middleBottom");
 	}
 }
 /*
