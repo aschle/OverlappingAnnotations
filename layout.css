@@ -30,6 +30,10 @@ html {min-height:101%;}
 	border-radius: 7px;
 }
 
+.word_split span:hover {background: #DDD;}
+
+.word_split span.permanentHover{background: #DDD;}
+
 /*blocksatz*/
 #text {
 	text-align: justify;

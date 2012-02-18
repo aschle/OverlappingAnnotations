@@ -165,12 +165,14 @@ function display(){
 	
 	$("div.bar").hover(
 		function () {
+			$("#text").html(originalContent.html());
 			wrapAllLines($(this));
 		},
 			
 		function () {
 			var content = $("#text");
 			content.html(originalContent.html());
+			$(".word_split").lettering('words');
 		}
 	);
 }

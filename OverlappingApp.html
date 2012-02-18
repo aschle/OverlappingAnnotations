@@ -58,14 +58,42 @@
 			var savedClick;
 			
 			// Start Element, while selecting text.
-			var startElement;
-			var endElement;
+			var startElement = null;
+			var endElement = null;
+				
+			var textContent;
+		
+		function hoveringWords(){						
+			$("#text .word_split span").mousedown(function(){
+				
+				console.log("span mouseDown");
+				
+				if (startElement && endElement){
+					startElement.removeClass("permanentHover");
+					endElement.removeClass("permanentHover");
+					startElement = null;
+					endElement = null;
+				}
+				
+				startElement = $(this);
+				$(this).addClass("permanentHover");
+			});
 			
-			var selecting = false;
+			$("#text .word_split span").mouseup(function(){
+				
+				console.log("span mouseUp");
+				
+				endElement = $(this);
+				$(this).addClass("permanentHover");
+			});
+		}
 		
 		$(document).ready(function(){
 			
+			textContent = $("#text").clone();
+			
 			// deals with STRG+ and STRG- and STRG0
+			// TODO: when size is changed, need to rerender everything
 			$(window).keydown(function(event) {
 			  if(event.ctrlKey && event.keyCode == 189) { 
 				console.log("Hey! Ctrl+- event captured!");
@@ -81,8 +109,8 @@
 			  }
 			});
 			
-			// hover-effect for single words
-			// $(".word_split").lettering('words');
+			// hover-effect for single words 
+			$(".word_split").lettering('words');
 			
 			// hover-effect on subcategories
 			$("li").hover(
@@ -94,6 +122,9 @@
 			
 			// creating a new annotation
 			$("li").click(function(){	
+				
+				// get rid of the single-word hovering
+				$("#text").html(textContent.html());
 								
 				// add new atom to the atomList, with category and
 				// subcategory
@@ -108,6 +139,12 @@
 				reset();
 				render();
 				display();
+				
+				$(".word_split").lettering('words');
+				console.log("Added Lettering.");
+				
+				hoveringWords();
+				console.log("Added hovering.");
 			});
 			
 			// for saving the start/end positions of the selected tex
@@ -121,61 +158,26 @@
 					};
 			});
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			$("#text .word_split span").mousedown(function(){
+			$("html").mousedown(function(e){
 				
-				console.log("wordSplit mouseDown");
+				console.log("html mouseDown");
 				
-				if(startElement && endElement){
-					startElement.removeClass("permanentHover");
-					endElement.removeClass("permanentHover");
-				}	
-				
-				selecting = true;
-				startElement = $(this);
-				// TDOD: this has to be removed! Again after choosing
-				// a category!
-				$(this).addClass("permanentHover");
-			});
-			
-			$("#text .word_split span").mouseup(function(){
-				
-				console.log("wordSplit mouseUp");
-				
-				selecting = false;
-				endElement = $(this);
-				// TDOD: this has to be removed! Again after choosing
-				// a category!
-				$(this).addClass("permanentHover");
-			});	
-			
-			$("html").click(function(){
-				
-				console.log("html click");
-				
-				if(!selecting && startElement && endElement){
-					startElement.removeClass("permanentHover");
-					endElement.removeClass("permanentHover");
-				}	
-			});
-			
-			$("#body").mousedown(function(){
-				
-				console.log("body mouseDown");
-				if (startElement && endElement){
-					startElement.removeClass("permanentHover");
-					endElement.removeClass("permanentHover");
+				if(e.target.nodeName != "SPAN"){
+					
+					console.log("html no SPAN");
+					if(startElement){
+						startElement.removeClass("permanentHover");
+						startElement = null;
+					}
+					
+					if(endElement){
+						endElement.removeClass("permanentHover");
+						endElement = null;
+					}
 				}
 			});
+			
+			hoveringWords();
 		});
 		</script>
 	</head>
