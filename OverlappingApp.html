@@ -1,5 +1,8 @@
 <html>
 	<head>
+		
+		<meta charset="utf-8">
+		
 		<title>
 			Overlapping Annotations
 		</title>
@@ -47,21 +50,78 @@
 		My own written stuff for concept bars.-->
 		<script type="text/javascript" src="js/conceptBars/bars.js"></script>
 		
+		<link rel="stylesheet/less" type="text/css" href="css/layout.less">
+		<script src="js/less-1.2.1.min.js" type="text/javascript"></script>
+		
 		
 		<link rel="stylesheet" type="text/css" href="skeleton/base.css" />
 		<link rel="stylesheet" type="text/css" href="skeleton/layout.css" />
 		<link rel="stylesheet" type="text/css" href="skeleton/skeleton.css" />
-		<link rel="stylesheet" type="text/css" href="layout.css" />
 		
 		<script type='text/javascript'>
 			
-			var savedClick;
+		var savedClick;
+		
+		// Start Element, while selecting text.
+		var startElement = null;
+		var endElement = null;
 			
-			// Start Element, while selecting text.
-			var startElement = null;
-			var endElement = null;
+		var textContent;
+		
+		
+		function showMenu(e, endElement){
+			
+			var x = e.clientX;
+			var y = endElement.position().top + endElement.height();
+			
+			var subpopup =["A", "B", "C", "D"];
+						
+			$("body").append("<div id='contextmenu' class='popup'></div>");
+			$("#contextmenu").css({"top": y+4, "left":x});
+			
+			// load contextmenu
+			$("#contextmenu").load("menu.html", function(){
 				
-			var textContent;
+				// load all subPopups, but make them not visible					
+				for (s in subpopup){
+					
+					var id = subpopup[s];
+					var subX = $("#contextmenu").width() + 22 - 3;
+					var entry = $("#"+id);
+					var subY = entry.position().top;
+					
+					$("body").append("<div id='subpopup_"+id+"' class='popup'></div>");
+					$("#subpopup_"+id).css({"top": y+4+subY, "left": x + subX, "display": "none"});
+					
+					$("#subpopup_"+id).load("sub"+id+".html", function(){
+							var divs = $(this).children();
+							for (child in divs){
+								
+								console.log(divs[child]);
+								
+								// TODO: das mit dem cklick funktioniert nicht
+								divs[child].click(function(){
+									console.log("click on", divs[child].attr(id));
+									
+								});
+								
+							}
+							
+						});
+				}
+					
+				$(".menuentry").mouseover(function(e){
+					
+					for (s in subpopup){
+						var id = subpopup[s];
+						$("#subpopup_"+id).css("display", "none");
+					}
+					
+					var id = $(this).attr("id");
+					$("#subpopup_"+id).css("display", "");
+				});
+			});	
+		}
 		
 		function hoveringWords(){						
 			$("#text .word_split span").mousedown(function(){
@@ -118,8 +178,8 @@
 					$(this).addClass("hover");},
 				function () {
 					$(this).removeClass("hover");}
-			);
-			
+			);			
+									
 			// creating a new annotation
 			$("li").click(function(){	
 				
@@ -148,7 +208,7 @@
 			});
 			
 			// for saving the start/end positions of the selected tex
-			$("#text").mouseup(function(){			
+			$("#text").mouseup(function(e){			
 				
 				// save the click
 				var selectedText = $("#text").selection();
@@ -156,6 +216,11 @@
 					"start":selectedText.start,
 					"end":selectedText.end
 					};
+				
+				if(startElement != null &&  endElement != null){
+					showMenu(e, endElement);
+				}
+				
 			});
 			
 			$("html").mousedown(function(e){
@@ -202,43 +267,41 @@
 					<div class="twelve columns omega">
 						
 						<div class="six columns alpha">
-							<div class="category three columns alpha" id="A">
+							<div class="category A_underline three columns alpha">
 								<h5>Category A</h5>
 								<ul>
 									<li>Subcategory 1</li>
 									<li>Subcategory 2</li>
 									<li>Subcategory 3</li>
-								</ul>							
+								</ul>						
 							</div>
-							<div class="category three columns omega" id="B">
-								<h5>Category B</h5>
+							<div class="category B_underline three columns omega">
+								<h5>Wissenschaft</h5>
 								<ul>
-									<li>Subcategory 1</li>
-									<li>Subcategory 2</li>
-									<li>Subcategory 3</li>
-									<li>Subcategory 3</li>
+									<li>Forschung</li>
+									<li>Reisen</li>
+									<li>Werke</li>
 								</ul>
 							</div>
 						</div>
 						
 						<div class="six columns omega">
 							
-							<div class="category three columns alpha" id="C">
-								<h5>Category C</h5>
+							<div class="category C_underline three columns alpha">
+								<h5>Sonstiges</h5>
 								<ul>
-									<li>Subcategory 1</li>
-									<li>Subcategory 2</li>
+									<li>Beruf</li>
+									<li>Reisen</li>
 								</ul>
 							</div>
 							
-							<div class="category three columns omega" id="D">
-								<h5>Category D</h5>
+							<div class="category D_underline three columns omega">
+								<h5>Person</h5>
 								<ul>
-									<li>Subcategory 1</li>
-									<li>Subcategory 2</li>
-									<li>Subcategory 3</li>
-									<li>Subcategory 4</li>
-									<li>Subcategory 5</li>
+									<li>Name</li>
+									<li>Vorname</li>
+									<li>Nachname</li>
+									<li>Geburtsort</li>
 								</ul>
 							</div>											
 						</div>															
@@ -253,11 +316,12 @@
 					
 					<!-- This is the div for the text, which is going to be annotated.-->
 					<div class="twelve columns omega">
-						<h2>Text Heading</h2>
+						<h2>Charles Darwin</h2>
 						<div id="text">
-							<p class="word_split">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.</p>
-							<p class="word_split">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna liquyam erat, sed diam voluptua.</p>
-							<p class="word_split">At vero eos et accusam et justo duo dolores et ea rebum. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et.</p>
+							<p class="word_split">Charles Robert Darwin war ein britischer Naturforscher. Er gilt wegen seiner wesentlichen Beiträge zur Evolutionstheorie als einer der bedeutendsten Naturwissenschaftler.</p>
+							<p class="word_split">Die Ende 1831 begonnene und fast fünf Jahre andauernde Reise mit der HMS Beagle, die den jungen Darwin einmal um die Welt führte, war zugleich Schlüsselerlebnis und Grundlage für sein späteres Werk. Der breiten Öffentlichkeit wurde Darwin erstmals durch seinen 1839 herausgegebenen Reisebericht bekannt. Mit seiner Theorie über die Entstehung der Korallenriffe und weiteren geologischen Schriften erlangte er in wissenschaftlichen Kreisen die Anerkennung als Geologe. Seine Untersuchungen an den Rankenfußkrebsen verschafften ihm Mitte der 1850er Jahre zusätzlich einen angesehenen Ruf als Zoologe und Taxonom.</p>
+							<p class="word_split">Bereits 1838 entwarf Darwin seine Theorie der Anpassung an den Lebensraum durch Variation und natürliche Selektion und erklärte so die phylogenetische Entwicklung aller Organismen und ihre Aufspaltung in verschiedene Arten. Über 20 Jahre lang trug er Belege für diese Theorie zusammen. 1842 und 1844 verfasste Darwin kurze Abrisse seiner Theorie, die er jedoch nicht veröffentlichte. Ab 1856 arbeitete er an einem umfangreichen Manuskript mit dem Titel Natural Selection. Durch einen Brief von Alfred Russel Wallace, der dessen Ternate-Manuskript mit ähnlichen Gedanken zur Evolution enthielt, kam es im Sommer 1858 schließlich zu einer Veröffentlichung der Theorien über die Evolution durch die beiden Männer. Ein Jahr später folgte Darwins Hauptwerk On the Origin of Species (Die Entstehung der Arten), das als streng naturwissenschaftliche Erklärung für die Diversität des Lebens die Grundlage der modernen Evolutionsbiologie bildet und einen entscheidenden Wendepunkt in der Geschichte der modernen Biologie darstellt.</p>
+							<p class="word_split">1871 diskutierte Darwin in The Descent of Man, and Selection in Relation to Sex (Die Abstammung des Menschen und die geschlechtliche Zuchtwahl) mit der sexuellen Selektion einen zweiten Selektionsmechanismus und nutzte seine Theorie, um die Abstammung des Menschen zu erklären. In seinem letzten Lebensjahrzehnt untersuchte Darwin Kletterpflanzen, Orchideen und fleischfressende Pflanzen und leistete wichtige Beiträge zur Botanik. Sein offizielles botanisches Autorenkürzel lautet „Darwin“.</p>		
 						</div>
 					</div>
 				</div>

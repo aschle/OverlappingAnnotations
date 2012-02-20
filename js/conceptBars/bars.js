@@ -221,7 +221,7 @@ function applyWrapCase(spanLines, category){
 			
 			last.css("padding-right", offsetX);
 			last.css("padding-bottom", offsetY);
-			last.css("padding-bottom", "+="+3);
+			last.css("padding-bottom", "+="+1);
 		}
 		
 		last = $(this);

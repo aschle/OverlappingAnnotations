@@ -1,0 +1,171 @@
+/* Colores for categories */
+@A: #FF9000;
+@B: #A101A6;
+@C: #A3B92E;
+@D: #0A64A4;
+
+/* Backgroundcolor for things */
+@grey: #DDD;
+@bg: #FFF;
+@lighter: 30%;
+
+@radius: 7px;
+
+/* to always have a scrollbar on the right*/
+html {min-height:101%;}
+
+/*categorie boxes in the menu*/
+.category {
+	background: @grey;
+	border-bottom-right-radius: @radius;
+	border-top-left-radius: @radius;
+}
+
+/*heading of a categorie*/
+.category h5 { margin: 8px 8px 4px 8px; }
+
+/*make the subcategories look nice*/
+.category ul { padding: 8px 8px 0px 8px; }
+
+/*subcategories*/
+.category li {
+	padding-left: 4px;
+	background: @bg;
+	border-radius: @radius;
+}
+
+.word_split span:hover {background: @grey;}
+
+.word_split span.permanentHover{background: @grey;}
+
+/*blocksatz*/
+#text { text-align: justify; }
+
+/*get borders for the menu*/
+#body {
+	border-top: 1px solid @grey;
+	border-bottom: 1px solid @grey;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	margin-bottom: 8px;
+}
+
+/*underlining the categories*/
+.A_underline h5{border-bottom: 8px solid @A;}
+.B_underline h5{border-bottom: 8px solid @B;}
+.C_underline h5{border-bottom: 8px solid @C;}
+.D_underline h5{border-bottom: 8px solid @D;}
+
+/*background color*/
+.A {background: @A;}
+.B {background: @B;}
+.C {background: @C;}
+.D {background: @D;}
+
+/*hovering the bars, showing the textatoms*/
+.A_light {background: lighten(@A, @lighter) !important;}
+.B_light {background: lighten(@B, @lighter) !important;}
+.C_light {background: lighten(@C, @lighter) !important;}
+.D_light {background: lighten(@D, @lighter) !important;}
+
+/*bars on the left*/
+.bar{
+	width: 10px;
+	border-radius: @radius; 
+	position: absolute;
+	z-index: 2;
+}
+
+/*styling the text atoms, when hovering the bars*/
+#text span.hover {
+	padding-top: 2px;
+    padding-bottom: 1px;
+}
+
+#text span.hover.top {
+    border-top-left-radius: @radius;
+    border-top-right-radius: @radius;
+}
+
+#text span.hover.topBottom {
+    border-bottom-right-radius: @radius;
+}
+
+#text span.hover.middleTop {
+    border-top-left-radius: @radius;
+}
+
+#text span.hover.middleBottom {
+    border-bottom-right-radius: @radius;
+}
+
+#text span.hover.bottom {
+    border-bottom-left-radius: @radius;
+    border-bottom-right-radius:@radius;
+}
+
+#text span.hover.bottomTop {
+    border-top-left-radius:@radius;
+}
+
+#text span.hover.single {
+    border-radius:@radius;
+}
+
+#text span.hover.singleLeft {
+    border-top-left-radius:@radius;
+    border-bottom-left-radius:@radius;
+}
+
+#text span.hover.singleRight {
+    border-top-right-radius:@radius;
+    border-bottom-right-radius:@radius;
+}
+
+.popup {
+	position: absolute;
+	z-index: 100;
+	background: @bg;
+	border: 3px solid @grey;
+	border-radius: @radius;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+
+.popup h5 {
+	border-left: 8px solid @bg;
+	border-right: 8px solid @bg;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+.popup div.dotted {
+	padding-top: 2px;
+	padding-bottom: 2px;
+	border-bottom: 1px dashed @grey;
+}
+
+.popup div.last {
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+.popup h5.A_hover:hover {
+	border-color: @A;
+	background: lighten(@A, @lighter);
+}
+
+.popup h5.B_hover:hover {
+	border-color: @B;
+	background: lighten(@B, @lighter);
+}
+
+.popup h5.C_hover:hover {
+	border-color: @C;
+	background: lighten(@C, @lighter);
+}
+
+.popup h5.D_hover:hover {
+	border-color: @D;
+	background: lighten(@D, @lighter);
+}
