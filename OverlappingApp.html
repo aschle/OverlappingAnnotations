@@ -47,204 +47,61 @@
 		<script type="text/javascript" src="js/jquery.wraplines.js"></script>
 		
 		<!--
-		My own written stuff for concept bars.-->
+		My own written stuff for concept bars.
+		-->
 		<script type="text/javascript" src="js/conceptBars/bars.js"></script>
 		
+		<!--
+		JavaSript which is used for interaction on the webpage.
+		-->
+		<script type="text/javascript" src="js/contextMenu.js"></script>
+		<script type="text/javascript" src="js/main.js"></script>
+		
+		<!--
+		StyleCheets of the future.
+		-->
 		<link rel="stylesheet/less" type="text/css" href="css/layout.less">
 		<script src="js/less-1.2.1.min.js" type="text/javascript"></script>
 		
-		
+		<!--
+		Using getSkelleton to have a nice grid layout. Makes life easy.
+		-->
 		<link rel="stylesheet" type="text/css" href="skeleton/base.css" />
 		<link rel="stylesheet" type="text/css" href="skeleton/layout.css" />
 		<link rel="stylesheet" type="text/css" href="skeleton/skeleton.css" />
 		
-		<script type='text/javascript'>
+		<script type="text/javascript">
 			
-		var savedClick;
-		
-		// Start Element, while selecting text.
-		var startElement = null;
-		var endElement = null;
+			var categories = [{
+				"name":"Category 1", "subs":["subcategorie 1", "subcat 2", "subcategorie 3"]},{
+				"name":"Category 2", "subs":["subcategorie 1", "subcategorie 2", "subcategorie 3", "subcategorie 4", "subcategorie 5" ]},{
+				"name":"Category 3", "subs":["subcategorie 1", "subcategorie 2"]},{
+				"name":"Category 4", "subs":["subcategorie 1", "subcategorie 2", "subcategorie 3", "subcategorie 4"]}
+			];
 			
-		var textContent;
-		
-		
-		function showMenu(e, endElement){
+			var textContent;
 			
-			var x = e.clientX;
-			var y = endElement.position().top + endElement.height();
-			
-			var subpopup =["A", "B", "C", "D"];
-						
-			$("body").append("<div id='contextmenu' class='popup'></div>");
-			$("#contextmenu").css({"top": y+4, "left":x});
-			
-			// load contextmenu
-			$("#contextmenu").load("menu.html", function(){
+			$(document).ready(function(){
 				
-				// load all subPopups, but make them not visible					
-				for (s in subpopup){
-					
-					var id = subpopup[s];
-					var subX = $("#contextmenu").width() + 22 - 3;
-					var entry = $("#"+id);
-					var subY = entry.position().top;
-					
-					$("body").append("<div id='subpopup_"+id+"' class='popup'></div>");
-					$("#subpopup_"+id).css({"top": y+4+subY, "left": x + subX, "display": "none"});
-					
-					$("#subpopup_"+id).load("sub"+id+".html", function(){
-							var divs = $(this).children();
-							for (child in divs){
-								
-								console.log(divs[child]);
-								
-								// TODO: das mit dem cklick funktioniert nicht
-								divs[child].click(function(){
-									console.log("click on", divs[child].attr(id));
-									
-								});
-								
-							}
-							
-						});
-				}
-					
-				$(".menuentry").mouseover(function(e){
-					
-					for (s in subpopup){
-						var id = subpopup[s];
-						$("#subpopup_"+id).css("display", "none");
+				textContent = $("#text").clone();
+				
+				// load the categories inside the #menu
+				for(categoryId in categories){									
+					var contentString = "<h5>" + categories[categoryId]["name"] + "</h5>\n<ul>\n";		
+					for(subId in categories[categoryId]["subs"]){
+						contentString += "<li>" + categories[categoryId]["subs"][subId] +"</li>\n";
 					}
-					
-					var id = $(this).attr("id");
-					$("#subpopup_"+id).css("display", "");
-				});
-			});	
-		}
-		
-		function hoveringWords(){						
-			$("#text .word_split span").mousedown(function(){
-				
-				console.log("span mouseDown");
-				
-				if (startElement && endElement){
-					startElement.removeClass("permanentHover");
-					endElement.removeClass("permanentHover");
-					startElement = null;
-					endElement = null;
+					contentString += "</ul";
+					$("#c_"+categoryId).html(contentString);
 				}
 				
-				startElement = $(this);
-				$(this).addClass("permanentHover");
+				// load the context menu, but hide it (it becomes visible when annotating the text (mouseup event)
+				loadContextMenu(categories);
+				effectsOnMenu();
 			});
-			
-			$("#text .word_split span").mouseup(function(){
 				
-				console.log("span mouseUp");
-				
-				endElement = $(this);
-				$(this).addClass("permanentHover");
-			});
-		}
-		
-		$(document).ready(function(){
-			
-			textContent = $("#text").clone();
-			
-			// deals with STRG+ and STRG- and STRG0
-			// TODO: when size is changed, need to rerender everything
-			$(window).keydown(function(event) {
-			  if(event.ctrlKey && event.keyCode == 189) { 
-				console.log("Hey! Ctrl+- event captured!");
-				event.preventDefault(); 
-			  }
-			  if(event.ctrlKey && event.keyCode == 187) { 
-				console.log("Hey! Ctrl++ event captured!");
-				event.preventDefault(); 
-			  }
-			  if(event.ctrlKey && event.keyCode == 48) { 
-				console.log("Hey! Ctrl++ event captured!");
-				event.preventDefault(); 
-			  }
-			});
-			
-			// hover-effect for single words 
-			$(".word_split").lettering('words');
-			
-			// hover-effect on subcategories
-			$("li").hover(
-				function () {
-					$(this).addClass("hover");},
-				function () {
-					$(this).removeClass("hover");}
-			);			
-									
-			// creating a new annotation
-			$("li").click(function(){	
-				
-				// get rid of the single-word hovering
-				$("#text").html(textContent.html());
-								
-				// add new atom to the atomList, with category and
-				// subcategory
-				// TODO: look after subcategory
-				var category = $(this).parent().parent().attr('id');
-				var subcategory = 0;
-
-				addAtomToAtomList(category, savedClick["start"], savedClick["end"]);
-								
-				// render all bars again and display them
-				savedClick = null;
-				reset();
-				render();
-				display();
-				
-				$(".word_split").lettering('words');
-				console.log("Added Lettering.");
-				
-				hoveringWords();
-				console.log("Added hovering.");
-			});
-			
-			// for saving the start/end positions of the selected tex
-			$("#text").mouseup(function(e){			
-				
-				// save the click
-				var selectedText = $("#text").selection();
-				savedClick = {
-					"start":selectedText.start,
-					"end":selectedText.end
-					};
-				
-				if(startElement != null &&  endElement != null){
-					showMenu(e, endElement);
-				}
-				
-			});
-			
-			$("html").mousedown(function(e){
-				
-				console.log("html mouseDown");
-				
-				if(e.target.nodeName != "SPAN"){
-					
-					console.log("html no SPAN");
-					if(startElement){
-						startElement.removeClass("permanentHover");
-						startElement = null;
-					}
-					
-					if(endElement){
-						endElement.removeClass("permanentHover");
-						endElement = null;
-					}
-				}
-			});
-			
-			hoveringWords();
-		});
 		</script>
+		
 	</head>
 
 	<body>		
@@ -255,57 +112,30 @@
 						<h2 style="display:inline">overlap</h2>
 						<h5 style="display:inline; margin-left:8px;">visualizing overlapping annotations in text.</h5>
 				</div>
-				
-				
-				
-				<div class="sixteen columns" id="body">
+								
+				<div class="sixteen columns" id="menu">
 				
 					<div class="four columns alpha">
 						...
 					</div>
 				
-					<div class="twelve columns omega">
+					<div class="twelve columns omega">	
 						
 						<div class="six columns alpha">
-							<div class="category A_underline three columns alpha">
-								<h5>Category A</h5>
-								<ul>
-									<li>Subcategory 1</li>
-									<li>Subcategory 2</li>
-									<li>Subcategory 3</li>
-								</ul>						
+							<div id="c_0" class="category A_underline three columns alpha" >						
 							</div>
-							<div class="category B_underline three columns omega">
-								<h5>Wissenschaft</h5>
-								<ul>
-									<li>Forschung</li>
-									<li>Reisen</li>
-									<li>Werke</li>
-								</ul>
+							<div id="c_1" class="category B_underline three columns omega" >
 							</div>
 						</div>
 						
 						<div class="six columns omega">
-							
-							<div class="category C_underline three columns alpha">
-								<h5>Sonstiges</h5>
-								<ul>
-									<li>Beruf</li>
-									<li>Reisen</li>
-								</ul>
+							<div id="c_2" class="category C_underline three columns alpha" >
 							</div>
-							
-							<div class="category D_underline three columns omega">
-								<h5>Person</h5>
-								<ul>
-									<li>Name</li>
-									<li>Vorname</li>
-									<li>Nachname</li>
-									<li>Geburtsort</li>
-								</ul>
+							<div id="c_3" class="category D_underline three columns omega" >
 							</div>											
 						</div>															
 					</div>
+				
 				</div>
 				
 				<div class="sixteen columns">

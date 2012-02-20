@@ -1,13 +1,13 @@
 var atomList = [];
 var columnList = [];
 
-function addAtomToAtomList(category, start, end){
+function addAtomToAtomList(category, subcategory, start, end){
 			
 	atomList.push({
 		"start":Number(start),
 		"end":Number(end),
-		"category":String(category),
-		"subcategory":0,
+		"category":Number(category),
+		"subcategory":Number(subcategory)
 		});
 }
 
@@ -140,7 +140,7 @@ function render(){
 }
 	
 function display(){
-		
+			
 	for (i in columnList){
 		for (j in columnList[i]){
 			
@@ -157,7 +157,7 @@ function display(){
 			
 			$("body").append('<div class="bar" id="barID_'+id+'">&nbsp;</div>');	
 			$("#barID_"+id).css({"top":cssTop, "left":cssLeft, "height":cssHeight});
-			$("#barID_"+id).addClass(atomList[id]["category"]);
+			$("#barID_"+id).addClass("bar_"+atomList[id]["category"]);
 		}
 	}
 	

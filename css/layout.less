@@ -42,7 +42,7 @@ html {min-height:101%;}
 #text { text-align: justify; }
 
 /*get borders for the menu*/
-#body {
+#menu {
 	border-top: 1px solid @grey;
 	border-bottom: 1px solid @grey;
 	padding-top: 20px;
@@ -57,10 +57,10 @@ html {min-height:101%;}
 .D_underline h5{border-bottom: 8px solid @D;}
 
 /*background color*/
-.A {background: @A;}
-.B {background: @B;}
-.C {background: @C;}
-.D {background: @D;}
+.bar_0 {background: @A;}
+.bar_1 {background: @B;}
+.bar_2 {background: @C;}
+.bar_3 {background: @D;}
 
 /*hovering the bars, showing the textatoms*/
 .A_light {background: lighten(@A, @lighter) !important;}
@@ -128,44 +128,35 @@ html {min-height:101%;}
 	background: @bg;
 	border: 3px solid @grey;
 	border-radius: @radius;
-	padding-left: 8px;
-	padding-right: 8px;
 }
 
-.popup h5 {
-	border-left: 8px solid @bg;
-	border-right: 8px solid @bg;
-	padding-left: 4px;
-	padding-right: 4px;
-}
-
-.popup div.dotted {
-	padding-top: 2px;
-	padding-bottom: 2px;
-	border-bottom: 1px dashed @grey;
+.popup div {	
+	border-left: 8px solid transparent;
+	border-right: 8px solid transparent;
+	padding: 2px 4px 2px 4px;
+	border-bottom: 1px dashed @grey;	
 }
 
 .popup div.last {
-	padding-top: 2px;
-	padding-bottom: 2px;
+	border-bottom: 0px !important;
 }
 
-.popup h5.A_hover:hover {
-	border-color: @A;
+.popup div.hover_0:hover {
+	border-color: @A !important;
 	background: lighten(@A, @lighter);
 }
 
-.popup h5.B_hover:hover {
-	border-color: @B;
+.popup div.hover_1:hover {
+	border-color: @B !important;
 	background: lighten(@B, @lighter);
 }
 
-.popup h5.C_hover:hover {
-	border-color: @C;
+.popup div.hover_2:hover {
+	border-color: @C !important;
 	background: lighten(@C, @lighter);
 }
 
-.popup h5.D_hover:hover {
-	border-color: @D;
+.popup div.hover_3:hover {
+	border-color: @D !important;
 	background: lighten(@D, @lighter);
 }
