@@ -15,5 +15,17 @@ function loadCategoryMenu(){
 	}
 }
 
+var atomList = [];
+
+function addAtomToAtomList(category, subcategory, start, end){
+			
+	atomList.push({
+		"start":Number(start),
+		"end":Number(end),
+		"category":Number(category),
+		"subcategory":Number(subcategory)
+		});
+}
+
 		
 

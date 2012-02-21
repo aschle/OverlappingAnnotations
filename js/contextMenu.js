@@ -58,7 +58,7 @@ function effectsOnMenu(){
 			
 			// get rid of the single-word hovering
 			$("#text").html(textContent.html());
-			
+						
 			var idArray = $(this).attr("id").split("_");
 			addAtomToAtomList(idArray[1], idArray[2], savedClick["start"], savedClick["end"]);
 			
