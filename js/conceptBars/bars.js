@@ -186,8 +186,7 @@ function applyWrapCase(spanLines, category){
 	var end = spanLines.last().position().left + spanLines.last().width();
 	
 	spanLines.addClass("hover");
-	spanLines.addClass(category);
-	spanLines.addClass("light");
+	spanLines.addClass("light_" +category);
 		
 	// Case 1: 1 line -> single
 	if(len == 1){
@@ -209,10 +208,11 @@ function applyWrapCase(spanLines, category){
 	var last = null;
 	
 	spanLines.each(function(index){
+		console.log($(this));
 		
-		var classString = $(this).attr("class");
+		var classString = $(this).attr("class").split(" ")[0];
 				
-		if((classString.indexOf('1') != -1) && (last != null)){
+		if((classString == "wrap_line_1") && (last != null)){
 			
 			var max = Number($("#text").position().left) + Number($("#text").width());
 			var rigth = last.position().left + last.width();

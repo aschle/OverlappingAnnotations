@@ -62,23 +62,23 @@ function effectsOnMenu(){
 			var idArray = $(this).attr("id").split("_");
 			addAtomToAtomList(idArray[1], idArray[2], savedClick["start"], savedClick["end"]);
 			
-			// render all bars again and display them
+			// render all bars again and display them: bars.js
 			savedClick = null;
 			reset();
 			render();
 			display();
 			
-			$(".word_split").lettering('words');
-			hoveringWords();
+			resetAppAfterAnnotation();
 		});
 	});	
 }
 
 function showMenu(e, endElement){
-			
-	var x = e.clientX;
-	var y = endElement.position().top + endElement.height();
+		
+	var x = e.pageX;
+	var y = e.pageY + 10;
 	
+	console.log(x,y);
 	$("#contextMenu").css("display", "");				
 	$("#contextMenu").css({"top": y + 4, "left":x});
 	

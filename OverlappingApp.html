@@ -80,24 +80,33 @@
 			];
 			
 			var textContent;
+			var savedClick;
 			
 			$(document).ready(function(){
 				
 				textContent = $("#text").clone();
 				
-				// load the categories inside the #menu
-				for(categoryId in categories){									
-					var contentString = "<h5>" + categories[categoryId]["name"] + "</h5>\n<ul>\n";		
-					for(subId in categories[categoryId]["subs"]){
-						contentString += "<li>" + categories[categoryId]["subs"][subId] +"</li>\n";
-					}
-					contentString += "</ul";
-					$("#c_"+categoryId).html(contentString);
-				}
+				// load menu at the top
+				loadCategoryMenu(categories);
 				
 				// load the context menu, but hide it (it becomes visible when annotating the text (mouseup event)
 				loadContextMenu(categories);
 				effectsOnMenu();
+				
+				$("#text").mouseup(function(e){
+					endElement = $(this);
+		
+					// save the click
+					var selectedText = $("#text").selection();
+					savedClick = {
+						"start":selectedText.start,
+						"end":selectedText.end
+						};
+					console.log("Selection", selectedText.start, selectedText.end);
+					showMenu(e);
+				});
+								
+				resetAppAfterAnnotation();
 			});
 				
 		</script>
