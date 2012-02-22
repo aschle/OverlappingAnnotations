@@ -53,6 +53,7 @@ function render(){
 		// if it is the first one
 		if (levelList.length == 0){
 			levelList.push([atomStartEndList[atom]]);
+			console.log("fit in level", 0);
 		}
 		else {
 		
@@ -61,6 +62,7 @@ function render(){
 				if(fitsInLevel(atom, level) == true){
 					levelList[level].push(atomStartEndList[atom]);
 					added = true;
+					console.log("fit in level", level);
 					break;
 				}
 				else {

@@ -90,3 +90,6 @@ function showMenu(e, endElement){
 		$("#subContextMenu_"+categoryId).css({"top": y+4+subY, "left": x + subX});	
 	}
 }
+
+function hideMenu(){
+}
