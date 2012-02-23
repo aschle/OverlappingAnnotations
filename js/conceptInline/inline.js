@@ -32,7 +32,7 @@ function calcAtomPositions(){
 		var endY = spanLines.last().position().top + spanLines.last().height();
 		
 		// only single line atoms are important for now
-		if(len == 1 || (len ==2 && startX>endX) ){
+		if(len == 1){
 			atomStartEndList.push({"startX": startX, "startY": startY, "endX": endX, "endY": endY, "category": atomList[atom]["category"]});
 		}
 		
@@ -53,7 +53,7 @@ function render(){
 		// if it is the first one
 		if (levelList.length == 0){
 			levelList.push([atomStartEndList[atom]]);
-			console.log("fit in level", 0);
+			console.log("Lenght = 0; fit in level", 0);
 		}
 		else {
 		
@@ -62,13 +62,13 @@ function render(){
 				if(fitsInLevel(atom, level) == true){
 					levelList[level].push(atomStartEndList[atom]);
 					added = true;
-					console.log("fit in level", level);
+					console.log("For: fit in level", level);
 					break;
 				}
 				else {
 					// overlap happend
 					for (a in levelList[level]){
-						var type = getOverlappingType(levelList[level][a], atom);
+						var type = getOverlappingType(levelList[level][a], atomStartEndList[atom]);
 						console.log("Overlapping Type", type);
 					}
 				}
@@ -84,24 +84,42 @@ function render(){
 
 function getOverlappingType(atomInLevel, atom){
 	
-	var aLstart = atomInLevel["startX"];
-	var aLend = atomInLevel["endX"];
-	var aStart = atom["startX"];
-	var aEnd = atom["endX"];
-
-	// CASE 1: Identity
-	if(aLstart == aStart && aLend == aEnd){
-		return 1;
-	}
-
-	// CASE 2: Inclusion
-	if((aLstart == aStart && aLend < aEnd) || (aLstart > aStart && aLend < aEnd) || (aLstart > aStart && aLend == aEnd )){
-		return 2;
-	}
+	var aLstartX = atomInLevel["startX"];
+	var aLendX = atomInLevel["endX"];
+	var aLstartY = atomInLevel["startY"];
+	var aStartX = atom["startX"];
+	var aEndX = atom["endX"];
+	var aStartY = atom["startY"];
 	
-	// CASE 3: Overlap
-	if((aLstart < aStart && aLend > aStart && aLend < aEnd) || (aLstart > aStart && aLstart < aEnd && aLend > aEnd)){
-		return 3;
+
+	if (aLstartY == aStartY){
+		
+		console.log("Tyep: same row");
+		console.log("StartX1", aLstartX, "EndX1", aLendX, "StartX2", aStartX, "EndX2", aEndX);
+
+		// CASE 1: Identity
+		if(aLstartX == aStartX && aLendX == aEndX){
+			return 1;
+		}
+
+		// CASE 2: Inclusion
+		// 		|----------| (thats what we have)
+		//		|------------->|
+		//	|<-------------|
+		//  |<---------------->|
+		//		|-------<|
+		//        |>-------|
+		// 		  |>----<|
+		if(	(aStartX<aLstartX && ((aEndX==aLendX)||(aEndX>aLendX)))||
+			(aStartX==aLstartX && ((aEndX>aLstartX && aEndX<aLendX)||(aEndX>aLendX)))||
+			(aStartX>aLstartX && aStartX<aLendX && ((aEndX > aLstartX && aEndX < aLendX) || (aEndX == aLendX)))){
+			return 2;
+		}
+		
+		// CASE 3: Overlap
+		if((aLstartX < aStartX && aLendX > aStartX && aLendX < aEndX) || (aLstartX > aStartX && aLstartX < aEndX && aLendX > aEndX)){
+			return 3;
+		}
 	}
 	
 	// no Overlap:
@@ -117,16 +135,19 @@ function fitsInLevel(atom, level){
 	var currLevel = levelList[level];
 	var currAtom = atomStartEndList[atom];
 	
-	var currStart = currAtom["startX"];
-	var currEnd = currAtom["endX"];
-	
-	console.log("atom:level", atom, level, "currStart:currEnd", currStart, currEnd);
+	var currStartX = currAtom["startX"];
+	var currEndX = currAtom["endX"];
+	var currStartY = currAtom["startY"];
 					
 	for (a in currLevel){
-		if(currLevel[a]["endX"] < currStart || currEnd < currLevel[a]["endX"]){
-			continue;
+		
+		// if there are in the same row
+		if (currLevel[a]["startY"] == currStartY){
+			if(currLevel[a]["endX"] < currStartX || currEndX < currLevel[a]["startX"]){
+				continue;
+			}
+			return false;
 		}
-		return false;
 	}
 	return true;		
 }
