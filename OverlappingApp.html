@@ -100,6 +100,11 @@
 						
 					// save the click
 					var selectedText = $("#text").selection();
+					
+					// Only show menu when the user really selected anything.
+					if(selectedText.start == selectedText.end)
+						return;
+
 					savedClick = {
 						"start":selectedText.start,
 						"end":selectedText.end
