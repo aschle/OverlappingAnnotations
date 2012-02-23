@@ -78,7 +78,6 @@ function showMenu(e, endElement){
 	var x = e.pageX;
 	var y = e.pageY + 10;
 	
-	console.log(x,y);
 	$("#contextMenu").css("display", "");				
 	$("#contextMenu").css({"top": y + 4, "left":x});
 	
