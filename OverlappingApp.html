@@ -47,7 +47,7 @@
 		<script type="text/javascript" src="js/jquery.wraplines.js"></script>
 		
 		<!--
-		My own written stuff for concept bars.
+		My own written stuff for concept bars and inline.
 		-->
 		<!--<script type="text/javascript" src="js/conceptBars/bars.js"></script>-->
 		<script type="text/javascript" src="js/conceptInline/inline.js"></script>
@@ -79,14 +79,12 @@
 				"name":"Category 3", "subs":["subcategorie 1", "subcategorie 2"]},{
 				"name":"Category 4", "subs":["subcategorie 1", "subcategorie 2", "subcategorie 3", "subcategorie 4"]}
 			];
-			
-			var textContent;
+
 			var savedClick;
-			var startElement;
-			var endElement;
 			
 			$(document).ready(function(){
 				
+				// keep the plain text version (without spans)
 				textContent = $("#text").clone();
 				
 				// load menu at the top
@@ -95,47 +93,35 @@
 				// load the context menu, but hide it (it becomes visible when annotating the text (mouseup event)
 				loadContextMenu(categories);
 				effectsOnMenu();
+
+				$("#text").mousedown(function(){
+					plainText();
+				});
 				
 				$("#text").mouseup(function(e){	
-						
+					
 					// save the click
+					var text = document.getSelection().toString();
 					var selectedText = $("#text").selection();
+					
 					savedClick = {
 						"start":selectedText.start,
 						"end":selectedText.end
-						};
+					};
 
-					var text = document.getSelection().toString();
+					// adjust the selection (snap to whole words)
+					savedClick = getRealSelection(text);
 
-					$("#text").html(textContent.html());
-					$("#text").selection(savedClick["start"], savedClick["end"]);
-					var spans = $("#text").wrapSelection();
-					var offset = realSelection(text, spans);
-console.log(savedClick["start"]-offset["startOffset"]);
-console.log(savedClick["end"] + offset["endOffset"]);
+					// show it to the user
+					$("#text").selection(savedClick["start"],
+						savedClick["end"]);
 
-					$("#text").selection(savedClick["start"]-offset["startOffset"], savedClick["end"] + offset["endOffset"]);
 					showMenu(e);
 				});
-				
-				$("body").click(function(){
-					
-				});
-								
+
 				resetAppAfterAnnotation();
 			});
-// TODO: schön machen!
-function realSelection(text, spans){
-  var spanText = "";
-  spans.each(function(){
-  spanText += $(this).text();
-  spanText += "\n\n";
-  });
-  var startOffset = spanText.indexOf(text);
-  var endOffset = spanText.length - startOffset - text.length -2;
-console.log(startOffset, endOffset);	
-  return {"startOffset": startOffset, "endOffset": endOffset};
-}
+
 				
 		</script>
 		

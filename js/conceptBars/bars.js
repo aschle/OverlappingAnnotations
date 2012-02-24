@@ -175,7 +175,7 @@ function applyWrapCase(spanLines, category){
 	var end = spanLines.last().position().left + spanLines.last().width();
 	
 	spanLines.addClass("hover");
-	spanLines.addClass("light_" +category);
+	spanLines.addClass("light_" + category);
 		
 	// Case 1: 1 line -> single
 	if(len == 1){
@@ -250,44 +250,6 @@ function applyWrapCase(spanLines, category){
 		spanLines.first().next().addClass("middleTop");
 		/*last().prev() is not working ?-| */
 		spanLines.slice(spanLines.length - 2, spanLines.length - 1).addClass("middleBottom");
-	}
-}
-/*
- * */
-function minMaxCase (start, end){
-	
-	var min = $("#text").position().left; 
-	var max = $("#text").position().left + $("#text").width();
-		
-	// Case A
-	//  __
-	// |__|
-	if (start == min && end == max){
-		return 'A';
-	}
-	
-	// Case B:
-	//	___
-	// |  _|
-	// |_|
-	if(start == min && end < max){
-		return 'B';
-	}
-	
-	// Case C:
-	//   __
-	// _|  |
-	//|____|
-	if(start > min && end == max){
-		return 'C';
-	}
-	
-	// Case D:
-	//    ___
-	//  _|  _|
-	// |___|
-	if(start > min && end < max){
-		return 'D';
 	}
 }
 

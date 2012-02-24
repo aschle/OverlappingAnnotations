@@ -57,12 +57,17 @@ function effectsOnMenu(){
 			menu.css("display", "none");
 			
 			// get rid of the single-word hovering
-			$("#text").html(textContent.html());
+			plainText();
 						
 			var idArray = $(this).attr("id").split("_");
-			addAtomToAtomList(idArray[1], idArray[2], savedClick["start"], savedClick["end"]);
+			addAtomToAtomList(
+				idArray[1],
+				idArray[2],
+				savedClick["start"],
+				savedClick["end"],
+				atomList.length);
 			
-			// render all bars again and display them: bars.js
+			// render all bars again and display them: inline.js at the moment
 			savedClick = null;
 			reset();
 			render();

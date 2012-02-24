@@ -76,6 +76,12 @@ html {min-height:101%;}
 	z-index: 2;
 }
 
+/*background color*/
+.bubble_0 {border-color: @A;}
+.bubble_1 {border-color: @B;}
+.bubble_2 {border-color: @C;}
+.bubble_3 {border-color: @D;}
+
 /*styling the text atoms, when hovering the bars*/
 #text span.hover {
 	padding-top: 0.3em;
@@ -159,4 +165,67 @@ html {min-height:101%;}
 .popup div.hover_3:hover {
 	border-color: @D !important;
 	background: lighten(@D, @lighter);
+}
+
+/*bordered bubbles inside the text*/
+.bubble{
+	position: absolute;
+	z-index: -1;
+	border-style: solid;
+}
+
+
+.bubble_all {
+	border-width: 2px;
+	border-radius:  @radius;
+}
+
+.bubble_B {
+	border-left-width: 2px;
+	border-bottom-width: 2px;
+	border-right-width: 2px;
+	border-bottom-left-radius: @radius;
+	border-bottom-right-radius: @radius;
+}
+
+.bubble_T {
+	border-left-width: 2px;
+	border-top-width: 2px;
+	border-right-width: 2px;
+	border-top-left-radius: @radius;
+	border-top-right-radius: @radius;
+}
+
+.bubble_L {
+	border-left-width: 2px;
+	border-top-width: 2px;
+	border-bottom-width: 2px;
+	border-right-width: 0px;
+	border-top-left-radius: @radius;
+	border-bottom-left-radius: @radius;
+}
+
+.bubble_R {
+	border-right-width: 2px;
+	border-top-width: 2px;
+	border-bottom-width: 2px;
+	border-top-right-radius: @radius;
+	border-bottom-right-radius: @radius;
+}
+
+.bubble_cornerTL {
+	border-left-width: 2px;
+	border-top-width: 2px;
+	border-top-left-radius: @radius;
+}
+
+.bubble_cornerBR {
+	border-right-width: 2px;
+	border-bottom-width: 2px;
+	border-bottom-right-radius: @radius;
+}
+
+.bubble_TB {
+	border-top-width: 2px;
+	border-bottom-width: 2px;
 }
