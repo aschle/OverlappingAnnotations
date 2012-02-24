@@ -151,14 +151,14 @@ function isInclusion(aStartX, aStartY, aEndX, aEndY, xStartX, xStartY, xEndX, xE
 			return true;
 		}
 		
-		if(xEndY < aEndY && xEndY)
+		//if(xEndY < aEndY && xEndY)
 		
 		
 		
 	}
 	
 	//outside:
-	if(xStartY <= aStartY && xEndY >= aEndY)
+	//if(xStartY <= aStartY && xEndY >= aEndY)
 }
 
 /*

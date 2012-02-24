@@ -52,8 +52,8 @@
 			wrapRange: false,
 			selectClass: selectClass,
 			regexElementBlockers: new RegExp(/^BR$/),// fitToWord Var
-			regexWordCharacterBasic: new RegExp(/^[A-Za-z0-9'\-]$/),// fitToWord Var
-			regexWordCharacterFull: new RegExp(/^[A-Za-z0-9':,\-]$/),// fitToWord Var
+			regexWordCharacterBasic: new RegExp(/^[A-Za-z0-9\u00C4'\-]$/),// fitToWord Var
+			regexWordCharacterFull: new RegExp(/^[A-Za-z0-9\u00C4':,\-]$/),// fitToWord Var
 			regexWordPunc: new RegExp(/^[:,]$/),// fitToWord Var
 			regexWordNumbers: new RegExp(/^[0-9]$/)// fitToWord Var
 		};
