@@ -212,35 +212,37 @@ function fitsInLevel(atom, level){
 }
 
 function display(){
+
+	var min = $("#text").position().left; 
+	var max = $("#text").position().left + $("#text").width();
+	var h = 16; // TODO: why 16px?
+	var lh = 21;  // TODO: why 21?
+
+	var left, top, height, width;
 	
 	for (i in levelList){
 		for (j in levelList[i]) {
 			
 			var bubble = levelList[i][j];
-			var coordinates = atomStartEndList[bubble["id"]];
+			var id = bubble["id"];
+			var coordinates = atomStartEndList[id];
 			var type = coordinates["type"];
+			var category = atomList[id]["category"];
 
 			var offset = i * 4;
-			var id = bubble["id"];
-
-			var min = $("#text").position().left; 
-			var max = $("#text").position().left + $("#text").width();
-			var height = 16; // TODO: why 16px?
 
 			switch (type)
 			{
 				case 'X': case 'A':
 				{
-					// onle line
-					var left = getDisplayXBar(coordinates["startX"]) - offset - 2;
-					var top = coordinates["startY"] - offset - 2;
-					var height = coordinates["endY"] - coordinates["startY"];
-					var width = coordinates["endX"] - coordinates["startX"];
-					var category = atomList[id]["category"];
-					var bubbleClass = "bubble_all";
+					// one line
+					left = getDisplayXBar(coordinates["startX"]) - offset - 2;
+					top = coordinates["startY"] - offset;
+					height = coordinates["endY"] - coordinates["startY"] - 2;
+					width = coordinates["endX"] - coordinates["startX"];
 
-					addBubble(id, top, left, height, width,
-						offset, category, bubbleClass);
+					addBubble(id, null, top, left, height, width,
+						offset, category, "bubble_all");
 				}
 				break;
 
@@ -248,68 +250,84 @@ function display(){
 				{
 					// two lines, but seperate
 
-					// TODO: weitermachen addBubble benutzen!!!
-
-					
 					// first on the right
-					var bubbleLeft = getDisplayXBar(coordinates["startX"]) - offset - 2;
-					var bubbleTop = coordinates["startY"] - offset - 2;
-					var bubbleHeight = height;
-					var bubbleWidth = max - coordinates["startX"];
+					left = getDisplayXBar(coordinates["startX"]) - offset - 2;
+					top = coordinates["startY"] - offset;
+					height = h - 2;
+					width = max - coordinates["startX"];
 
-					$("body").append('<div class="bubble" id="bubbleID_'+id+'_1">&nbsp;</div>');	
-					$("#bubbleID_"+id+"_1").css({
-						"top":bubbleTop,
-						"left":bubbleLeft,
-						"height":bubbleHeight,
-						"width":bubbleWidth,
-						"padding": offset
-					});
-					$("#bubbleID_"+id+"_1").addClass("bubble_"+atomList[id]["category"]);
-					$("#bubbleID_"+id+"_1").addClass("bubble_L");
+					addBubble(id, 1, top, left, height, width, offset,
+						category, "bubble_L");
 
 					// second on the left
-					bubbleLeft = getDisplayXBar(min) - offset - 2;
-					bubbleTop = coordinates["endY"] - height -  offset - 2;
-					bubbleWidth = coordinates["endX"] - min;
+					left = getDisplayXBar(min) - offset - 2;
+					top = coordinates["endY"] - h -  offset;
+					width = coordinates["endX"] - min;
 
-					$("body").append('<div class="bubble" id="bubbleID_'+id+'_2">&nbsp;</div>');	
-					$("#bubbleID_"+id+"_2").css({
-						"top":bubbleTop,
-						"left":bubbleLeft,
-						"height":bubbleHeight,
-						"width":bubbleWidth,
-						"padding": offset
-					});
-					$("#bubbleID_"+id+"_2").addClass("bubble_"+atomList[id]["category"]);
-					$("#bubbleID_"+id+"_2").addClass("bubble_R");
+					addBubble(id, 2, top, left, height, width, offset,
+						category, "bubble_R");
 				}
 				break;
 
 			  	case 'B':
 			  	{
 			  		// first on the left I (corner_TL)
-					var bubbleLeft = getDisplayXBar(coordinates["startX"]) - offset - 2;
-					var bubbleTop = coordinates["startY"] - offset - 2;
-					var bubbleHeight = coordinates["endY"] - coordinates["startY"] - height;
-					var bubbleWidth = max - coordinates["startX"];
+					left = getDisplayXBar(coordinates["startX"]) - offset - 2;
+					top = coordinates["startY"] - offset;
+					height = coordinates["endY"] - coordinates["startY"] - h - 2;
+					width = max - coordinates["startX"];
 
-					$("body").append('<div class="bubble" id="bubbleID_'+id+'_1">&nbsp;</div>');	
-					$("#bubbleID_"+id+"_1").css({
-						"top":bubbleTop,
-						"left":bubbleLeft,
-						"height":bubbleHeight,
-						"width":bubbleWidth,
-						"padding": offset
-					});
-					$("#bubbleID_"+id+"_1").addClass("bubble_"+atomList[id]["category"]);
-					$("#bubbleID_"+id+"_1").addClass("bubble_L");
+					addBubble(id, 1, top, left, height, width, offset,
+						category, "bubble_cornerTL");
 
+					// second on the right II
+					left = getDisplayXBar(coordinates["endX"]) + offset - 2;
+					height = coordinates["endY"] - coordinates["startY"] - lh - 2;
+					width = max - coordinates["endX"] - 2 * offset + 2;
+
+					addBubble(id, 2, top, left, height, width, offset,
+						category, "bubble_R");
+
+					// third bottom left III
+					left = getDisplayXBar(coordinates["startX"]) - offset - 2;
+					top = coordinates["endY"] - lh + offset;
+					height = lh - 2 * offset;
+					width = coordinates["endX"] - min - 2;
+
+					addBubble(id, 3, top, left, height, width, offset,
+						category, "bubble_B");
 			  	}
 			  	break;
 
 			  	case 'C':
-			  	document.write("Sleepy Sunday");
+			   	{
+			  		// first on the top I (corner_TL)
+					left = getDisplayXBar(coordinates["startX"]) - offset - 2;
+					top = coordinates["startY"] - offset;
+					height = lh - 2 * offset;
+					width = max - coordinates["startX"];
+
+					addBubble(id, 1, top, left, height, width, offset,
+						category, "bubble_T");
+
+					// second on the left
+					left = getDisplayXBar(min) - offset - 2;
+					height = coordinates["endY"] - coordinates["startY"] - lh - 2;
+					top = coordinates["startY"] + lh - offset;
+					width = coordinates["startX"] - min - 2 * offset;
+
+					addBubble(id, 2, top, left, height, width, offset,
+						category, "bubble_L");
+
+					// third bottom left
+					left = getDisplayXBar(coordinates["startX"]) - offset - 2;
+					top = coordinates["startY"] + 2+  lh - offset;
+					height = coordinates["endY"] - coordinates["startY"] - lh - 2;
+					width = coordinates["endX"] - coordinates["startX"] + 2;
+
+					addBubble(id, 3, top, left, height, width, offset,
+						category, "bubble_cornerBR");
+			  	}
 			  	break;
 
 			  	case 'D':
@@ -332,17 +350,36 @@ function getDisplayXBar (x){
 	return containerLeft + x;
 }
 
-function addBubble(id, top, left, height, width,
+function addBubble(id, subId, top, left, height, width,
 						offset, category, bubbleClass){
 
-	$("body").append('<div class="bubble" id="bubbleID_'+id+'">&nbsp;</div>');	
-	$("#bubbleID_"+id).css({
-		"top":top,
-		"left":left,
-		"height":height,
-		"width":width,
-		"padding": offset
-	});
-	$("#bubbleID_"+id).addClass("bubble_"+category);
-	$("#bubbleID_"+id).addClass(bubbleClass);
+	if(subId == null){
+
+		$("body").append('<div class="bubble" id="bubbleID_'+id+'">&nbsp;</div>');	
+		$("#bubbleID_"+id).css({
+			"top":top,
+			"left":left,
+			"height":height,
+			"width":width,
+			"padding": offset
+		});
+		$("#bubbleID_"+id).addClass("bubble_"+category);
+		$("#bubbleID_"+id).addClass(bubbleClass);
+
+	} else{
+
+		$("body").append('<div class="bubble" id="bubbleID_'+id+'_'+subId+'">&nbsp;</div>');	
+		$("#bubbleID_"+id+"_"+subId).css({
+			"top":top,
+			"left":left,
+			"height":height,
+			"width":width,
+			"padding": offset
+		});
+		$("#bubbleID_"+id+"_"+subId).addClass("bubble_"+category);
+		$("#bubbleID_"+id+"_"+subId).addClass(bubbleClass);
+
+	}
+
+
 }
