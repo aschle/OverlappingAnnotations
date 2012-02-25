@@ -170,7 +170,7 @@ function insert(atom, level){
 					} else {
 						var removedItem = levelList[level].splice(overlaps[0]["atom"], 1);
 						levelList[level].push(atom);
-						insert(removedItem, level + 1);
+						insert(removedItem[0], level + 1);
 					}
 				}
 
@@ -183,7 +183,7 @@ function insert(atom, level){
 					} else {
 						var removedItem = levelList[level].splice(overlaps[0]["atom"], 1);
 						levelList[level].push(atom);
-						insert(removedItem, level + 1);
+						insert(removedItem[0], level + 1);
 					}
 				}
 
