@@ -5,20 +5,20 @@
  * @author		Jeremy Peterson
  * @version		0.2.0
  */
- 
+
 (function ($) {
 	/**
 	 * jquery getRangeAt function
 	 */
 	$.fn.getWSRangeAt = function() {
-		var selectionParent = this;// element from the mouseup 
+		var selectionParent = this;// element from the mouseup
 		var range = $.fn.WSrange;// Reference to range object
-		
+
 		// Initialize variables
 		range.ClearVariables();
 		range.setWSRange();// gets Selection range
-		
-//		Verify what container the selection is allowed in.  		
+
+//		Verify what container the selection is allowed in.
 // 		Check if First node Selection is in selectionParent
 // 		Assume mouseUp is in the selectionParent (or last node)
 		if (this[0] == document) {// Skips check if called like $().wrapSelection
@@ -27,19 +27,19 @@
 		else{
 			var checkFirst = $(range.startContainer).parents().index(selectionParent);
 			var checkLast = $(range.endContainer).parents().index(selectionParent);
-			
+
 			if ( checkFirst == -1 || checkLast == -1 ) {// restrict range to a specific container
 				range.ClearVariables();
 				return false;
 			};
-		}; 
-		
+		};
+
 //		// set commonAncestorContainer
 //		var commonAncestorContainer = $(range.startContainer).parents().filter(function(){
 //															return $(range.endContainer).parents().index(this) != -1;
 //														})[0];
 //		selRange.commonAncestorContainer	= commonAncestorContainer;
-		
+
 		return range;// returns range object, no chaining when getting Range
 	};
 
@@ -78,15 +78,15 @@
 			return $([]);// return empty node
 		};
 
-		// Creates the range object	
+		// Creates the range object
 		function setWrapRange(element, newRange){
 	//		console.log('set-Element:', element);
 			if(newRange)
-				$.fn.WSrange = newRange;	
+				$.fn.WSrange = newRange;
 			else
 				$(element).getWSRangeAt();// test without parent call
 		};
-		
+
 		function SplitText() {
 			var range = $.fn.WSrange;
 			var myIsSameNode = (range.startContainer == range.endContainer);
@@ -110,13 +110,13 @@
 			var range = $.fn.WSrange;
 			var myStart = fitToStartWord(range.startContainer, range.startOffset, 'normal');
 			var myEnd = fitToEndWord(range.endContainer, range.endOffset, 'normal');
-			
+
 			range.startContainer = myStart.container;
 			range.startOffset = myStart.offset;
 			range.endContainer = myEnd.container;
 			range.endOffset = myEnd.offset;
 		};
-		
+
 		function fitToEndWord (myContainer, myOffset, myType) {
 			var myChar = '';
 			if (myOffset > 0) myChar = myContainer.nodeValue.substr(myOffset - 1, 1);
@@ -167,7 +167,7 @@
 			if (myNext.character.length == 1) return fitToStartWord(myNext.container, myNext.offset, 'reverse');
 			else return {container: myContainer, offset: myOffset};
 		};
-	
+
 		function getNextChar(myContainer, myOffset) {
 			if (myOffset < 0) {
 				var myPrevContainer = $.fn.wrapSelection.dom.GetPreviousTextNode(myContainer);
@@ -208,7 +208,7 @@
 		};
 
 		function doWrap() {
-			var myRange = $.fn.WSrange;					
+			var myRange = $.fn.WSrange;
 			var Spans = [];
 			if (!myRange.startContainer || !myRange.endContainer) return false;
 
@@ -217,7 +217,7 @@
 
 			//myNodes is arranged by level, so everything at the same level can be surrounded by a <span>
 			var myNodesSurrounded = 0;
-			
+
 			for (var i = 0; i < iLength; i++) {
 
 				if (!myNodes[i][0]) continue;
@@ -233,16 +233,16 @@
 
 					//this works assuming there aren't any block-level elements contained in the lower element; so it should work for P, but not for UL
 					if (myParentName == 'DIV') {
-						
-						
+
+
 						if (myNodes[i][j].nodeType != 1) {
 							continue;
 						}
-						
+
 						var myChildNodes = myNodes[i][j].childNodes;
 
 						var mySpan = makeSpanElement();
-						
+
 						while (myChildNodes.length > 0) mySpan.appendChild(myChildNodes[0]);
 						myNodes[i][j].appendChild(mySpan); //it's OK to do here because we're replacing the whole thing
 						Spans.push(mySpan);
@@ -263,7 +263,7 @@
 	};// END wrapSelection
 
 
-	$.fn.WSrange = {	
+	$.fn.WSrange = {
 		onlySpacesMatch: new RegExp(/[^\t\r\n ]/),
 		containedNodes: null,
 		selection: null,
@@ -302,7 +302,7 @@
 			if (!$.fn.WSrange.selection) return;
 			//Firefox has bugs if you don't do both
 			$.fn.WSrange.selection.removeAllRanges();
-			$.fn.WSrange.ClearVariables();	
+			$.fn.WSrange.ClearVariables();
 		},
 
 		ClearVariables: function() {
@@ -362,7 +362,7 @@
 
 		GetNextTextNode: function(myNode, myParent) {
 			while (myNode = $.fn.wrapSelection.dom.getNodeOrder(myNode, myParent, 'next')) {
-				if (myNode.nodeType == 3) return myNode;	
+				if (myNode.nodeType == 3) return myNode;
 			}
 			return myNode;
 		},
@@ -377,7 +377,7 @@
 
 		GetPreviousTextNode: function(myNode, myParent) {
 			while (myNode = $.fn.wrapSelection.dom.getNodeOrder(myNode, myParent, 'previous')) {
-				if (myNode.nodeType == 3) return myNode;	
+				if (myNode.nodeType == 3) return myNode;
 			}
 			return myNode;
 		},
@@ -413,10 +413,10 @@
 
 	// Integrate Internet Explorer Code
 	if ($.browser.msie) {
-		
+
 		$.extend($.fn.WSrange, {
 			ClearAllWSRanges: function(){
-				if (this.selection) 
+				if (this.selection)
 					this.selection.empty(); //clear the current selection; we don't want it hanging around
 				this.ClearVariables();
 			},
@@ -489,7 +489,7 @@
 					myOut.unshift(myOffset);
 				}
 				while (myNode = myNode.parentNode);
-				if (myType && myType == 'string') 
+				if (myType && myType == 'string')
 					return myOut.join('.');
 				return myOut;
 			}

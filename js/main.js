@@ -14,8 +14,9 @@ function getRealSelection(text){
 
 	plainText();
 	$("#text").selection(savedClick["start"], savedClick["end"]);
-
 	var spans = $("#text").wrapSelection();
+
+	console.log(spans);
 
 	var spanText = "";
 
