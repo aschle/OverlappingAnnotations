@@ -26,6 +26,12 @@ function calcAtomPositions(){
 		spans.wraplines();
 		var spanLines = $("span[class^='wrap_line_']");
 
+		spanLines.each(function(index, el){
+			// Remove trailing whitespace
+			var text = $(el).text().replace(/\s+$/, '')
+			$(el).text(text);
+		})
+
 		// NOTE: similar to applyWrapCase(spanLines, category)
 		var len = spanLines.length;
 		var startX = spanLines.first().position().left;
