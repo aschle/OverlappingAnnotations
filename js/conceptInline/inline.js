@@ -390,7 +390,7 @@ function display(){
 								// 3rd on the right III
 								top = startY + lh - border - offset;
 								left = getDisplayXBar(startX) - offset;
-								height = endY - startY - 2* lh + 2 * offset + border;
+								height = endY - startY - 2 * lh + 2 * offset + border;
 								width = max - startX + 2 * offset;
 
 								addBubble(id, 3, top, left, height, width, offset, category, "cornerBR");
@@ -410,7 +410,6 @@ function display(){
 								width = startX -endX - 2 * offset;
 
 								addBubble(id, 5, top, left, height, width, offset, category, "topBottom");
-
 						}
 					}
 			  	break;
