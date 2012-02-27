@@ -223,6 +223,7 @@ function display(){
 	var max = $("#text").position().left + $("#text").width();
 	var h = 16; // TODO: why 16px?
 	var lh = 21;  // TODO: why 21?
+	var border = 2;
 
 	var left, top, height, width;
 
@@ -239,151 +240,176 @@ function display(){
 			var endX = coordinates["endX"];
 			var endY = coordinates["endY"]
 
-			var offset = i * 4;
+			var offset = i * 2 * border;
 
 			switch (type)
 			{
-				case 'X': case 'A':
+				case 'X': case 'A': // one line or block
 				{
-					// one line
-					left = getDisplayXBar(startX) - offset - 2;
-					top = startY - offset;
-					height = endY - startY - 2;
-					width = endX - startX;
 
-					addBubble(id, null, top, left, height, width,
-						offset, category, "bubble_all");
+					top = startY - border - offset;
+					left = getDisplayXBar(startX) - border - offset;
+					height = endY - startY + 2 * offset;
+					width = endX - startX + 2 * offset;
+
+					addBubble(id, null, top, left, height, width, offset, category, "all");
 				}
 				break;
 
-				case 'Y':
+				case 'Y': // two lines, but seperate
 				{
-					// two lines, but seperate
 
 					// first on the right
-					left = getDisplayXBar(startX) - offset - 2;
-					top = startY - offset;
-					height = h - 2;
-					width = max - startX;
+					top = startY - border - offset;
+					left = getDisplayXBar(startX) - border - offset;
+					height = h + 2 * offset;
+					width = max - startX + offset;
 
-					addBubble(id, 1, top, left, height, width, offset,
-						category, "bubble_L");
+					addBubble(id, 1, top, left, height, width, offset, category, "left");
 
 					// second on the left
-					left = getDisplayXBar(min) - offset - 2;
-					top = endY - h -  offset;
-					width = endX - min;
+					top = endY - h - border - offset;
+					left = getDisplayXBar(min);
+					width = endX - min + offset;
 
-					addBubble(id, 2, top, left, height, width, offset,
-						category, "bubble_R");
+					addBubble(id, 2, top, left, height, width, offset, category, "right");
 				}
 				break;
 
 			  	case 'B':
 			  	{
 			  		// first on the left I (corner_TL)
-					left = getDisplayXBar(startX) - offset - 2;
-					top = startY - offset;
-					height = endY - startY - h - 2;
-					width = max - startX;
+			  		top = startY - border - offset;
+						left = getDisplayXBar(startX) - border - offset;
+						height = endY - startY - lh + border + 2 * offset;
+						width = max - startX + 2 * offset;
 
-					addBubble(id, 1, top, left, height, width, offset,
-						category, "bubble_cornerTL");
+						addBubble(id, 1, top, left, height, width, offset, category, "cornerTLTR");
 
-					// second on the right II
-					left = getDisplayXBar(endX) + offset - 2;
-					height = endY - startY - lh - 2;
-					width = max - endX - 2 * offset + 2;
+						// second on the right II
+						left = getDisplayXBar(endX) + offset;
+						height = endY - startY - lh + 2 * offset;
+						width = max - endX;
 
-					addBubble(id, 2, top, left, height, width, offset,
-						category, "bubble_R");
+						addBubble(id, 2, top, left, height, width, offset, category, "right");
 
-					// third bottom left III
-					left = getDisplayXBar(startX) - offset - 2;
-					top = endY - lh + offset;
-					height = lh - 2 * offset;
-					width = endX - min - 2;
+						// third bottom left III
+						top = endY - lh + border + offset;
+						left = getDisplayXBar(startX) - border - offset;
+						height = lh - border;
+						width = endX - min + 2 * offset;
 
-					addBubble(id, 3, top, left, height, width, offset,
-						category, "bubble_B");
+						addBubble(id, 3, top, left, height, width, offset, category, "bottom");
 			  	}
 			  	break;
 
 			  	case 'C':
 			   	{
 			  		// first on the top I (corner_TL)
-					left = getDisplayXBar(startX) - offset - 2;
-					top = startY - offset;
-					height = lh - 2 * offset;
-					width = max - startX;
+			  		top = startY - border - offset;
+						left = getDisplayXBar(startX) - border - offset;
+						height = lh;
+						width = max - startX + 2 * offset;
 
-					addBubble(id, 1, top, left, height, width, offset,
-						category, "bubble_T");
+						addBubble(id, 1, top, left, height, width, offset, category, "top");
 
-					// second on the left
-					left = getDisplayXBar(min) - offset - 2;
-					height = endY - startY - lh - 2;
-					top = startY + lh - offset;
-					width = startX - min - 2 * offset;
+						// second on the left
+						top = startY + lh - border - offset;
+						left = getDisplayXBar(min) - border - offset;
+						height = endY - startY - lh + 2 * offset;
+						width = startX - min;
 
-					addBubble(id, 2, top, left, height, width, offset,
-						category, "bubble_L");
+						addBubble(id, 2, top, left, height, width, offset, category, "left");
 
-					// third bottom left
-					left = getDisplayXBar(startX) - offset - 2;
-					top = startY + 2+  lh - offset;
-					height = endY - startY - lh - 2;
-					width = endX - startX + 2;
+						// third bottom right
+						left = getDisplayXBar(startX) - border - offset;
+						top = startY + border + lh - border - offset;
+						height = endY - startY - lh + 2 * offset;
+						width = endX - startX + border + 2 * offset;
 
-					addBubble(id, 3, top, left, height, width, offset,
-						category, "bubble_cornerBR");
+						addBubble(id, 3, top, left, height, width, offset, category, "cornerBR");
 			  	}
 			  	break;
 
 			  	case 'D':
 			  	  	{
 			  	  		// CASE I: 4 DIVs
-			  	  		if(startX<= endX){
+			  	  		if(startX <= endX){
 
 					  		// first on the left I (corner_TL)
-							left = getDisplayXBar(min) - offset - 2;
-							top = startY + lh - offset;
-							height = endY - startY - lh - 2;
-							width = startX - min - 2 * offset -2;
+					  		top = startY + lh - border - offset;
+								left = getDisplayXBar(min) - border - offset;
+								height = endY - startY - lh + 2 * offset;
+								width = startX - min;
 
-							addBubble(id, 1, top, left, height, width, offset,
-								category, "bubble_L");
+								addBubble(id, 1, top, left, height, width, offset, category, "left");
 
-							// // second on top Í
-							left = getDisplayXBar(startX) - offset - 2;
-							top = startY - offset;
-							height = lh - 2 * offset;
-							width = max - startX;
+								// // second on top Í
+								top = startY - border - offset;
+								left = getDisplayXBar(startX) - border - offset;
+								height = lh;
+								width = max - startX + 2 * offset;
 
-							addBubble(id, 2, top, left, height, width, offset,
-								category, "bubble_T");
+								addBubble(id, 2, top, left, height, width, offset, category, "cornerTLTR");
 
-							// third on the right III
-							left = getDisplayXBar(endX) + offset + 2;
-							top = startY - offset;
-							height = endY - startY - lh - 2;
-							width = max - endX - 2 - 2 * offset;
+								// 4rd on the right III
+								left = getDisplayXBar(endX) + offset;
+								height = endY - startY - lh + 2 * offset;
+								width = max - endX;
 
-							addBubble(id, 3, top, left, height, width, offset,
-								category, "bubble_R");
+								addBubble(id, 3, top, left, height, width, offset, category, "right");
 
-							// 4th on the bottom IV
-							left = getDisplayXBar(min) + offset + 2;
-							top = endY - lh;
-							height = lh - 2;
-							width = endX - min;
+								// 4th on the bottom IV
+								left = getDisplayXBar(startX) - border - offset;
+								top = endY - lh + border + offset;
+								height = lh - border;
+								width = endX - startX  + border + 2 * offset;
 
-							addBubble(id, 4, top, left, height, width, offset,
-								category, "bubble_B");
+								addBubble(id, 4, top, left, height, width, offset, category, "cornerBR");
 						}
 
 						// CASE 2: 5 DIVs
 						else {
+
+							// first on the left I (corner_TL)
+					  		top = startY + lh - border - offset;
+								left = getDisplayXBar(min) - border - offset;
+								height = endY - startY - lh + 2 * offset;
+								width = endX - min + 2 * offset;
+
+								addBubble(id, 1, top, left, height, width, offset, category, "cornerTLBL");
+
+								// second on top Í
+								top = startY - border - offset;
+								left = getDisplayXBar(startX) - border - offset;
+								height = lh;
+								width = max - startX + 2 * offset;
+
+								addBubble(id, 2, top, left, height, width, offset, category, "top");
+
+								// 3rd on the right III
+								top = startY + lh - border - offset;
+								left = getDisplayXBar(startX) - offset;
+								height = endY - startY - 2* lh + 2 * offset + border;
+								width = max - startX + 2 * offset;
+
+								addBubble(id, 3, top, left, height, width, offset, category, "cornerBR");
+
+								// 4th on the bottom IV
+								top = endY - lh + border + offset;
+								left = getDisplayXBar(min) - border - offset;
+								height = lh - border;
+								width = endX - min + 2 * offset;
+
+								addBubble(id, 4, top, left, height, width, offset, category, "bottom");
+
+								// 5th in the middle
+								top = startY + lh - border - offset;
+								left = getDisplayXBar(endX) + offset;
+								height = endY - startY - 2 * lh + 2 * offset;
+								width = startX -endX - 2 * offset;
+
+								addBubble(id, 5, top, left, height, width, offset, category, "topBottom");
 
 						}
 					}
@@ -415,11 +441,11 @@ function addBubble(id, subId, top, left, height, width,
 			"top":top,
 			"left":left,
 			"height":height,
-			"width":width,
-			"padding": offset
+			"width":width
 		});
-		$("#bubbleID_"+id).addClass("bubble_"+category);
+
 		$("#bubbleID_"+id).addClass(bubbleClass);
+		$("#bubbleID_"+id).addClass("bubble_"+category);
 
 	} else{
 
@@ -428,13 +454,10 @@ function addBubble(id, subId, top, left, height, width,
 			"top":top,
 			"left":left,
 			"height":height,
-			"width":width,
-			"padding": offset
+			"width":width
 		});
-		$("#bubbleID_"+id+"_"+subId).addClass("bubble_"+category);
+
 		$("#bubbleID_"+id+"_"+subId).addClass(bubbleClass);
-
+		$("#bubbleID_"+id+"_"+subId).addClass("bubble_"+category);
 	}
-
-
 }

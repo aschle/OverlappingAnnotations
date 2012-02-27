@@ -1,18 +1,18 @@
 <html>
 	<head>
-		
+
 		<meta charset="utf-8">
-		
+
 		<title>
 			Overlapping Annotations
 		</title>
-		
+
 		<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
-		
+
 		<!--
 		The jQuery selectionPlugin is copied from the JavaSriptMVC Project
 		[http://javascriptmvc.com/]. It's an easy way to get/set the boundaries
-		as indexies of selected text. It works with all elements, also 
+		as indexies of selected text. It works with all elements, also
 		across multiple elements. Now every jQuery object has th additionally
 		function .selection() and .selection(start, end). To get the selection
 		function running, it depends on range.js and compare.js.
@@ -20,7 +20,7 @@
 		<script type="text/javascript" src="js/selectionPlugin/selection.js"></script>
 		<script type="text/javascript" src="js/selectionPlugin/range.js"></script>
 		<script type="text/javascript" src="js/selectionPlugin/compare.js"></script>
-		
+
 		<!--
 		The jQuery wrapSelection Plugin [http://archive.plugins.jquery.com/project/wrapSelection]
 		makes it possible to easily wrap an span element around an selected
@@ -30,49 +30,49 @@
 		plugins the Range in wrapSelection is now calles WSrange.
 		-->
 		<script type="text/javascript" src="js/wrapSelectionPlugin/jquery.wrapSelection.js"></script>
-		
+
 		<!--
-		This jQuery plugin can be found on github. 
+		This jQuery plugin can be found on github.
 		[https://github.com/davatron5000/Lettering.js] Its used for
 		getting a hovering effect on single words, to make selections
 		easier for the user.
 		-->
 		<script type="text/javascript" src="js/jquery.lettering-0.6.1.min.js"></script>
-		
+
 		<!--
-		This jQuery plugin can be found here. 
+		This jQuery plugin can be found here.
 		[http://pmbennett.net/demos/jquery-finding-lines-of-text.html]
 		It wraps each line into a span.
 		-->
 		<script type="text/javascript" src="js/jquery.wraplines.js"></script>
-		
+
 		<!--
 		My own written stuff for concept bars and inline.
 		-->
 		<!--<script type="text/javascript" src="js/conceptBars/bars.js"></script>-->
 		<script type="text/javascript" src="js/conceptInline/inline.js"></script>
-		
+
 		<!--
 		JavaSript which is used for interaction on the webpage.
 		-->
 		<script type="text/javascript" src="js/contextMenu.js"></script>
 		<script type="text/javascript" src="js/main.js"></script>
-		
+
 		<!--
 		StyleCheets of the future.
 		-->
 		<link rel="stylesheet/less" type="text/css" href="css/layout.less">
 		<script src="js/less-1.2.1.min.js" type="text/javascript"></script>
-		
+
 		<!--
 		Using getSkelleton to have a nice grid layout. Makes life easy.
 		-->
 		<link rel="stylesheet" type="text/css" href="skeleton/base.css" />
 		<link rel="stylesheet" type="text/css" href="skeleton/layout.css" />
 		<link rel="stylesheet" type="text/css" href="skeleton/skeleton.css" />
-		
+
 		<script type="text/javascript">
-			
+
 			var categories = [{
 				"name":"Category 1", "subs":["subcategorie 1", "subcat 2", "subcategorie 3"]},{
 				"name":"Category 2", "subs":["subcategorie 1", "subcategorie 2", "subcategorie 3", "subcategorie 4", "subcategorie 5" ]},{
@@ -81,15 +81,15 @@
 			];
 
 			var savedClick;
-			
+
 			$(document).ready(function(){
-				
+
 				// keep the plain text version (without spans)
 				textContent = $("#text").clone();
-				
+
 				// load menu at the top
 				loadCategoryMenu(categories);
-				
+
 				// load the context menu, but hide it (it becomes visible when annotating the text (mouseup event)
 				loadContextMenu(categories);
 				effectsOnMenu();
@@ -97,13 +97,13 @@
 				$("#text").mousedown(function(){
 					plainText();
 				});
-				
-				$("#text").mouseup(function(e){	
-					
+
+				$("#text").mouseup(function(e){
+
 					// save the click
 					var text = document.getSelection().toString();
 					var selectedText = $("#text").selection();
-					
+
 					savedClick = {
 						"start":selectedText.start,
 						"end":selectedText.end
@@ -122,51 +122,51 @@
 				resetAppAfterAnnotation();
 			});
 
-				
+
 		</script>
-		
+
 	</head>
 
-	<body>		
-		
+	<body>
+
 		<div class="container">
-			
+
 				<div class="sixteen columns" style="margin-bottom: 8px; margin-top: 8px;">
 						<h2 style="display:inline">overlap</h2>
 						<h5 style="display:inline; margin-left:8px;">visualizing overlapping annotations in text.</h5>
 				</div>
-								
+
 				<div class="sixteen columns" id="menu">
-				
+
 					<div class="four columns alpha">
 						...
 					</div>
-				
-					<div class="twelve columns omega">	
-						
+
+					<div class="twelve columns omega">
+
 						<div class="six columns alpha">
-							<div id="c_0" class="category A_underline three columns alpha" >						
+							<div id="c_0" class="category A_underline three columns alpha" >
 							</div>
 							<div id="c_1" class="category B_underline three columns omega" >
 							</div>
 						</div>
-						
+
 						<div class="six columns omega">
 							<div id="c_2" class="category C_underline three columns alpha" >
 							</div>
 							<div id="c_3" class="category D_underline three columns omega" >
-							</div>											
-						</div>															
+							</div>
+						</div>
 					</div>
-				
+
 				</div>
-				
+
 				<div class="sixteen columns">
-					
+
 					<div class="four columns alpha">
 						...
 					</div>
-					
+
 					<!-- This is the div for the text, which is going to be annotated.-->
 					<div class="twelve columns omega">
 						<h2>Charles Darwin</h2>
@@ -174,11 +174,11 @@
 							<p class="word_split">Charles Robert Darwin in Berlin ein britischer Naturforscher. Er gilt wegen seiner wesentlichen Beiträge zur Evolutionstheorie als einer der bedeutendsten Naturwissenschaftler.</p>
 							<p class="word_split">Die Ende 18Ä31 begonnene und fast fünf Jahre andauernde Reise mit der HMS Beagle, die den jungen Darwin einmal um die Welt führte, war zugleich Schlüsselerlebnis und Grundlage für sein späteres Werk. Der breiten Öffentlichkeit wurde Darwin erstmals durch seinen 1839 herausgegebenen Reisebericht bekannt. Mit seiner Theorie über die Entstehung der Korallenriffe und weiteren geologischen Schriften erlangte er in wissenschaftlichen Kreisen die Anerkennung als Geologe. Seine Untersuchungen an den Rankenfußkrebsen verschafften ihm Mitte der 1850er Jahre zusätzlich einen angesehenen Ruf als Zoologe und Taxonom.</p>
 							<p class="word_split">Bereits 1838 entwarf Darwin seine Theorie der Anpassung an den Lebensraum durch Variation und natürliche Selektion und erklärte so die phylogenetische Entwicklung aller Organismen und ihre Aufspaltung in verschiedene Arten. Über 20 Jahre lang trug er Belege für diese Theorie zusammen. 1842 und 1844 verfasste Darwin kurze Abrisse seiner Theorie, die er jedoch nicht veröffentlichte. Ab 1856 arbeitete er an einem umfangreichen Manuskript mit dem Titel Natural Selection. Durch einen Brief von Alfred Russel Wallace, der dessen Ternate-Manuskript mit ähnlichen Gedanken zur Evolution enthielt, kam es im Sommer 1858 schließlich zu einer Veröffentlichung der Theorien über die Evolution durch die beiden Männer. Ein Jahr später folgte Darwins Hauptwerk On the Origin of Species (Die Entstehung der Arten), das als streng naturwissenschaftliche Erklärung für die Diversität des Lebens die Grundlage der modernen Evolutionsbiologie bildet und einen entscheidenden Wendepunkt in der Geschichte der modernen Biologie darstellt.</p>
-							<p class="word_split">1871 diskutierte Darwin in The Descent of Man, and Selection in Relation to Sex (Die Abstammung des Menschen und die geschlechtliche Zuchtwahl) mit der sexuellen Selektion einen zweiten Selektionsmechanismus und nutzte seine Theorie, um die Abstammung des Menschen zu erklären. In seinem letzten Lebensjahrzehnt untersuchte Darwin Kletterpflanzen, Orchideen und fleischfressende Pflanzen und leistete wichtige Beiträge zur Botanik. Sein offizielles botanisches Autorenkürzel lautet „Darwin“.</p>		
+							<p class="word_split">1871 diskutierte Darwin in The Descent of Man, and Selection in Relation to Sex (Die Abstammung des Menschen und die geschlechtliche Zuchtwahl) mit der sexuellen Selektion einen zweiten Selektionsmechanismus und nutzte seine Theorie, um die Abstammung des Menschen zu erklären. In seinem letzten Lebensjahrzehnt untersuchte Darwin Kletterpflanzen, Orchideen und fleischfressende Pflanzen und leistete wichtige Beiträge zur Botanik. Sein offizielles botanisches Autorenkürzel lautet „Darwin“.</p>
 						</div>
 					</div>
 				</div>
 		</div>
-		
+
 	</body>
 </html>

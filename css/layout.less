@@ -19,20 +19,29 @@ html {min-height:101%;}
 	background: @grey;
 	border-bottom-right-radius: @radius;
 	border-top-left-radius: @radius;
+
+	/*heading of a categorie*/
+	h5 {
+		margin: 8px 8px 4px 8px;
+	}
+
+	/*make the subcategories look nice*/
+	ul {
+		padding: 8px 8px 0px 8px;
+	}
+
+	/*subcategories*/
+	li {
+		padding-left: 4px;
+		background: @bg;
+		border-radius: @radius;
+	}
 }
 
-/*heading of a categorie*/
-.category h5 { margin: 8px 8px 4px 8px; }
 
-/*make the subcategories look nice*/
-.category ul { padding: 8px 8px 0px 8px; }
 
-/*subcategories*/
-.category li {
-	padding-left: 4px;
-	background: @bg;
-	border-radius: @radius;
-}
+
+
 
 .word_split span:hover {background: @grey;}
 
@@ -71,62 +80,48 @@ html {min-height:101%;}
 /*bars on the left*/
 .bar{
 	width: 10px;
-	border-radius: @radius; 
+	border-radius: @radius;
 	position: absolute;
 	z-index: 2;
 }
 
-/*background color*/
-.bubble_0 {border-color: @A;}
-.bubble_1 {border-color: @B;}
-.bubble_2 {border-color: @C;}
-.bubble_3 {border-color: @D;}
-
 /*styling the text atoms, when hovering the bars*/
-#text span.hover {
-	padding-top: 0.3em;
-    padding-bottom: 0.2em;
+#text span .hover{
+
+			padding-top: 0.3em;
+		  padding-bottom: 0.2em;
+
+			.top {
+    			border-top-left-radius: @radius;
+    			border-top-right-radius: @radius;
+			}
+
+			.topBottom { border-bottom-right-radius: @radius; }
+
+			.middleTop { border-top-left-radius: @radius; }
+
+			.middleBottom { border-bottom-right-radius: @radius; }
+
+			.bottom {
+		    border-bottom-left-radius: @radius;
+		    border-bottom-right-radius:@radius;
+			}
+
+			.bottomTop { border-top-left-radius:@radius; }
+
+			.single { border-radius:@radius; }
+
+			.singleLeft {
+		    border-top-left-radius:@radius;
+		    border-bottom-left-radius:@radius;
+			}
+
+			.singleRight {
+		    border-top-right-radius:@radius;
+		    border-bottom-right-radius:@radius;
+			}
 }
 
-#text span.hover.top {
-    border-top-left-radius: @radius;
-    border-top-right-radius: @radius;
-}
-
-#text span.hover.topBottom {
-    border-bottom-right-radius: @radius;
-}
-
-#text span.hover.middleTop {
-    border-top-left-radius: @radius;
-}
-
-#text span.hover.middleBottom {
-    border-bottom-right-radius: @radius;
-}
-
-#text span.hover.bottom {
-    border-bottom-left-radius: @radius;
-    border-bottom-right-radius:@radius;
-}
-
-#text span.hover.bottomTop {
-    border-top-left-radius:@radius;
-}
-
-#text span.hover.single {
-    border-radius:@radius;
-}
-
-#text span.hover.singleLeft {
-    border-top-left-radius:@radius;
-    border-bottom-left-radius:@radius;
-}
-
-#text span.hover.singleRight {
-    border-top-right-radius:@radius;
-    border-bottom-right-radius:@radius;
-}
 
 .popup {
 	position: absolute;
@@ -136,11 +131,11 @@ html {min-height:101%;}
 	border-radius: @radius;
 }
 
-.popup div {	
+.popup div {
 	border-left: 8px solid transparent;
 	border-right: 8px solid transparent;
 	padding: 2px 4px 2px 4px;
-	border-bottom: 1px dashed @grey;	
+	border-bottom: 1px dashed @grey;
 }
 
 .popup div.last {
@@ -167,66 +162,68 @@ html {min-height:101%;}
 	background: lighten(@D, @lighter);
 }
 
+/*Border width for bubbles inside the text.*/
+@b: 2px;
+
 /*bordered bubbles inside the text*/
-.bubble{
-	position: absolute;
-	z-index: -1;
-	border-style: solid;
+.bubble {
+	border-style:	solid;
+	position:			absolute;
+	z-index:			-1;
 }
 
-
-.bubble_all {
-	border-width: 2px;
-	border-radius:  @radius;
+.bubble.all {
+	border-width:								@b;
+	border-radius:							@radius;
 }
 
-.bubble_B {
-	border-left-width: 2px;
-	border-bottom-width: 2px;
-	border-right-width: 2px;
-	border-bottom-left-radius: @radius;
+.bubble.top {
+	border-width:								@b @b 0px @b;
+	border-top-left-radius:			@radius;
+	border-top-right-radius:		@radius;
+}
+
+.bubble.right {
+	border-width:								@b @b @b 0px;
+	border-top-right-radius:		@radius;
 	border-bottom-right-radius: @radius;
 }
 
-.bubble_T {
-	border-left-width: 2px;
-	border-top-width: 2px;
-	border-right-width: 2px;
-	border-top-left-radius: @radius;
-	border-top-right-radius: @radius;
-}
-
-.bubble_L {
-	border-left-width: 2px;
-	border-top-width: 2px;
-	border-bottom-width: 2px;
-	border-right-width: 0px;
-	border-top-left-radius: @radius;
-	border-bottom-left-radius: @radius;
-}
-
-.bubble_R {
-	border-right-width: 2px;
-	border-top-width: 2px;
-	border-bottom-width: 2px;
-	border-top-right-radius: @radius;
+.bubble.bottom {
+	border-width:								0px @b @b @b;
+	border-bottom-left-radius:	@radius;
 	border-bottom-right-radius: @radius;
 }
 
-.bubble_cornerTL {
-	border-left-width: 2px;
-	border-top-width: 2px;
-	border-top-left-radius: @radius;
-	border-top-right-radius: @radius;
+.bubble.left {
+	border-width:								@b 0px @b @b;
+	border-top-left-radius:			@radius;
+	border-bottom-left-radius:	@radius;
 }
 
-.bubble_cornerBR {
-	border-right-width: 2px;
-	border-bottom-width: 2px;
-	border-bottom-right-radius: @radius;
+.bubble.cornerTLTR {
+	border-width:								@b 0px 0px @b;
+	border-top-left-radius: 		@radius;
+	border-top-right-radius:		@radius;
 }
 
-.bubble_TB {
-	border-top-width: 2px;
-	border-bottom-width: 2px;
+.bubble.cornerTLBL {
+	border-width:									@b 0px 0px @b;
+	border-top-left-radius: 			@radius;
+	border-bottom-left-radius:		@radius;
 }
+
+.bubble.cornerBR {
+	border-width:									0px @b @b 0px;
+	border-bottom-right-radius: 	@radius;
+}
+
+.bubble.topBottom {
+	border-width: 								@b 0px @b 0px;
+}
+
+	/*background color*/
+	.bubble_0 { border-color: @A; }
+	.bubble_1 { border-color: @B; }
+	.bubble_2 { border-color: @C; }
+	.bubble_3 { border-color: @D; }
