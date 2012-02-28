@@ -41,13 +41,13 @@
 		<!--
 		My own written stuff for concept bars and inline.
 		-->
-		<!--<script type="text/javascript" src="js/barConcept.js"></script>-->
+		<<script type="text/javascript" src="js/barConcept.js"></script>
 		<script type="text/javascript" src="js/borderConcept.js"></script>
 
 		<!--
 		JavaSript which is used for interaction on the webpage.
 		-->
-		<script type="text/javascript" src="js/contextMenu.js"></script>
+		<script type="text/javascript" src="js/menu.js"></script>
 		<script type="text/javascript" src="js/main.js"></script>
 		<script type="text/javascript" src="js/base.js"></script>
 
@@ -63,60 +63,6 @@
 		<link rel="stylesheet" type="text/css" href="css/base.css" />
 		<link rel="stylesheet" type="text/css" href="css/layout.css" />
 		<link rel="stylesheet" type="text/css" href="css/skeleton.css" />
-
-		<script type="text/javascript">
-
-			var categories = [{
-				"name":"Category 1", "subs":["subcategorie 1", "subcat 2", "subcategorie 3"]},{
-				"name":"Category 2", "subs":["subcategorie 1", "subcategorie 2", "subcategorie 3", "subcategorie 4", "subcategorie 5" ]},{
-				"name":"Category 3", "subs":["subcategorie 1", "subcategorie 2"]},{
-				"name":"Category 4", "subs":["subcategorie 1", "subcategorie 2", "subcategorie 3", "subcategorie 4"]}
-			];
-
-			var savedClick;
-
-			$(document).ready(function(){
-
-				// keep the plain text version (without spans)
-				textContent = $("#text").clone();
-
-				// load menu at the top
-				loadCategoryMenu(categories);
-
-				// load the context menu, but hide it (it becomes visible when annotating the text (mouseup event)
-				loadContextMenu(categories);
-				effectsOnMenu();
-
-				$("#text").mousedown(function(){
-					plainText();
-				});
-
-				$("#text").mouseup(function(e){
-
-					// save the click
-					var text = document.getSelection().toString();
-					var selectedText = $("#text").selection();
-
-					savedClick = {
-						"start":selectedText.start,
-						"end":selectedText.end
-					};
-
-					// adjust the selection (snap to whole words)
-					savedClick = getRealSelection(text);
-
-					// show it to the user
-					$("#text").selection(savedClick["start"],
-						savedClick["end"]);
-
-					showMenu(e);
-				});
-
-				resetAppAfterAnnotation();
-			});
-
-
-		</script>
 
 	</head>
 
