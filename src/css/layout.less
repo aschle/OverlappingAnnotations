@@ -5,11 +5,11 @@
 @D: #0A64A4;
 
 /* Backgroundcolor for things */
-@grey: #DDD;
-@bg: #FFF;
+@grey: 		#DDD;
+@bg: 			#FFF;
 @lighter: 30%;
 
-@radius: 7px;
+@radius: 	7px;
 
 /* to always have a scrollbar on the right*/
 html {min-height:101%;}
@@ -37,11 +37,6 @@ html {min-height:101%;}
 		border-radius: @radius;
 	}
 }
-
-
-
-
-
 
 .word_split span:hover {background: @grey;}
 
@@ -78,7 +73,7 @@ html {min-height:101%;}
 .light_3 {background: lighten(@D, @lighter) !important;}
 
 /*bars on the left*/
-.bar{
+.bar {
 	width: 10px;
 	border-radius: @radius;
 	position: absolute;
@@ -86,40 +81,39 @@ html {min-height:101%;}
 }
 
 /*styling the text atoms, when hovering the bars*/
-#text span .hover{
+#text span .hover {
+	padding-top: 0.3em;
+	padding-bottom: 0.2em;
+}
 
-			padding-top: 0.3em;
-		  padding-bottom: 0.2em;
+.hover.top {
+	border-top-left-radius: @radius;
+	border-top-right-radius: @radius;
+}
 
-			.top {
-    			border-top-left-radius: @radius;
-    			border-top-right-radius: @radius;
-			}
+.hover.topBottom { border-bottom-right-radius: @radius; }
 
-			.topBottom { border-bottom-right-radius: @radius; }
+.hover.middleTop { border-top-left-radius: @radius; }
 
-			.middleTop { border-top-left-radius: @radius; }
+.hover.middleBottom { border-bottom-right-radius: @radius; }
 
-			.middleBottom { border-bottom-right-radius: @radius; }
+.hover.bottom {
+  border-bottom-left-radius: @radius;
+  border-bottom-right-radius:@radius;
+}
 
-			.bottom {
-		    border-bottom-left-radius: @radius;
-		    border-bottom-right-radius:@radius;
-			}
+.hover.bottomTop { border-top-left-radius:@radius; }
 
-			.bottomTop { border-top-left-radius:@radius; }
+.hover.single { border-radius:@radius; }
 
-			.single { border-radius:@radius; }
+.hover.singleLeft {
+  border-top-left-radius:@radius;
+  border-bottom-left-radius:@radius;
+}
 
-			.singleLeft {
-		    border-top-left-radius:@radius;
-		    border-bottom-left-radius:@radius;
-			}
-
-			.singleRight {
-		    border-top-right-radius:@radius;
-		    border-bottom-right-radius:@radius;
-			}
+.hover.singleRight {
+  border-top-right-radius:@radius;
+  border-bottom-right-radius:@radius;
 }
 
 
@@ -222,8 +216,13 @@ html {min-height:101%;}
 	border-width: 								@b 0px @b 0px;
 }
 
-	/*background color*/
-	.bubble_0 { border-color: @A; }
-	.bubble_1 { border-color: @B; }
-	.bubble_2 { border-color: @C; }
-	.bubble_3 { border-color: @D; }
+/*background color*/
+.bubble_0 { border-color: @A; }
+.bubble_1 { border-color: @B; }
+.bubble_2 { border-color: @C; }
+.bubble_3 { border-color: @D; }
+
+.activeButton {
+	box-shadow: 0px 0px 12px @radius #ccc !important;
+}
+
