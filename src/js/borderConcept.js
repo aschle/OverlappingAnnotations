@@ -1,7 +1,10 @@
-var levelList = [];
-var atomStartEndList = [];
+var Overlap = window.Overlap = Overlap || {};
+Overlap.border = {};
 
-function reset(){
+Overlap.border.levelList = [];
+Overlap.border.atomStartEndList = [];
+
+Overlap.border.reset = function(){
 
 	// before the bars are rendered, the old ones have to be removed
 	$(".bubble").remove();
@@ -12,7 +15,7 @@ function reset(){
 }
 
 /* It */
-function calcAtomPositions(){
+Overlap.border.calcAtomPositions = function(){
 
 	for(atom in atomList){
 
@@ -81,7 +84,7 @@ function calcAtomPositions(){
 	}
 }
 
-function render(){
+Overlap.border.render = function(){
 
 	calcAtomPositions();
 
@@ -93,7 +96,7 @@ function render(){
 	console.log(levelList);
 }
 
-function insert(atom, level){
+Overlap.border.insert = function(atom, level){
 
 	// atom is an object and level is an index
 
@@ -200,7 +203,7 @@ function insert(atom, level){
 	} // *** end: find a fitting level
 }
 
-function fitsInLevel(atom, level){
+Overlap.border.fitsInLevel = function(atom, level){
 
 	var aStart = atom["start"];
 	var aEnd = atom["end"];
@@ -217,7 +220,7 @@ function fitsInLevel(atom, level){
 	return true;
 }
 
-function display(){
+Overlap.border.display = function(){
 
 	var min = $("#text").position().left;
 	var max = $("#text").position().left + $("#text").width();
@@ -418,7 +421,7 @@ function display(){
 	}
 }
 
-function getDisplayXBar (x){
+Overlap.border.getDisplayXBar = function(x){
 
 	var text = $("#text");
 	var container = $(".container");
@@ -430,7 +433,7 @@ function getDisplayXBar (x){
 	return containerLeft + x;
 }
 
-function addBubble(id, subId, top, left, height, width,
+Overlap.border.addBubble = function(id, subId, top, left, height, width,
 						offset, category, bubbleClass){
 
 	if(subId == null){

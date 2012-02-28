@@ -1,24 +1,27 @@
-var columnList = [];
+var Overlap = window.Overlap = Overlap || {};
+Overlap.bar = {};
+
+Overlap.bar.columnList = [];
 
 /*
 The reset function removes all existing Bars, also all needed
 global variables need to be reset, because they are going to be
 recalculated.
 */
-function reset(){
+Overlap.bar.reset = function(){
 
 	// before the bars are rendered, the old ones have to be removed
 	$(".bar").remove();
 
 	// all calculated global variables have to be reset
-	columnList = [];
+	Overlap.bar.columnList = [];
 }
 
 /*
 Helper function for render(). Adds a new colum to columnList.
 */
-function addNewColumnToColumnList(id, column, barTop, barHeight){
-	columnList.push([{
+Overlap.bar.addNewColumnToColumnList = function(id, column, barTop, barHeight){
+	Overlap.bar.columnList.push([{
 		"id":Number(id),
 		"barTop":Number(barTop),
 		"barHeight":Number(barHeight),
@@ -29,8 +32,8 @@ function addNewColumnToColumnList(id, column, barTop, barHeight){
 /*
 Helper function for render(). Adds a new bar to an existing column.
 */
-function addNewBarToColumn(id, column, barTop, barHeight){
-	columnList[column].push({
+Overlap.bar.addNewBarToColumn = function(id, column, barTop, barHeight){
+	Overlap.bar.columnList[column].push({
 		"id":Number(id),
 		"barTop":Number(barTop),
 		"barHeight":Number(barHeight),
@@ -42,16 +45,16 @@ function addNewBarToColumn(id, column, barTop, barHeight){
 Helper function for render().
 Tests if an atom fits into a column.
 */
-function fitsInColumn(atom, column, currentAtomTop, currentAtomHeight){
+Overlap.bar.fitsInColumn = function(atom, column, currentAtomTop, currentAtomHeight){
 
 	// that is the atom which should fit into the active column
 	var currentAtomEnd = currentAtomTop + currentAtomHeight;
 
-	for (x in columnList[column]){
+	for (x in Overlap.bar.columnList[column]){
 
 		// that is the iterating bar in the columnList
-		var barInColumnTop = columnList[column][x]["barTop"];
-		var barInColumnEnd = barInColumnTop + columnList[column][x]["barHeight"];
+		var barInColumnTop = Overlap.bar.columnList[column][x]["barTop"];
+		var barInColumnEnd = barInColumnTop + Overlap.bar.columnList[column][x]["barHeight"];
 
 		if (currentAtomEnd < barInColumnTop || currentAtomTop > barInColumnEnd){
 			console.log("No Overlap!");
@@ -66,13 +69,13 @@ function fitsInColumn(atom, column, currentAtomTop, currentAtomHeight){
 The render function iterates all atoms, and recalculates the
 position of the corresponding bar and its column, also its hovering box.
 */
-function render(){
+Overlap.bar.render = function(){
 
 	// *** calculating the bars
-	for(atom in atomList){
+	for(atom in Overlap.atomList){
 
-		var start = atomList[atom]["start"];
-		var end = atomList[atom]["end"];
+		var start = Overlap.atomList[atom]["start"];
+		var end = Overlap.atomList[atom]["end"];
 
 		// remember the original content of the textFrame,
 		// to easyly remove the span(s) later on
@@ -106,15 +109,15 @@ function render(){
 		var added = false;
 
 		// if it is the first one
-		if (columnList.length == 0){
-			addNewColumnToColumnList(atom, 0, barTop, barHeight);
+		if (Overlap.bar.columnList.length == 0){
+			Overlap.bar.addNewColumnToColumnList(atom, 0, barTop, barHeight);
 		}
 		else {
 
-			for(column in columnList){
+			for(column in Overlap.bar.columnList){
 
-				if(fitsInColumn(atom, column, barTop, barHeight) == true){
-					addNewBarToColumn(atom, column, barTop, barHeight);
+				if(Overlap.bar.fitsInColumn(atom, column, barTop, barHeight) == true){
+					Overlap.bar.addNewBarToColumn(atom, column, barTop, barHeight);
 					added = true;
 					break;
 				}
@@ -122,20 +125,20 @@ function render(){
 
 			// open a new column
 			if (added == false){
-				addNewColumnToColumnList(atom, Number(column) + 1, barTop, barHeight);
+				Overlap.bar.addNewColumnToColumnList(atom, Number(column) + 1, barTop, barHeight);
 			}
 		}
 	}
 }
 
-function display(){
+Overlap.bar.display = function(){
 
-	for (i in columnList){
-		for (j in columnList[i]){
+	for (i in Overlap.bar.columnList){
+		for (j in Overlap.bar.columnList[i]){
 
-			var bar = columnList[i][j];
+			var bar = Overlap.bar.columnList[i][j];
 
-			var barLeft = getDisplayXBar(bar["left"]);
+			var barLeft = Overlap.bar.getDisplayXBar(bar["left"]);
 			var offset = (Number(bar["column"])*5) + ((Number(bar["column"])+1)*10);
 
 			var cssTop = bar["barTop"];
@@ -146,7 +149,7 @@ function display(){
 
 			$("body").append('<div class="bar" id="barID_'+id+'">&nbsp;</div>');
 			$("#barID_"+id).css({"top":cssTop, "left":cssLeft, "height":cssHeight});
-			$("#barID_"+id).addClass("bar_"+atomList[id]["category"]);
+			$("#barID_"+id).addClass("bar_"+Overlap.atomList[id]["category"]);
 		}
 	}
 
@@ -155,20 +158,17 @@ function display(){
 	$("div.bar").hover(
 		function () {
 			$("#text").html(originalContent.html());
-			wrapAllLines($(this));
+			Overlap.bar.wrapAllLines($(this));
 		},
 
 		function () {
 			var content = $("#text");
 			content.html(originalContent.html());
-			$(".word_split").lettering('words');
 		}
 	);
 }
 
-/*
- * */
-function applyWrapCase(spanLines, category){
+Overlap.bar.applyWrapCase = function(spanLines, category){
 
 	var len = spanLines.length;
 	var start = spanLines.first().position().left;
@@ -253,9 +253,7 @@ function applyWrapCase(spanLines, category){
 	}
 }
 
-/*
- * */
-function wrapAllLines(bar){
+Overlap.bar.wrapAllLines = function(bar){
 	var id = bar.attr("id").split("_")[1];
 	var atom = atomList[id];
 	$("#text").selection(atom["start"], atom["end"]);
@@ -264,7 +262,7 @@ function wrapAllLines(bar){
 	applyWrapCase($("span[class^='wrap_line_']"), atom["category"]);
 }
 
-function getDisplayXBar (x){
+Overlap.bar.getDisplayXBar = function(x){
 
 	var text = $("#text");
 	var container = $(".container");
@@ -276,7 +274,7 @@ function getDisplayXBar (x){
 	return containerLeft + textLeft;
 }
 
-function getDisplayXBox (x){
+Overlap.bar.getDisplayXBox = function(x){
 
 	var text = $("#text");
 	var container = $(".container");
