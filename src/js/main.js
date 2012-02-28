@@ -18,8 +18,15 @@ $(document).ready(function() {
 
 	Overlap.savedClick		= null;
 	Overlap.textContent		= $("#text").clone();
-	Overlap.activeConcept = Overlap.bar;
+
+	Overlap.Atoms 				= new Overlap.Atoms();
+	Overlap.Bar 					= new Overlap.Bar();
+	Overlap.Border 				= new Overlap.Border();
 	Overlap.Menu 					= new Overlap.Menu(Overlap.categories);
+	Overlap.activeConcept = Overlap.Bar;
+
+	$("#barViewButton").addClass("activeButton");
+
 
 	// *** ALL USER INTERACTION (Clicking, Buttons, usw.)
 
@@ -42,7 +49,7 @@ $(document).ready(function() {
 		};
 
 		// adjust the selection (snap to whole words)
-		Overlap.savedClick = Overlap.helper.getRealSelection(text);
+		Overlap.savedClick = Overlap.Helper.getRealSelection(text);
 
 		// show the selected text to the user
 		$("#text").selection(Overlap.savedClick["start"],
@@ -55,10 +62,18 @@ $(document).ready(function() {
 
 	// Concept buttons
 	$("#barViewButton").click(function(){
+		$("#borderViewButton").removeClass("activeButton");
+		Overlap.activeConcept.reset();
 		Overlap.activeConcept = Overlap.Bar;
+		Overlap.activeConcept.run();
+		$(this).addClass("activeButton");
 	});
 
 	$("#borderViewButton").click(function(){
+		$("#barViewButton").removeClass("activeButton");
+		Overlap.activeConcept.reset();
 		Overlap.activeConcept = Overlap.Border;
+		Overlap.activeConcept.run();
+		$(this).addClass("activeButton");
 	});
 });
