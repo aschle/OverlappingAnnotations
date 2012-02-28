@@ -1,22 +1,15 @@
-function resetAppAfterAnnotation(){
-	// hover-effect for single words 
-	$(".word_split").lettering('words');
-}
+var Overlap = window.Overlap = Overlap || {};
+Overlap.helper = {};
+Overlap.helper.textContent;
 
-var textContent;
-function plainText(){
-	$("#text").html(textContent.html());
-}
-
-/* Gets the real selection (start, end), by comparing the user selection and 
+/* Gets the real selection (start, end), by comparing the user selection and
 the span wrapped text. It calculates the start and end offset.*/
-function getRealSelection(text){
+Overlap.helper.getRealSelection = function(text){
 
-	plainText();
-	$("#text").selection(savedClick["start"], savedClick["end"]);
+	$("#text").selection(Overlap.savedClick["start"],
+		Overlap.savedClick["end"]);
+
 	var spans = $("#text").wrapSelection();
-
-	console.log(spans);
 
 	var spanText = "";
 
@@ -27,27 +20,21 @@ function getRealSelection(text){
 
 	var startOffset = spanText.indexOf(text);
 	var endOffset = spanText.length - startOffset - text.length - 2;
-	
-	return {"start": savedClick["start"] - startOffset, "end": savedClick["end"] + endOffset};
+
+	Overlap.helper.removeSpans();
+
+	return {"start": Overlap.savedClick["start"] - startOffset,
+		"end": Overlap.savedClick["end"] + endOffset};
 }
 
-function loadCategoryMenu(){
-	// load the categories inside the #menu
-	for(categoryId in categories){									
-		var contentString = "<h5>" + categories[categoryId]["name"] + "</h5>\n<ul>\n";		
-		for(subId in categories[categoryId]["subs"]){
-			contentString += "<li>" + categories[categoryId]["subs"][subId] +"</li>\n";
-		}
-		contentString += "</ul";
-		$("#c_"+categoryId).html(contentString);
-	}
+Overlap.helper.removeSpans = function(){
+	$("#text").html(Overlap.helper.textContent.html());
 }
 
-var atomList = [];
 
-function addAtomToAtomList(category, subcategory, start, end, id){
-			
-	atomList.push({
+Overlap.helper.addAtomToAtomList = function(category, subcategory, start, end, id){
+
+	Overlap.atomList.push({
 		"start":Number(start),
 		"end":Number(end),
 		"category":Number(category),
@@ -56,21 +43,18 @@ function addAtomToAtomList(category, subcategory, start, end, id){
 		});
 }
 
+Overlap.helper.minMaxCase = function(start, end){
 
-/*
- * */
-function minMaxCase (start, end){
-	
-	var min = $("#text").position().left; 
+	var min = $("#text").position().left;
 	var max = $("#text").position().left + $("#text").width();
-		
+
 	// Case A
 	//  __
 	// |__|
 	if (start == min && end == max){
 		return 'A';
 	}
-	
+
 	// Case B:
 	//	___
 	// |  _|
@@ -78,7 +62,7 @@ function minMaxCase (start, end){
 	if(start == min && end < max){
 		return 'B';
 	}
-	
+
 	// Case C:
 	//   __
 	// _|  |
@@ -86,7 +70,7 @@ function minMaxCase (start, end){
 	if(start > min && end == max){
 		return 'C';
 	}
-	
+
 	// Case D:
 	//    ___
 	//  _|  _|
