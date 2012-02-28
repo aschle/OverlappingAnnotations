@@ -78,12 +78,13 @@ Overlap.Menu = function (categories) {
 
       var idArray = $(this).attr("id").split("_");
 
-      Overlap.atoms.addAtom(
-        idArray[1],
-        idArray[2],
-        Overlap.savedClick["start"],
-        Overlap.savedClick["end"],
-        Overlap.atoms.atomList.length);
+      Overlap.Atoms.addAtom(
+          idArray[1],
+          idArray[2],
+          Overlap.savedClick["start"],
+          Overlap.savedClick["end"],
+          Overlap.Atoms.getLength()
+        );
 
       Overlap.activeConcept.run();
 
