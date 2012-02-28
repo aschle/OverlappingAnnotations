@@ -1,10 +1,9 @@
 var Overlap = window.Overlap = Overlap || {};
-Overlap.helper = {};
-Overlap.helper.textContent;
+Overlap.Helper = {};
 
 /* Gets the real selection (start, end), by comparing the user selection and
 the span wrapped text. It calculates the start and end offset.*/
-Overlap.helper.getRealSelection = function(text){
+Overlap.Helper.getRealSelection = function(text){
 
 	$("#text").selection(Overlap.savedClick["start"],
 		Overlap.savedClick["end"]);
@@ -21,29 +20,18 @@ Overlap.helper.getRealSelection = function(text){
 	var startOffset = spanText.indexOf(text);
 	var endOffset = spanText.length - startOffset - text.length - 2;
 
-	Overlap.helper.removeSpans();
+	Overlap.Helper.removeSpans();
 
 	return {"start": Overlap.savedClick["start"] - startOffset,
 		"end": Overlap.savedClick["end"] + endOffset};
 }
 
-Overlap.helper.removeSpans = function(){
-	$("#text").html(Overlap.helper.textContent.html());
+Overlap.Helper.removeSpans = function(){
+	$("#text").html(Overlap.textContent.html());
 }
 
-
-Overlap.helper.addAtomToAtomList = function(category, subcategory, start, end, id){
-
-	Overlap.atomList.push({
-		"start":Number(start),
-		"end":Number(end),
-		"category":Number(category),
-		"subcategory":Number(subcategory),
-		"id":Number(id)
-		});
-}
-
-Overlap.helper.minMaxCase = function(start, end){
+/* start and end are the X coordinates*/
+Overlap.Helper.minMaxCase = function(start, end){
 
 	var min = $("#text").position().left;
 	var max = $("#text").position().left + $("#text").width();
