@@ -17,26 +17,30 @@ Overlap.Bar = function (){
 	recalculated.	*/
 	this.reset = function(){
 		$(".bar").remove();
+		$("div[id^='overlay_']").remove();
+
 		columnList = [];
 	};
 
 	/* Helper function for render(). Adds a new colum to columnList. */
-	var addNewColumnToColumnList = function(id, column, barTop, barHeight){
+	var addNewColumnToColumnList = function(id, column, barTop, barHeight, left){
 		columnList.push([{
 			"id"				: Number(id),
 			"barTop"		: Number(barTop),
 			"barHeight"	: Number(barHeight),
-			"column"		: Number(column)
+			"column"		: Number(column),
+			"left"			: Number(left)
 			}]);
 	};
 
 	/* Helper function for render(). Adds a new bar to an existing column. */
-	var addNewBarToColumn = function(id, column, barTop, barHeight){
+	var addNewBarToColumn = function(id, column, barTop, barHeight, left){
 		columnList[column].push({
 			"id"				: Number(id),
 			"barTop"		: Number(barTop),
 			"barHeight"	: Number(barHeight),
-			"column"		: Number(column)
+			"column"		: Number(column),
+			"left"			: Number(left)
 			});
 	};
 
@@ -80,6 +84,7 @@ Overlap.Bar = function (){
 
 			var barTop 		= span.position().top;
 			var barHeight = span.height();
+			var left 			= span.position().left; // for displaying the overlay
 
 			// different calcualtion if selection was across
 			// multiple elements, so we have more that one span
@@ -91,21 +96,22 @@ Overlap.Bar = function (){
 			}
 
 			// remove the span(s) -> reset the text
-			Overlap.Helper.removeSpans();
+			Overlap.Helper.removeSpans(atom, barTop, barHeight, left);
 
-			// *** Adding the bar to the columnList
-			var added = false;
+			// insertFirstFit(columnList);
+
+var added = false;
 
 			// if it is the first one
 			if (columnList.length == 0){
-				addNewColumnToColumnList(atom, 0, barTop, barHeight);
+				addNewColumnToColumnList(atom, 0, barTop, barHeight, left);
 			}
 			else {
 
 				for(column in columnList){
 
 					if(fitsInColumn(atom, column, barTop, barHeight) == true){
-						addNewBarToColumn(atom, column, barTop, barHeight);
+						addNewBarToColumn(atom, column, barTop, barHeight, left);
 						added = true;
 						break;
 					}
@@ -113,11 +119,40 @@ Overlap.Bar = function (){
 
 				// open a new column
 				if (added == false){
-					addNewColumnToColumnList(atom, Number(column) + 1, barTop, barHeight);
+					addNewColumnToColumnList(atom, Number(column) + 1, barTop, barHeight,
+						left);
 				}
 			}
+			// TODO: weitermachen!!!
 		}
 	};
+
+	var insertFirstFit = function(atom, barTop, barHeight, left){
+		// *** Adding the bar to the columnList
+			var added = false;
+
+			// if it is the first one
+			if (columnList.length == 0){
+				addNewColumnToColumnList(atom, 0, barTop, barHeight, left);
+			}
+			else {
+
+				for(column in columnList){
+
+					if(fitsInColumn(atom, column, barTop, barHeight) == true){
+						addNewBarToColumn(atom, column, barTop, barHeight, left);
+						added = true;
+						break;
+					}
+				}
+
+				// open a new column
+				if (added == false){
+					addNewColumnToColumnList(atom, Number(column) + 1, barTop, barHeight,
+						left);
+				}
+			}
+	}
 
 	var display = function(){
 
@@ -133,32 +168,85 @@ Overlap.Bar = function (){
 				var cssLeft 	= barLeft - offset - 18;
 				var cssHeight = bar["barHeight"];
 				var id 				= bar["id"];
+				var left 			= bar["left"];
 
 				$(".container").append(
 					'<div class="bar" id="barID_' + id + '">&nbsp;</div>'
 					);
 
-				$("#barID_"+id).css({
+				$("#barID_" + id).css({
 					"top"		: cssTop,
 					"left"	: cssLeft,
 					"height": cssHeight
 				});
 
-				$("#barID_"+id).addClass("bar_"+ atomList[id]["category"]);
+				$("#barID_" + id).addClass("bar_" + atomList[id]["category"]);
+
+				$("#barID_" + id).data("id", id);
+				$("#barID_" + id).data("category", atomList[id]["category"]);
+				$("#barID_" + id).data("subCategory", atomList[id]["subcategory"]);
+
+				addOverlay(id);
+
 			}
 		}
 
 		$("div.bar").hover(
 			function () {
-				Overlap.Helper.removeSpans();
-				wrapAllLines($(this));
+				hoverInBar($(this));
 			},
 
 			function () {
-				Overlap.Helper.removeSpans();
+				hoverOutBar($(this));
 			}
 		);
 	};
+
+	var addOverlay = function(id){
+		// add overlay for subcategories but hide it
+		var cat 		= Overlap.categories[atomList[id]["category"]]["name"];
+		var subcat 	= Overlap.categories[atomList[id]["category"]]["subs"][atomList[id]["subcategory"]];
+
+		var data 		= "<h5 style='display:inline'> " + cat + " </h5> ▶ " + subcat;
+
+		$(".container").append(
+			'<div class="popup shadow" id="overlay_' + id + '">' + data + '</div>'
+			);
+		var overlay = $("#overlay_" + id);
+		overlay.css({"display"	: "none"});
+	}
+
+	var hoverInBar = function(bar){
+
+		var category  = bar.data("category");
+		var id 				= bar.data("id");
+
+		wrapAllLines(id);
+
+		var overlay = $("#overlay_" + id);
+		var left 		= $("span[class^='wrap_line_1']").first().position().left;
+		var top 		= $("span[class^='wrap_line_1']").first().position().top;
+
+		overlay.css({
+			"top"			: top - overlay.outerHeight() - 5,
+			"left"		: left
+		});
+
+		overlay.fadeIn(200);
+
+		bar.addClass("bubble_" + category);
+
+	}
+
+	var hoverOutBar = function(bar){
+
+		var category  = bar.data("category");
+		var id 				= bar.data("id");
+
+		bar.removeClass("bubble_" + category);
+		Overlap.Helper.removeSpans();
+		$("#overlay_" + id).fadeOut(200);
+	}
 
 	var applyWrapCase = function(spanLines, category){
 
@@ -189,7 +277,6 @@ Overlap.Bar = function (){
 		var last = null;
 
 		spanLines.each(function(index){
-			console.log($(this));
 
 			var classString = $(this).attr("class").split(" ")[0];
 
@@ -202,7 +289,7 @@ Overlap.Bar = function (){
 
 				last.css("padding-right", offsetX);
 				last.css("padding-bottom", offsetY);
-				last.css("padding-bottom", "+="+1);
+				last.css("padding-bottom", "+="+3);
 			}
 
 			last = $(this);
@@ -244,9 +331,8 @@ Overlap.Bar = function (){
 		}
 	};
 
-	var wrapAllLines = function(bar){
+	var wrapAllLines = function(id){
 
-		var id 		= bar.attr("id").split("_")[1];
 		var atom 	= atomList[id];
 
 		$("#text").selection(atom["start"], atom["end"]);

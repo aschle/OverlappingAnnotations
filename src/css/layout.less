@@ -78,12 +78,14 @@ html {min-height:101%;}
 	border-radius: @radius;
 	position: absolute;
 	z-index: 2;
+	border: 1px solid #FFF;
 }
 
 /*styling the text atoms, when hovering the bars*/
 #text span .hover {
-	padding-top: 0.3em;
-	padding-bottom: 0.2em;
+	padding-top: 2px;
+	padding-bottom: 3px;
+  -webkit-transition: background 0.2s;
 }
 
 .hover.top {
@@ -123,6 +125,10 @@ html {min-height:101%;}
 	background: @bg;
 	border: 3px solid @grey;
 	border-radius: @radius;
+}
+
+.shadow {
+	box-shadow: 0px -2px 10px @radius rgba(255,255,255,0.7) !important;
 }
 
 .popup div {
@@ -217,10 +223,10 @@ html {min-height:101%;}
 }
 
 /*background color*/
-.bubble_0 { border-color: @A; }
-.bubble_1 { border-color: @B; }
-.bubble_2 { border-color: @C; }
-.bubble_3 { border-color: @D; }
+.bubble_0 { border-color: @A !important; }
+.bubble_1 { border-color: @B !important; }
+.bubble_2 { border-color: @C !important; }
+.bubble_3 { border-color: @D !important; }
 
 .activeButton {
 	box-shadow: 0px 0px 12px @radius #ccc !important;
