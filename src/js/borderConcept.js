@@ -61,7 +61,7 @@ Overlap.Border = function (){
 
 			}else {
 				// Case 1: 2 lines
-				//		  ___
+				//		    ___
 				// 	___	 |___
 				//  ___|
 				//

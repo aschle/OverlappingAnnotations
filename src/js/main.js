@@ -76,4 +76,10 @@ $(document).ready(function() {
 		Overlap.activeConcept.run();
 		$(this).addClass("activeButton");
 	});
+
+	Overlap.textX = 250; 
+	// Does not work: $("#text").position().left;
+	Overlap.textY	= $("#text").position().top;
+
+	console.log(Overlap.textX);
 });
