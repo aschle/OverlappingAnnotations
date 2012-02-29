@@ -1,3 +1,5 @@
+@import "elements.less";
+
 /* Colores for categories */
 @A: #FF9000;
 @B: #A101A6;
@@ -67,10 +69,10 @@ html {min-height:101%;}
 .bar_3 {background: @D;}
 
 /*hovering the bars, showing the textatoms*/
-.light_0 {background: lighten(@A, @lighter) !important;}
-.light_1 {background: lighten(@B, @lighter) !important;}
-.light_2 {background: lighten(@C, @lighter) !important;}
-.light_3 {background: lighten(@D, @lighter) !important;}
+.light_0 {background: hsla(hue(@A), saturation(@A), lightness(@A), 0.35) !important;}
+.light_1 {background: hsla(hue(@B), saturation(@B), lightness(@B), 0.35) !important;}
+.light_2 {background: hsla(hue(@C), saturation(@C), lightness(@C), 0.35) !important;}
+.light_3 {background: hsla(hue(@D), saturation(@D), lightness(@D), 0.35) !important;}
 
 /*bars on the left*/
 .bar {
