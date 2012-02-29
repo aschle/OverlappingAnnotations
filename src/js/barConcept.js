@@ -28,7 +28,7 @@ Overlap.Bar = function (){
 
 	/* Uses the atom list to calculate the position of each bar.*/
 	var letterToPixelPosition = function(){
-		
+
 		for(atom in atomList){
 
 			// get the selection within the text
@@ -56,13 +56,13 @@ Overlap.Bar = function (){
 			atomStartEndList.push({
 				"startY"	: barTop,
 				"endY"		: barTop + barHeight,
-				"height"	: barHeight	
+				"height"	: barHeight
 			});
 		}
 	};
 
 	// *** calculating the columns
-	var render = function(){	
+	var render = function(){
 		for(index in atomStartEndList){
 			insertBySizeASC(index, 0);
 		}
@@ -112,13 +112,31 @@ Overlap.Bar = function (){
 					var atomIdHeight 			= atomStartEndList[atomId].height;
 					var overlapAtomHeight	= atomStartEndList[id].height;
 
-					if( atomIdHeight >= overlapAtomHeight){
-						insertBySizeASC(atomId, columnId + 1);
-					} else {
+					if( atomIdHeight > overlapAtomHeight) {
+							// bigger one moves further
+							insertBySizeASC(atomId, columnId + 1);
 
+						} else {
+
+						// if same size (order according apperiance in text)
+						if( atomIdHeight == overlapAtomHeight) {
+
+							if( atomList[atomId].start > atomList[id].start ) {
+
+									// move the one with id away
+									var removedItem = columnList[columnId].splice(index, 1);
+									columnList[columnId].push(atomId);
+									insertBySizeASC(removedItem[0], columnId + 1);
+
+							} else {
+									insertBySizeASC(atomId, columnId + 1);
+							}
+
+						} else {
 							var removedItem = columnList[columnId].splice(index, 1);
 							columnList[columnId].push(atomId);
-							insertBySizeASC(removedItem[0], columnId + 1);	
+							insertBySizeASC(removedItem[0], columnId + 1);
+						}
 					}
 				}
 			}
@@ -197,7 +215,7 @@ Overlap.Bar = function (){
 
 	var addOverlay = function(id){
 		// add overlay for subcategories but hide i
-		
+
 		var atom 		= atomList[id];
 		var cat 		= Overlap.categories[atom.category].name;
 		var subcat 	= Overlap.categories[atom.category].subs[atom.subcategory];
