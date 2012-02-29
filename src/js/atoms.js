@@ -24,4 +24,8 @@ Overlap.Atoms = function(){
 		return atomList.length;
 	};
 
+	this.getAtomWithId = function(id){
+		return atomList[id];
+	}
+
 };

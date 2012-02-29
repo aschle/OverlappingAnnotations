@@ -1,6 +1,5 @@
 var Overlap = window.Overlap = Overlap || {};
 
-
 Overlap.Border = function (){
 
 	var levelList 				= [];
@@ -9,6 +8,7 @@ Overlap.Border = function (){
 
 	this.run = function(){
 		this.reset();
+		letterToPixelPosition();
 		render();
 		display();
 	}
@@ -21,11 +21,10 @@ Overlap.Border = function (){
 		atomStartEndList	= [];
 	}
 
-	var calcAtomPositions = function(){
+	var letterToPixelPosition = function(){
 
 		for(atom in atomList){
 
-			// note, almost same as in wrapAllLines(bar)
 			$("#text").selection(atomList[atom]["start"], atomList[atom]["end"]);
 
 			var spans = $("#text").wrapSelection({
@@ -41,7 +40,6 @@ Overlap.Border = function (){
 				$(el).text(text);
 			});
 
-			// NOTE: similar to applyWrapCase(spanLines, category)
 			var len 		= spanLines.length;
 			var startX 	= spanLines.first().position().left;
 			var startY 	= spanLines.first().position().top;
@@ -91,8 +89,6 @@ Overlap.Border = function (){
 	}
 
 	var render = function(){
-
-		calcAtomPositions();
 
 		// *** calculating the level
 		for(atom in atomList){

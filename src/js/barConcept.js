@@ -6,6 +6,8 @@ Overlap.Bar = function (){
 	var atomStartEndList 	= [];
 	var columnList 				= [];
 
+	var overlay 					= null;
+
 	/* Main method */
 	this.run = function(){
 		this.reset();
@@ -198,7 +200,6 @@ Overlap.Bar = function (){
 				$("#barID_" + barId).data("category", atomList[barId].category);
 				$("#barID_" + barId).data("subCategory", atomList[barId].subcategory);
 
-				addOverlay(barId);
 			}
 		}
 
@@ -213,21 +214,7 @@ Overlap.Bar = function (){
 		);
 	};
 
-	var addOverlay = function(id){
-		// add overlay for subcategories but hide i
 
-		var atom 		= atomList[id];
-		var cat 		= Overlap.categories[atom.category].name;
-		var subcat 	= Overlap.categories[atom.category].subs[atom.subcategory];
-
-		var data 		= "<h5 style='display:inline'> " + cat + " </h5> ▶ " + subcat;
-
-		$("body").append(
-			'<div class="popup shadow" id="overlay_' + id + '">' + data + '</div>'
-			);
-
-		$("#overlay_" + id).css({"display"	: "none"});
-	}
 
 	var hoverInBar = function(bar){
 
@@ -235,20 +222,14 @@ Overlap.Bar = function (){
 		var id 				= bar.data("id");
 
 		wrapAllLines(id);
-
-		var overlay = $("#overlay_" + id);
-		var left 		= $("span[class^='wrap_line_1']").first().position().left + $(".container").position().left;
-		var top 		= $("span[class^='wrap_line_1']").first().position().top;
-
-		overlay.css({
-			"top"			: top - overlay.outerHeight() - 5,
-			"left"		: left
-		});
-
-		overlay.fadeIn(200);
-
 		bar.addClass("bubble_" + category);
 
+		var left 	= $("span[class^='wrap_line_1']").first().position().left
+									+ $(".container").position().left;
+		var top 	= $("span[class^='wrap_line_1']").first().position().top;
+
+		overlay 	= new Overlap.Overlay(id, top, left);
+		overlay.show();
 	}
 
 	var hoverOutBar = function(bar){
@@ -258,7 +239,7 @@ Overlap.Bar = function (){
 
 		bar.removeClass("bubble_" + category);
 		Overlap.Helper.removeSpans();
-		$("#overlay_" + id).fadeOut(200);
+		overlay.hide();
 	}
 
 	var applyWrapCase = function(spanLines, category){
