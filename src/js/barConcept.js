@@ -2,13 +2,16 @@ var Overlap = window.Overlap = Overlap || {};
 
 Overlap.Bar = function (){
 
-	var columnList = [];
-	var atomList = Overlap.Atoms.getAtomList();
+	var atomList 					= Overlap.Atoms.getAtomList();
+	var atomStartEndList 	= [];
+	var columnList 				= [];
 
 	/* Main method */
 	this.run = function(){
 		this.reset();
+		letterToPixelPosition();
 		render();
+		console.log(columnList);
 		display();
 	};
 
@@ -19,64 +22,17 @@ Overlap.Bar = function (){
 		$(".bar").remove();
 		$("div[id^='overlay_']").remove();
 
-		columnList = [];
+		columnList 				= [];
+		atomStartEndList 	= [];
 	};
 
-	/* Helper function for render(). Adds a new colum to columnList. */
-	var addNewColumnToColumnList = function(id, column, barTop, barHeight, left){
-		columnList.push([{
-			"id"				: Number(id),
-			"barTop"		: Number(barTop),
-			"barHeight"	: Number(barHeight),
-			"column"		: Number(column),
-			"left"			: Number(left)
-			}]);
-	};
-
-	/* Helper function for render(). Adds a new bar to an existing column. */
-	var addNewBarToColumn = function(id, column, barTop, barHeight, left){
-		columnList[column].push({
-			"id"				: Number(id),
-			"barTop"		: Number(barTop),
-			"barHeight"	: Number(barHeight),
-			"column"		: Number(column),
-			"left"			: Number(left)
-			});
-	};
-
-	/* Helper function for render(). Tests if an atom fits into a column. */
-	var fitsInColumn = function(atom, column, currentAtomTop, currentAtomHeight){
-
-		// that is the atom which should fit into the active column
-		var currentAtomEnd = currentAtomTop + currentAtomHeight;
-
-		for (x in columnList[column]){
-
-			// that is the iterating bar in the columnList
-			var barInColumnTop =	columnList[column][x]["barTop"];
-			var barInColumnEnd =	barInColumnTop +
-														columnList[column][x]["barHeight"];
-
-			if (currentAtomEnd < barInColumnTop || currentAtomTop > barInColumnEnd){
-				continue;
-			}
-			return false;
-		}
-		return true;
-	};
-
-	/* The render function iterates all atoms, and recalculates the position of
-	the corresponding bar and its column. */
-	var render = function(){
-
-		// *** calculating the bars
+	/* Uses the atom list to calculate the position of each bar.*/
+	var letterToPixelPosition = function(){
+		
 		for(atom in atomList){
 
-			var start	= atomList[atom]["start"];
-			var end 	= atomList[atom]["end"];
-
-			// get the selection to wrap a span around it
-			$("#text").selection(start, end);
+			// get the selection within the text
+			$("#text").selection(atomList[atom].start, atomList[atom].end);
 
 			// add a span to selected text (when multiple elements
 			// are crossed, more than one span is added)
@@ -84,7 +40,6 @@ Overlap.Bar = function (){
 
 			var barTop 		= span.position().top;
 			var barHeight = span.height();
-			var left 			= span.position().left; // for displaying the overlay
 
 			// different calcualtion if selection was across
 			// multiple elements, so we have more that one span
@@ -96,98 +51,136 @@ Overlap.Bar = function (){
 			}
 
 			// remove the span(s) -> reset the text
-			Overlap.Helper.removeSpans(atom, barTop, barHeight, left);
+			Overlap.Helper.removeSpans();
 
-			// insertFirstFit(columnList);
-
-var added = false;
-
-			// if it is the first one
-			if (columnList.length == 0){
-				addNewColumnToColumnList(atom, 0, barTop, barHeight, left);
-			}
-			else {
-
-				for(column in columnList){
-
-					if(fitsInColumn(atom, column, barTop, barHeight) == true){
-						addNewBarToColumn(atom, column, barTop, barHeight, left);
-						added = true;
-						break;
-					}
-				}
-
-				// open a new column
-				if (added == false){
-					addNewColumnToColumnList(atom, Number(column) + 1, barTop, barHeight,
-						left);
-				}
-			}
-			// TODO: weitermachen!!!
+			atomStartEndList.push({
+				"startY"	: barTop,
+				"endY"		: barTop + barHeight,
+				"height"	: barHeight	
+			});
 		}
 	};
 
-	var insertFirstFit = function(atom, barTop, barHeight, left){
-		// *** Adding the bar to the columnList
-			var added = false;
+	// *** calculating the columns
+	var render = function(){	
+		for(index in atomStartEndList){
+			insertBySizeASC(index, 0);
+		}
+	};
 
-			// if it is the first one
-			if (columnList.length == 0){
-				addNewColumnToColumnList(atom, 0, barTop, barHeight, left);
+	var insertFirstFit = function(atomId, columnId){
+
+		if (columnList[columnId] == null){
+			columnList.push([atomId]);
+		}
+		else {
+
+			var overlapList = getAllOverlaps(atomId, columnId);
+
+			if(overlapList.length == 0) {
+				columnList[columnId].push(atomId);
 			}
 			else {
-
-				for(column in columnList){
-
-					if(fitsInColumn(atom, column, barTop, barHeight) == true){
-						addNewBarToColumn(atom, column, barTop, barHeight, left);
-						added = true;
-						break;
-					}
-				}
-
-				// open a new column
-				if (added == false){
-					addNewColumnToColumnList(atom, Number(column) + 1, barTop, barHeight,
-						left);
+				if(overlapList.length >= 1) {
+					insertFirstFit(atomId, columnId + 1);
 				}
 			}
-	}
+		}
+	};
+
+	var insertBySizeASC = function(atomId, columnId){
+
+		if (columnList[columnId] == null){
+			columnList.push([atomId]);
+		}
+		else {
+
+			var overlapList = getAllOverlaps(atomId, columnId);
+
+			if(overlapList.length == 0) {
+				columnList[columnId].push(atomId);
+			}
+			else {
+				if(overlapList.length > 1) {
+					insertBySizeASC(atomId, columnId + 1);
+				}
+				else {
+					// exactly one overlap:
+					// the bigger one needs to move further
+					var index							= overlapList[0].index;
+					var id 								= overlapList[0].atomId;
+					var atomIdHeight 			= atomStartEndList[atomId].height;
+					var overlapAtomHeight	= atomStartEndList[id].height;
+
+					if( atomIdHeight >= overlapAtomHeight){
+						insertBySizeASC(atomId, columnId + 1);
+					} else {
+
+							var removedItem = columnList[columnId].splice(index, 1);
+							columnList[columnId].push(atomId);
+							insertBySizeASC(removedItem[0], columnId + 1);	
+					}
+				}
+			}
+		}
+	};
+
+	var getAllOverlaps = function(atomId, columnId){
+
+		var overlapList = [];
+
+		var startY  = atomStartEndList[atomId].startY;
+		var endY 		= atomStartEndList[atomId].endY;
+
+		for (x in columnList[columnId]){
+
+			var currAtom 		= atomStartEndList[columnList[columnId][x]];
+			var currStartY 	=	currAtom.startY;
+			var currEndY 		=	currAtom.endY;
+
+			if (!(endY < currStartY || startY > currEndY)){
+				overlapList.push({
+					"index"		: x,
+					"atomId"	: columnList[columnId][x]
+				});
+			}
+		}
+		return overlapList;
+	};
 
 	var display = function(){
+
+		// in columnList are only IDs
 
 		for (i in columnList){
 			for (j in columnList[i]){
 
-				var bar 			= columnList[i][j];
-				var barLeft 	= $("#text").position().left
+				var barId 		= columnList[i][j];
+				var gap 			= 5;
+				var thickness	= 10;
 
-				var offset 		= (Number(bar["column"]) * 5) +
-												((Number(bar["column"]) + 1) * 10);
-				var cssTop 		= bar["barTop"];
-				var cssLeft 	= barLeft - offset - 18;
-				var cssHeight = bar["barHeight"];
-				var id 				= bar["id"];
-				var left 			= bar["left"];
+				var y 				= atomStartEndList[barId].startY;
+				var height 		= atomStartEndList[barId].height;
+				var offset 		= (i * gap) + ((Number(i)+1) * thickness); // TODO remove numbers
+				var x 				= Overlap.textX - offset - 18;
 
 				$(".container").append(
-					'<div class="bar" id="barID_' + id + '">&nbsp;</div>'
+					'<div class="bar" id="barID_' + barId + '">&nbsp;</div>'
 					);
 
-				$("#barID_" + id).css({
-					"top"		: cssTop,
-					"left"	: cssLeft,
-					"height": cssHeight
+				$("#barID_" + barId).css({
+					"top"		: y,
+					"left"	: x,
+					"height": height
 				});
 
-				$("#barID_" + id).addClass("bar_" + atomList[id]["category"]);
+				$("#barID_" + barId).addClass("bar_" + atomList[barId].category);
 
-				$("#barID_" + id).data("id", id);
-				$("#barID_" + id).data("category", atomList[id]["category"]);
-				$("#barID_" + id).data("subCategory", atomList[id]["subcategory"]);
+				$("#barID_" + barId).data("id", barId);
+				$("#barID_" + barId).data("category", atomList[barId].category);
+				$("#barID_" + barId).data("subCategory", atomList[barId].subcategory);
 
-				addOverlay(id);
-
+				addOverlay(barId);
 			}
 		}
 
@@ -203,17 +196,19 @@ var added = false;
 	};
 
 	var addOverlay = function(id){
-		// add overlay for subcategories but hide it
-		var cat 		= Overlap.categories[atomList[id]["category"]]["name"];
-		var subcat 	= Overlap.categories[atomList[id]["category"]]["subs"][atomList[id]["subcategory"]];
+		// add overlay for subcategories but hide i
+		
+		var atom 		= atomList[id];
+		var cat 		= Overlap.categories[atom.category].name;
+		var subcat 	= Overlap.categories[atom.category].subs[atom.subcategory];
 
 		var data 		= "<h5 style='display:inline'> " + cat + " </h5> ▶ " + subcat;
 
-		$(".container").append(
+		$("body").append(
 			'<div class="popup shadow" id="overlay_' + id + '">' + data + '</div>'
 			);
-		var overlay = $("#overlay_" + id);
-		overlay.css({"display"	: "none"});
+
+		$("#overlay_" + id).css({"display"	: "none"});
 	}
 
 	var hoverInBar = function(bar){
@@ -224,7 +219,7 @@ var added = false;
 		wrapAllLines(id);
 
 		var overlay = $("#overlay_" + id);
-		var left 		= $("span[class^='wrap_line_1']").first().position().left;
+		var left 		= $("span[class^='wrap_line_1']").first().position().left + $(".container").position().left;
 		var top 		= $("span[class^='wrap_line_1']").first().position().top;
 
 		overlay.css({
