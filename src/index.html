@@ -52,6 +52,7 @@
 		<script type="text/javascript" src="js/helper.js"></script>
 		<script type="text/javascript" src="js/atoms.js"></script>
 		<script type="text/javascript" src="js/overlay.js"></script>
+		<script type="text/javascript" src="js/databaseAction.js"></script>
 
 		<!--
 		StyleCheets of the future.
@@ -69,6 +70,38 @@
 	</head>
 
 	<body>
+
+		<div id="savePopup" class="popupWindow">
+			<form >
+				<h2 style="display:inline;">Save</h2>
+				<h5 style="display:inline; margin-left:8px;">with title:</h5>
+
+				<input type="text" id="saveName" placeholder="enter the name"value=""/>
+
+				<h5 style="display:inline;">Or</h5>
+				<h2 style="display:inline; margin-left:8px;">override</h2>
+				<h5 style="display:inline; margin-left:8px;">existing:</h5>
+
+				<fieldset class="allInStorage">
+				</fieldset>
+
+				<a id="confirmButtonSave" class="button">Save</a>
+				<a id="cancelButtonSave" class="button">Cancel</a>
+			</form>
+		</div>
+
+		<div id="loadPopup" class="popupWindow">
+			<form >
+				<h2 style="display:inline;">Load</h2>
+				<h5 style="display:inline; margin-left:8px;">with title:</h5>
+
+				<fieldset class="allInStorage">
+				</fieldset>
+
+				<a id="confirmButtonLoad" class="button">Load</a>
+				<a id="cancelButtonLoad" class="button">Cancel</a>
+			</form>
+		</div>
 
 		<div class="container">
 
