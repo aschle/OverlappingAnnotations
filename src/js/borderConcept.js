@@ -19,6 +19,7 @@ Overlap.Border = function (){
 
 		levelList 				= [];
 		atomStartEndList	= [];
+		atomList 					= Overlap.Atoms.getAtomList();
 	}
 
 	var letterToPixelPosition = function(){
@@ -179,7 +180,7 @@ Overlap.Border = function (){
 						} else {
 							var removedItem = levelList[level].splice(overlaps[0]["atom"], 1);
 							levelList[level].push(atom);
-							insert(removedItem[0], level + 1);
+							insert(removedItem[0], 0);
 						}
 					}
 
@@ -192,7 +193,7 @@ Overlap.Border = function (){
 						} else {
 							var removedItem = levelList[level].splice(overlaps[0]["atom"], 1);
 							levelList[level].push(atom);
-							insert(removedItem[0], level + 1);
+							insert(removedItem[0], 0);
 						}
 					}
 
