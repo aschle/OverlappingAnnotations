@@ -67,3 +67,21 @@ Overlap.Helper.minMaxCase = function(start, end){
 		return 'D';
 	}
 }
+
+Overlap.Helper.appendRadioList = function(name){
+
+		var list = Overlap.Storage.getAll();
+
+		if(list.length == 0){
+			$(".allInStorage").append("<span style='color:#ccc'>No saved Files yet.</span>");
+		}
+
+		for(item in list){
+			var data = 	"<label for='radio_" + item + "'>" +
+									"<input type='radio' name='"+ name +"'" +
+									"id='radio_" + item + "' value='" + list[item] + "' />" +
+									"<span>" + list[item] +"</span></label>";
+
+			$(".allInStorage").append(data);
+		}
+}
