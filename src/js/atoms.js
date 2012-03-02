@@ -28,4 +28,8 @@ Overlap.Atoms = function(){
 		return atomList[id];
 	}
 
+	this.setAtomList = function(newList){
+		atomList = newList;
+	}
+
 };
