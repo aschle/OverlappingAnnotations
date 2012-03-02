@@ -8,11 +8,11 @@ Overlap.Menu = function (categories) {
 
   /* Loads the category menu. (top #menu) */
   for (id in categories) {
-    var contentString = "<h5>" + categories[id]["name"] + "</h5>\n<ul>\n";
-    for (subId in categories[id]["subs"]) {
+    var contentString = "<h5>" + categories[id].name + "</h5>\n<ul>\n";
+    for (subId in categories[id].subs) {
       contentString += "<li>" + categories[id]["subs"][subId] + "</li>\n";
     }
-    contentString += "</ul";
+    contentString += "</ul>";
     $("#c_" + id).html(contentString);
   }
 
@@ -24,7 +24,7 @@ Overlap.Menu = function (categories) {
   var categoryId;
   for (categoryId in categories) {
 
-    var categorieName = categories[categoryId]["name"];
+    var categorieName = categories[categoryId].name;
     menu.append("<div id='entry_" + categoryId + "'><h5>" + categorieName + "</h5></div>");
     $("#entry_" + categoryId).addClass("hover_" + categoryId);
 
@@ -32,14 +32,14 @@ Overlap.Menu = function (categories) {
     var subMenu = $("#subContextMenu_" + categoryId);
 
     var subId;
-    for (subId in categories[categoryId]["subs"]) {
+    for (subId in categories[categoryId].subs) {
 
       var subCategorieName = categories[categoryId]["subs"][subId];
-      subMenu.append("<div id='entry_" + categoryId + "_" + subId + "' style='cursor:pointer;'><h5>" + subCategorieName + "</h5></div>");
+      subMenu.append("<div id='subEntry_" + categoryId + "_" + subId + "' style='cursor:pointer;'><h5>" + subCategorieName + "</h5></div>");
       subMenu.css("display", "none");
-      $("#entry_" + categoryId + "_" + subId).addClass("hover_" + categoryId);
+      $("#subEntry_" + categoryId + "_" + subId).addClass("hover_" + categoryId);
     }
-    $("#entry_" + categoryId + "_" + subId).addClass("last");
+    $("#subEntry_" + categoryId + "_" + subId).addClass("last");
   }
   $("#entry_" + categoryId).addClass("last");
 
@@ -116,6 +116,6 @@ Overlap.Menu = function (categories) {
 
   this.hideMenu = function () {
     menu.css("display", "none");
+    $("#subContextMenu_" + lastSubMenuId).css("display", "none");
   };
-
 };
