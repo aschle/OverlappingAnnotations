@@ -13,7 +13,6 @@ Overlap.Bar = function (){
 		this.reset();
 		letterToPixelPosition();
 		render();
-		console.log(columnList);
 		display();
 	};
 
@@ -24,6 +23,7 @@ Overlap.Bar = function (){
 		$(".bar").remove();
 		$("div[id^='overlay_']").remove();
 
+		atomList 					= Overlap.Atoms.getAtomList();
 		columnList 				= [];
 		atomStartEndList 	= [];
 	};
