@@ -75,13 +75,10 @@ Overlap.Border = function (){
 			}
 
 			atomStartEndList.push({
-				"id"					: atomList[atom]["id"],
 				"startX"			: startX,
 				"startY"			: startY,
 				"endX"				: endX,
 				"endY"				: endY,
-				"category"		: atomList[atom]["category"],
-				"subcategory"	: atomList[atom]["subcategory"],
 				"type"				: type
 				});
 
@@ -92,107 +89,108 @@ Overlap.Border = function (){
 	var render = function(){
 
 		// *** calculating the level
-		for(atom in atomList){
-			insert(atomList[atom], 0);
+		for(index in atomList){
+			insert(index, 0);
 		}
 	}
 
-	var insert = function(atom, level){
+	var getAllOverlaps = function(atomId, levelId){
 
-		// atom is an object and level is an index
+		var overlapList = [];
+
+		var aStart 	= atomList[atomId].start;
+		var aEnd 		= atomList[atomId].end;
+
+		// check for all atoms in the level the overlpping type:
+		for (l in levelList[levelId]){
+
+			var lStart 	= atomList[levelList[levelId][l]].start;
+			var lEnd 		= atomList[levelList[levelId][l]].end;
+
+			// No overlap:
+			if(lEnd < aStart || aEnd < lStart){
+				continue;
+			}
+
+			// Identity:
+			if (aStart == lStart && aEnd == lEnd){
+				overlapList.push({"type": 0, "index": l, "atomId": levelList[levelId][l]});
+				continue;
+			}
+
+			// Overlap:
+			if( (lStart < aStart && lEnd > aStart && lEnd < aEnd) ||
+				(lEnd > aEnd && lStart > aStart && lStart < aEnd)){
+
+				overlapList.push({"type": 1, "index": l, "atomId": levelList[levelId][l]});
+				continue;
+			}
+
+			// else: Inclusion
+			overlapList.push({"type": 2, "index": l, "atomId": levelList[levelId][l]});
+		}
+		return overlapList;
+	}
+
+	var insert = function(atomId, levelId){
 
 		// *** if this level does not exist: add a new one
-		if (levelList[level] == null){
-			levelList.push([atom]);
+		if (levelList[levelId] == null){
+			levelList.push([atomId]);
 		}
 
 		// *** find a fitting level
 		else {
 
-			// ** fits in level: add it to the level
-			if( fitsInLevel(atom, level) ){
-				levelList[level].push(atom);
+			var overlapList = getAllOverlaps(atomId, levelId);
+			
+			if(overlapList.length == 0){
+				levelList[levelId].push(atomId);
 			}
-
-			// ** if the atom is somehow overlapping: insert in a level up
 			else{
-
-				var overlaps = [];
-
-				var aStart 	= atom["start"];
-				var aEnd 		= atom["end"];
-
-				// check for all atoms in the level the overlpping type:
-				for (l in levelList[level]){
-
-					var lStart 	= levelList[level][l]["start"];
-					var lEnd 		= levelList[level][l]["end"];
-
-					// No overlap:
-					if(lEnd < aStart || aEnd < lStart){
-						continue;
-					}
-
-					// Identity:
-					if (aStart == lStart && aEnd == lEnd){
-						overlaps.push({"type": 0, "atom": l});
-						continue;
-					}
-
-					// Overlap:
-					if( (lStart < aStart && lEnd > aStart && lEnd < aEnd) ||
-						(lEnd > aEnd && lStart > aStart && lStart < aEnd)){
-
-						overlaps.push({"type": 1, "atom": l});
-						continue;
-					}
-
-					// else: Inclusion
-					overlaps.push({"type": 2, "atom": l});
-
-				} // end: for
-
-
-
 				// * more than one overlap: bubble up
-				if(overlaps.length > 1){
-					insert(atom, level +1);
+				if(overlapList.length > 1){
+					insert(atomId, levelId + 1);
 				}
-
 				// * only one overlap: decide which to bubble, depending on the
 				// overlap type
 				else {
 
-					var lAtom = levelList[level][overlaps[0]["atom"]];
+					var type 		= overlapList[0].type;
+					var index 	= overlapList[0].index;
+					var id 			= overlapList[0].atomId;
+					var aStart 	= atomList[atomId].start;
+					var aEnd 		= atomList[atomId].end;
+					var lAtom 	= atomList[id];
 
 					// (0) Identity: does not matter which bubbles
-					if (overlaps[0]["type"] == 0){
-						insert(atom, level + 1);
+					if (type == 0){
+						insert(atomId, levelId + 1);
 						return;
 					}
 
 					// (1) Overlap: longer one bubbles up
-					if(overlaps[0]["type"] == 1){
+					if(type == 1){
 						// check which one is longer
 						if(aEnd - aStart >
-							lAtom["end"] - lAtom["start"]){
-							insert(atom, level + 1);
+							lAtom.end - lAtom.start){
+							insert(atomId, levelId + 1);
 						} else {
-							var removedItem = levelList[level].splice(overlaps[0]["atom"], 1);
-							levelList[level].push(atom);
+							var removedItem = levelList[levelId].splice(index, 1);
+							levelList[levelId].push(atomId);
 							insert(removedItem[0], 0);
 						}
 					}
 
 					// (2) Inclusion: longer on bubbles up
-					if(overlaps[0]["type"] == 2){
+					if(type == 2){
 						// check which one is longer
 						if(aEnd - aStart >
-							lAtom["end"] - lAtom["start"]){
-							insert(atom, level + 1);
+							lAtom.end - lAtom.start){
+							insert(atomId, levelId + 1);
 						} else {
-							var removedItem = levelList[level].splice(overlaps[0]["atom"], 1);
-							levelList[level].push(atom);
+							var removedItem = levelList[levelId].splice(index, 1);
+							levelList[levelId].push(atomId);
 							insert(removedItem[0], 0);
 						}
 					}
@@ -204,15 +202,15 @@ Overlap.Border = function (){
 		} // *** end: find a fitting level
 	}
 
-	var fitsInLevel = function(atom, level){
+	var fitsInLevel = function(atomId, levelId){
 
-		var aStart 	= atom["start"];
-		var aEnd 		= atom["end"];
+		var aStart 	= atomList[atomId].start;
+		var aEnd 		= atomList[atomId].end;
 
-		for(l in levelList[level]){
+		for(l in levelList[levelId]){
 
-			var lStart 	= levelList[level][l]["start"];
-			var lEnd 		= levelList[level][l]["end"];
+			var lStart 	= atomList[levelList[levelId][l]].start;
+			var lEnd 		= atomList[levelList[levelId][l]].end;
 
 			if (!(lEnd < aStart || aEnd < lStart)){
 				return false;
@@ -234,15 +232,15 @@ Overlap.Border = function (){
 		for (i in levelList){
 			for (j in levelList[i]) {
 
-				var bubble 			= levelList[i][j];
-				var id 					= bubble["id"];
+				var id 					= levelList[i][j];
+				var bubble 			= atomList[id];
 				var coordinates = atomStartEndList[id];
-				var type 				= coordinates["type"];
-				var category 		= atomList[id]["category"];
-				var startX 			= coordinates["startX"];
-				var startY 			= coordinates["startY"];
-				var endX 				= coordinates["endX"];
-				var endY 				= coordinates["endY"]
+				var type 				= coordinates.type;
+				var category 		= atomList[id].category;
+				var startX 			= coordinates.startX;
+				var startY 			= coordinates.startY;
+				var endX 				= coordinates.endX;
+				var endY 				= coordinates.endY;
 
 				var offset = i * 2 * border;
 

@@ -11,8 +11,7 @@ Overlap.Atoms = function(){
 			"start"				: Number(start),
 			"end"					: Number(end),
 			"category"		: Number(category),
-			"subcategory"	: Number(subcategory),
-			"id"					: Number(id)
+			"subcategory"	: Number(subcategory)
 			});
 	};
 
