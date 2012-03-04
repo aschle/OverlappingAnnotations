@@ -33,12 +33,14 @@ $(document).ready(function() {
 
 	// *** ALL USER INTERACTION (Clicking, Buttons, usw.)
 
-	$("body").click(function(e){
+	$('body').mousemove(function(){
+		if (Overlap.Menu.visible){
+			Overlap.Menu.hideSubMenu();
+		}
+	});
 
-console.log(e);
-		//if(e.srcElement.nodeName != "H5"){
-			Overlap.Menu.hideMenu();
-		//}
+	$("body").click(function(e){
+		Overlap.Menu.hideMenu();
 	});
 
 	// Show the context menu if text was selected

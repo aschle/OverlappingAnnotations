@@ -5,6 +5,7 @@ Overlap.Menu = function (categories) {
   var lastSubMenuId = null;
   var categories    = categories;
   var menu          = null;
+  this.visible      = false;
 
   /* Loads the category menu. (top #menu) */
   for (id in categories) {
@@ -61,12 +62,15 @@ Overlap.Menu = function (categories) {
     $(this).css("display", "none");
   });
 
-  // when mouse leaves the menu, hide the submenus
-  menu.mouseleave(function (event) {
-    if (event.srcElement.id == "contextMenu") {
-      $("#subContextMenu_" + lastSubMenuId).css("display", "none");
-    }
+  // *** to make the submenu close when the mouse leaves the menu
+  menu.mousemove(function(){
+    return false;
   });
+
+  $("div[id^='subContextMenu_']").mousemove(function(){
+    return false;
+  });
+  // ***
 
   // click on submenu entry
   $("div[id^='subContextMenu_']").children().each(function () {
@@ -82,8 +86,7 @@ Overlap.Menu = function (categories) {
           idArray[1],
           idArray[2],
           Overlap.savedClick["start"],
-          Overlap.savedClick["end"],
-          Overlap.Atoms.getLength()
+          Overlap.savedClick["end"]
         );
 
       Overlap.activeConcept.run();
@@ -91,7 +94,13 @@ Overlap.Menu = function (categories) {
     });
   });
 
+  menu.click(function(){
+    return false;
+  });
+
   this.showMenu = function (e) {
+
+    this.visible = true;
 
     var x = e.pageX;
     var y = e.pageY + 10;
@@ -115,7 +124,13 @@ Overlap.Menu = function (categories) {
   };
 
   this.hideMenu = function () {
+    this.visible = false;
     menu.css("display", "none");
-    $("#subContextMenu_" + lastSubMenuId).css("display", "none");
+
   };
+
+  this.hideSubMenu = function(){
+    $("#subContextMenu_" + lastSubMenuId).css("display", "none");
+  }
 };
+
