@@ -27,6 +27,8 @@ Overlap.Overlay = function (id, top, left) {
 	}
 
 	this.hide = function(id) {
-		overlay.fadeOut(200);
+		overlay.fadeOut(200, function(){
+			overlay.remove();
+		});
 	}
 }

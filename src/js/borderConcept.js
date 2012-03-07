@@ -487,7 +487,7 @@ Overlap.Border = function (){
 		// HOVER EFFECT
 		bubble.hover(
 			function(){
-				hoverIn($(this));
+				hoverIn($(this), offset);
 			},
 
 			function(){
@@ -495,11 +495,11 @@ Overlap.Border = function (){
 			});
 	}
 
-	var hoverIn = function(elem){
+	var hoverIn = function(elem, offset){
 
 		var id 		= $(elem).data("id");
-		var top 	= atomStartEndList[id].startX ;
-		var left	= atomStartEndList[id].startY + $(".container").position().left;
+		var left 	= atomStartEndList[id].startX + $(".container").position().left - offset - 2;
+		var top	= atomStartEndList[id].startY - offset - 2;
 
 		overlay 	= new Overlap.Overlay(id, top, left);
 		overlay.show();

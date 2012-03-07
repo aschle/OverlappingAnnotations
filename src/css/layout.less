@@ -7,19 +7,19 @@
 @D: #0A64A4;
 
 /* Backgroundcolor for things */
-@grey: 		#DDD;
-@bg: 		#FFF;
+@grey: 			#DDD;
+@bg: 				#FFF;
 @lighter: 	30%;
-@radius: 	7px;
+@radius: 		7px;
 
 /* to always have a scrollbar on the right*/
 html {min-height:101%;}
 
 /*categorie boxes in the menu*/
 .category {
-	background: @grey;
+	background: 								@grey;
 	border-bottom-right-radius: @radius;
-	border-top-left-radius: @radius;
+	border-top-left-radius: 		@radius;
 
 	/*heading of a categorie*/
 	h5 {
@@ -33,9 +33,9 @@ html {min-height:101%;}
 
 	/*subcategories*/
 	li {
-		padding-left: 4px;
-		background: @bg;
-		border-radius: @radius;
+		padding-left: 	4px;
+		background: 		@bg;
+		border-radius: 	@radius;
 	}
 }
 
@@ -48,11 +48,11 @@ html {min-height:101%;}
 
 /*get borders for the menu*/
 #menu {
-	border-top: 1px solid @grey;
-	border-bottom: 1px solid @grey;
-	padding-top: 20px;
+	border-top: 		1px solid @grey;
+	border-bottom: 	1px solid @grey;
+	padding-top: 		20px;
 	padding-bottom: 20px;
-	margin-bottom: 8px;
+	margin-bottom: 	8px;
 }
 
 /*underlining the categories*/
@@ -75,23 +75,23 @@ html {min-height:101%;}
 
 /*bars on the left*/
 .bar {
-	width: 10px;
-	border-radius: @radius;
-	position: absolute;
-	z-index: 2;
-	border: 1px solid #FFF;
+	width: 					10px;
+	border-radius: 	@radius;
+	position: 			absolute;
+	z-index: 				2;
+	border: 				1px solid #FFF;
 }
 
 /*styling the text atoms, when hovering the bars*/
 #text span .hover {
-	padding-top: 2px;
-	padding-bottom: 3px;
+	padding-top: 				2px;
+	padding-bottom: 		3px;
   -webkit-transition: background 0.2s;
 }
 
 .hover.top {
-	border-top-left-radius: @radius;
-	border-top-right-radius: @radius;
+	border-top-left-radius: 	@radius;
+	border-top-right-radius: 	@radius;
 }
 
 .hover.topBottom { border-bottom-right-radius: @radius; }
@@ -121,10 +121,10 @@ html {min-height:101%;}
 
 
 .popup {
-	position: absolute;
-	z-index: 100;
-	background: @bg;
-	border: 3px solid @grey;
+	position: 			absolute;
+	z-index: 				100;
+	background: 		@bg;
+	border: 				3px solid @grey;
 	border-radius: @radius;
 }
 
@@ -133,10 +133,10 @@ html {min-height:101%;}
 }
 
 .popup div {
-	border-left: 8px solid transparent;
-	border-right: 8px solid transparent;
-	padding: 2px 4px 2px 4px;
-	border-bottom: 1px dashed @grey;
+	border-left: 		8px solid transparent;
+	border-right: 	8px solid transparent;
+	padding: 				2px 4px 2px 4px;
+	border-bottom: 	1px dashed @grey;
 }
 
 .popup div.last {
@@ -145,22 +145,22 @@ html {min-height:101%;}
 
 .popup div.hover_0:hover {
 	border-color: @A !important;
-	background: lighten(@A, @lighter);
+	background: hsla(hue(@A), saturation(@A), lightness(@A), 0.35);
 }
 
 .popup div.hover_1:hover {
 	border-color: @B !important;
-	background: lighten(@B, @lighter);
+	background: hsla(hue(@B), saturation(@B), lightness(@B), 0.35);
 }
 
 .popup div.hover_2:hover {
 	border-color: @C !important;
-	background: lighten(@C, @lighter);
+	background: hsla(hue(@C), saturation(@C), lightness(@C), 0.35);
 }
 
 .popup div.hover_3:hover {
 	border-color: @D !important;
-	background: lighten(@D, @lighter);
+	background: hsla(hue(@D), saturation(@D), lightness(@D), 0.35);
 }
 
 /*Border width for bubbles inside the text.*/

@@ -214,8 +214,6 @@ Overlap.Bar = function (){
 		);
 	};
 
-
-
 	var hoverInBar = function(bar){
 
 		var category  = bar.data("category");
@@ -227,6 +225,8 @@ Overlap.Bar = function (){
 		var left 	= $("span[class^='wrap_line_1']").first().position().left
 									+ $(".container").position().left;
 		var top 	= $("span[class^='wrap_line_1']").first().position().top;
+
+		console.log(left, top);
 
 		overlay 	= new Overlap.Overlay(id, top, left);
 		overlay.show();
