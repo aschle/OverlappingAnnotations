@@ -31,4 +31,7 @@ Overlap.Atoms = function(){
 		atomList = newList;
 	}
 
+	this.removeAtomWithId = function(id){
+		atomList.splice(id, 1);
+	}
 };

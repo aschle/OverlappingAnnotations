@@ -493,6 +493,20 @@ Overlap.Border = function (){
 			function(){
 				hoverOut($(this));
 			});
+
+		bubble.mousedown(function(event){ 
+	    if( event.button == 2 ) {
+	    	var bubble = $(this);
+				hoverOut(bubble);
+				Overlap.Atoms.removeAtomWithId(bubble.data("id"));
+	      bubble.fadeOut(600, function(){
+	      	$(this).remove();
+	      	Overlap.Border.run();
+	      });
+	      return false; 
+	    }
+	    return true;
+	  });
 	}
 
 	var hoverIn = function(elem, offset){

@@ -43,7 +43,10 @@ $(document).ready(function() {
 		Overlap.Menu.hideMenu();
 	});
 
-	// just to make the bubbles HOVERBAR
+	// disable contextMenu on rightClick
+	document.oncontextmenu = function() {return false;};
+
+	// just to make the bubbles HOVERBAR, and text is still selectable
 	$("#text").mousedown(function(){
 		$(".bubble").css("z-index", -2);
 	});

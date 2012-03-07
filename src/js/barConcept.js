@@ -203,6 +203,21 @@ Overlap.Bar = function (){
 			}
 		}
 
+		// delete on right click
+		$("div.bar").mousedown(function(event){ 
+	    if( event.button == 2 ) {
+	    	var bar = $(this);
+				hoverOutBar(bar);
+				Overlap.Atoms.removeAtomWithId(bar.data("id"));
+	      bar.fadeOut(600, function(){
+	      	$(this).remove();
+	      	Overlap.Bar.run();
+	      });
+	      return false; 
+	    }
+	    return true;
+	  });
+
 		$("div.bar").hover(
 			function () {
 				hoverInBar($(this));
@@ -215,6 +230,8 @@ Overlap.Bar = function (){
 	};
 
 	var hoverInBar = function(bar){
+
+		console.log(bar);
 
 		var category  = bar.data("category");
 		var id 				= bar.data("id");
