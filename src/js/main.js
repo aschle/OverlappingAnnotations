@@ -36,6 +36,7 @@ $(document).ready(function() {
 	Overlap.Bar 					= new Overlap.Bar();
 	Overlap.Border 				= new Overlap.Border();
 	Overlap.Menu 					= new Overlap.Menu(Overlap.categories);
+	Overlap.Menu.loadMenuShort();
 	Overlap.activeConcept = Overlap.Bar;
 
 	Overlap.Storage				= new Overlap.Storage();
@@ -89,9 +90,17 @@ $(document).ready(function() {
 		// adjust the selection (snap to whole words)
 		Overlap.savedClick = Overlap.Helper.getRealSelection(text);
 
+
 		// show the selected text to the user
 		$("#text").selection(Overlap.savedClick["start"],
 			Overlap.savedClick["end"]);
+		console.log(Overlap.savedClick);
+
+		if(Overlap.savedClick["end"] < Overlap.savedClick["start"]){
+			Overlap.Menu.hideMenu();
+			Overlap.activeConcept.run();
+			return;
+		}
 
 		// display the context menu
 		Overlap.Menu.showMenu(event);

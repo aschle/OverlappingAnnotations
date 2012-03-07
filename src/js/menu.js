@@ -7,16 +7,6 @@ Overlap.Menu = function (categories) {
   var menu          = null;
   this.visible      = false;
 
-  /* Loads the category menu. (top #menu) */
-  for (id in categories) {
-    var contentString = "<h5>" + categories[id].name + "</h5>\n<ul>\n";
-    for (subId in categories[id].subs) {
-      contentString += "<li>" + categories[id]["subs"][subId] + "</li>\n";
-    }
-    contentString += "</ul>";
-    $("#c_" + id).html(contentString);
-  }
-
   /* Loads the context menu */
   $("body").append("<div id='contextMenu' class='popup'></div>");
   menu = $("#contextMenu");
@@ -97,6 +87,30 @@ Overlap.Menu = function (categories) {
   menu.click(function(){
     return false;
   });
+
+    /* Loads the category menu. (top #menu) */
+  this.loadMenuLong = function(){
+    for (id in categories) {
+      var contentString = "<h5>" + categories[id].name + "</h5>\n<ul>\n";
+      for (subId in categories[id].subs) {
+        contentString += "<li>" + categories[id]["subs"][subId] + "</li>\n";
+    }
+    contentString += "</ul>";
+    $("#c_" + id).html(contentString);
+    }
+  }
+
+  /* Loads the category menu. (top #menu) */
+  this.loadMenuShort = function(){
+    for (id in categories) {
+      var contentString = "<h5>" + categories[id].name + "</h5>\n<ul><small>";
+      for (subId in categories[id].subs) {
+        contentString += categories[id]["subs"][subId] + " – ";
+    }
+    contentString += "</small></ul>";
+    $("#c_" + id).html(contentString);
+    }
+  }
 
   this.showMenu = function (e) {
 
