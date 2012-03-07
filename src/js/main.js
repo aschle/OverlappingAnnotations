@@ -43,6 +43,15 @@ $(document).ready(function() {
 		Overlap.Menu.hideMenu();
 	});
 
+	// just to make the bubbles HOVERBAR
+	$("#text").mousedown(function(){
+		$(".bubble").css("z-index", -2);
+	});
+
+	$(".bubble").live("mousedown", function(){
+		$(".bubble").css("z-index", -2);
+	});
+
 	// Show the context menu if text was selected
 	$("#text").mouseup(function(event){
 

@@ -9,6 +9,7 @@ Overlap.Overlay = function (id, top, left) {
 	var data 	=	"<h5 style='display:inline'> "
 					+ cat + " </h5> ▶ " + subcat;
 
+	// adding it to the body because to have it always on one line
 	$("body").append(
 		'<div class="popup shadow" id="overlay_' + id + '">' + data + '</div>'
 		);
