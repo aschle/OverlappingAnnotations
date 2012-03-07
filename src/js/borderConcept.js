@@ -288,10 +288,10 @@ Overlap.Border = function (){
 				  		top 		= startY - border - offset;
 							left 		= startX - border - offset;
 							height 	= endY - startY - lh + border + 2 * offset;
-							width 	= max - startX + 2 * offset;
+							width 	= max - startX + 2 * offset - (max - endX);
 
 							addBubble(id, 1, top, left, height, width, offset, category,
-								"cornerTLTR", level);
+								"cornerTL", level);
 
 							// second on the right II
 							left 		= endX + offset;
@@ -333,10 +333,10 @@ Overlap.Border = function (){
 								"left", level);
 
 							// third bottom right
-							left 		= startX - border - offset;
+							left 		= startX - offset;
 							top 		= startY + border + lh - border - offset;
 							height 	= endY - startY - lh + 2 * offset;
-							width 	= endX - startX + border + 2 * offset;
+							width 	= endX - startX + 2 * offset;
 
 							addBubble(id, 3, top, left, height, width, offset, category,
 								"cornerBR", level);
@@ -345,7 +345,7 @@ Overlap.Border = function (){
 
 				  	case 'D':
 				  	  	{
-				  	  		// CASE I: 4 DIVs
+				  	  		// CASE I: 5 DIVs (in the middle no borders)
 				  	  		if(startX <= endX){
 
 						  		// first on the left I (corner_TL)
@@ -357,14 +357,14 @@ Overlap.Border = function (){
 									addBubble(id, 1, top, left, height, width, offset, category,
 										"left", level);
 
-									// // second on top Í
+									// // second on top II
 									top 		= startY - border - offset;
 									left 		= startX - border - offset;
 									height 	= lh;
-									width 	= max - startX + 2 * offset;
+									width 	= max - startX + 2 * offset - (max - endX);
 
 									addBubble(id, 2, top, left, height, width, offset, category,
-										"cornerTLTR", level);
+										"cornerTL", level);
 
 									// 4rd on the right III
 									left 		= endX + offset;
@@ -375,13 +375,22 @@ Overlap.Border = function (){
 										"right", level);
 
 									// 4th on the bottom IV
-									left 		= startX - border - offset;
+									left 		= startX - offset;
 									top 		= endY - lh + border + offset;
 									height 	= lh - border;
-									width 	= endX - startX  + border + 2 * offset;
+									width 	= endX - startX + 2 * offset;
 
 									addBubble(id, 4, top, left, height, width, offset, category,
 										"cornerBR", level);
+
+									// 5th in the middle
+									top 		= startY + lh - offset;
+									left 		= startX - offset;
+									height 	= endY - startY - 2 * lh + 2 * offset + border;
+									width 	= endX - startX + 2 * offset;
+
+									addBubble(id, 5, top, left, height, width, offset, category,
+										"", level);
 							}
 
 							// CASE 2: 5 DIVs
@@ -390,11 +399,11 @@ Overlap.Border = function (){
 								// first on the left I (corner_TL)
 						  		top 		= startY + lh - border - offset;
 									left 		= min - border - offset;
-									height 	= endY - startY - lh + 2 * offset;
+									height 	= endY - startY - 2 * lh + 2 * offset + border;
 									width 	= endX - min + 2 * offset;
 
 									addBubble(id, 1, top, left, height, width, offset, category,
-										"cornerTLBL", level);
+										"cornerTL", level);
 
 									// second on top Í
 									top 		= startY - border - offset;
@@ -406,9 +415,9 @@ Overlap.Border = function (){
 										"top", level);
 
 									// 3rd on the right III
-									top 		= startY + lh - border - offset;
+									top 		= startY + lh - offset;
 									left 		= startX - offset;
-									height 	= endY - startY - 2 * lh + 2 * offset + border;
+									height 	= endY - startY - 2 * lh + 2 * offset;
 									width 	= max - startX + 2 * offset;
 
 									addBubble(id, 3, top, left, height, width, offset, category,
@@ -462,7 +471,7 @@ Overlap.Border = function (){
 
 			bubble.addClass(bubbleClass);
 			bubble.addClass("bubble_" + category);
-			bubble.data("id", id);
+			bubble.data({"id":id, "category":category});
 
 		} else{
 
@@ -481,7 +490,7 @@ Overlap.Border = function (){
 
 			bubble.addClass(bubbleClass);
 			bubble.addClass("bubble_" + category);
-			bubble.data({"id":id, "subId": subId});
+			bubble.data({"id":id, "subId": subId, "category":category});
 		}
 
 		// HOVER EFFECT
@@ -494,33 +503,66 @@ Overlap.Border = function (){
 				hoverOut($(this));
 			});
 
+		// REMOVE bubble
 		bubble.mousedown(function(event){ 
+
 	    if( event.button == 2 ) {
 	    	var bubble = $(this);
-				hoverOut(bubble);
 				Overlap.Atoms.removeAtomWithId(bubble.data("id"));
-	      bubble.fadeOut(600, function(){
+
+				var all = getAllBubbles(id);
+
+				all.fadeOut(600, function(){
 	      	$(this).remove();
 	      	Overlap.Border.run();
+	      	hoverOut(bubble);
 	      });
+	      
 	      return false; 
 	    }
 	    return true;
 	  });
 	}
 
+	var getAllBubbles = function(id){
+
+			var all = $("div[id^='bubbleID_" + id + "_']");
+
+			if (all.length == 0){
+				all = $("div[id^='bubbleID_" + id + "']");
+			}
+			return all;
+	}
+
 	var hoverIn = function(elem, offset){
 
-		var id 		= $(elem).data("id");
-		var left 	= atomStartEndList[id].startX + $(".container").position().left - offset - 2;
-		var top	= atomStartEndList[id].startY - offset - 2;
+		var id 				= $(elem).data("id");
+		var category 	= $(elem).data("category");
+
+		var left 			= atomStartEndList[id].startX +
+										$(".container").position().left - offset - 2;
+		var top				= atomStartEndList[id].startY - offset - 2;
+		
+		// for shanging the bg color while hovering
+		var all = getAllBubbles(id);
+
+		all.addClass("light_" + category);
 
 		overlay 	= new Overlap.Overlay(id, top, left);
 		overlay.show();
 	};
 
 	var hoverOut = function(elem){
+
 		overlay.hide();
+
+		var id 				= $(elem).data("id");
+		var category 	= $(elem).data("category");
+
+		var all = getAllBubbles(id);
+		
+		console.log(all);
+		all.removeClass("light_" + category);
 	}
 };
 

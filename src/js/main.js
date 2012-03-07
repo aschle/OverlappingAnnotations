@@ -1,19 +1,31 @@
 $(document).ready(function() {
 
+	// Overlap.categories = [{
+	//   "name": "Allgemein",
+	//   "subs": ["Basic"]
+	// }, {
+	//   "name": "Geschichte",
+	//   "subs": ["Basic", "Advanced"]
+	// }, {
+	//   "name": "Architektur",
+	//   "subs": ["Basic", "Advanced"]
+	// }, {
+	//   "name": "Ausstellungen",
+	//   "subs": ["Basic", "Advanced"]
+	// }];
+
 	Overlap.categories = [{
-	  "name": "Category 1",
-	  "subs": ["subcategorie 1", "subcat 2", "subcategorie 3"]
+	  "name": "Geografie",
+	  "subs": ["Kontinent", "Land", "Ort", "Stadt", "Fluss"]
 	}, {
-	  "name": "Category 2",
-	  "subs": ["subcategorie 1", "subcategorie 2", "subcategorie 3",
-	  "subcategorie 4", "subcategorie 5"]
+	  "name": "Peronendaten",
+	  "subs": ["Name", "Vorname", "Nachname", "Beruf"]
 	}, {
-	  "name": "Category 3",
-	  "subs": ["subcategorie 1", "subcategorie 2"]
+	  "name": "Architektur",
+	  "subs": ["Epoche", "Stilrichtung", "Gebäude", "Gebäudeteil", "Material"]
 	}, {
-	  "name": "Category 4",
-	  "subs": ["subcategorie 1", "subcategorie 2", "subcategorie 3",
-	  "subcategorie 4"]
+	  "name": "Ereignis",
+	  "subs": ["Eröffnung", "Gründung", "kulturelles Ereignis", "politisches Ereignis"]
 	}];
 
 	Overlap.savedClick		= null;
@@ -63,6 +75,7 @@ $(document).ready(function() {
 
 		if(!text){
 			Overlap.Menu.hideMenu();
+			Overlap.activeConcept.run();
 			return;
 		}
 
