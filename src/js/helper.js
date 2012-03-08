@@ -28,7 +28,6 @@ Overlap.Helper.getRealSelection = function(text){
         leadingPunct++;
 
     var trailingPunct = 0;
-    idx = text.length - 1;
     for(var idx = text.length - 1; re.test(text[idx]); idx--)
         trailingPunct++;
 
