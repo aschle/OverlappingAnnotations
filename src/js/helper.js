@@ -4,23 +4,32 @@ Overlap.Helper = {};
 /* Gets the real selection (start, end), by comparing the user selection and
 the span wrapped text. It calculates the start and end offset.*/
 Overlap.Helper.getRealSelection = function(text){
+    // NOTE: This is very basic implementation that only works for text that
+    // does NOT contain multiple continuous whitespaces.
 
 	$("#text").selection(Overlap.savedClick["start"],
 		Overlap.savedClick["end"]);
 
-	var spans = $("#text").wrapSelection();
-
 	var spanText = "";
 
+	var spans = $("#text").wrapSelection();
 	spans.each(function(){
 		spanText += $(this).text();
 		spanText += "\n\n";
 	});
-
-	var startOffset = spanText.indexOf(text);
-	var endOffset = spanText.length - startOffset - text.length - 2;
-
 	Overlap.Helper.removeSpans();
+
+    // Remove last linebreaks.
+    spanText = spanText.substr(0, spanText.length - 2);
+
+    // Test for additional characters in word-fitted selection.
+    // Note that trimmedText's position in spanText is zero if there are leading whitespaces.
+    var trimmedText = $.trim(text);
+    var pos = spanText.indexOf(trimmedText); 
+
+    // Calculate offsets, also consider whitespaces.
+    var startOffset = /\s/.test(text[0]) ? -1 : pos;
+    var endOffset = /\s/.test(text[text.length - 1]) ? -1 : (spanText.length - trimmedText.length - pos);
 
 	return {"start": Overlap.savedClick["start"] - startOffset,
 		"end": Overlap.savedClick["end"] + endOffset};
