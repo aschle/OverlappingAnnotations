@@ -103,9 +103,9 @@ Overlap.Menu = function (categories) {
   /* Loads the category menu. (top #menu) */
   this.loadMenuShort = function(){
     for (id in categories) {
-      var contentString = "<h5>" + categories[id].name + "</h5>\n<ul><small>";
+      var contentString = "<h5>" + categories[id].name + "</h5>\n<ul style='text-align: justify'><small>";
       for (subId in categories[id].subs) {
-        contentString += categories[id]["subs"][subId] + " – ";
+        contentString += categories[id]["subs"][subId] + " ";
     }
     contentString += "</small></ul>";
     $("#c_" + id).html(contentString);

@@ -15,18 +15,32 @@ $(document).ready(function() {
 	// }];
 
 	Overlap.categories = [{
-	  "name": "Geografie",
+	  "name": "Architektur",
+	  "subs": ["[Grundlagenwissen]", "[Detailwissen]", "Stilrichtung", "Gebäude", "Gebäudeteil", "Material"]
+	}, {
+	  "name": "Geschichte",
+	  "subs": ["[Grundlagenwissen]", "[Detailwissen]", "Eröffnung", "politisches Ereignis"]
+	}, {
+	  "name": "Geographie",
 	  "subs": ["Kontinent", "Land", "Ort", "Stadt", "Fluss"]
 	}, {
-	  "name": "Peronendaten",
+	  "name": "Personendaten",
 	  "subs": ["Name", "Vorname", "Nachname", "Beruf"]
-	}, {
-	  "name": "Architektur",
-	  "subs": ["Epoche", "Stilrichtung", "Gebäude", "Gebäudeteil", "Material"]
-	}, {
-	  "name": "Ereignis",
-	  "subs": ["Eröffnung", "Gründung", "kulturelles Ereignis", "politisches Ereignis"]
 	}];
+
+	// Overlap.categories = [{
+	//   "name": "Geografie",
+	//   "subs": ["Kontinent", "Land", "Ort", "Stadt", "Fluss"]
+	// }, {
+	//   "name": "Personendaten",
+	//   "subs": ["Name", "Vorname", "Nachname", "Beruf"]
+	// }, {
+	//   "name": "Architektur",
+	//   "subs": ["Epoche", "Stilrichtung", "Gebäude", "Gebäudeteil", "Material"]
+	// }, {
+	//   "name": "Ereignis",
+	//   "subs": ["Eröffnung", "Gründung", "kulturelles Ereignis", "politisches Ereignis"]
+	// }];
 
 	Overlap.savedClick		= null;
 	Overlap.textContent		= $("#text").clone();

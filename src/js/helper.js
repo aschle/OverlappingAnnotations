@@ -21,7 +21,7 @@ Overlap.Helper.getRealSelection = function(text){
     spanText = spanText.substr(0, spanText.length - 2);
 
     // Test for leading and trailing punctuation and whitespace characters.
-    var re = new RegExp(/[:,\s\.]/)
+    var re = new RegExp(/[:,\s\.\"]/)
 
     var leadingPunct = 0;
     for(var idx = 0; re.test(text[idx]); idx++)
