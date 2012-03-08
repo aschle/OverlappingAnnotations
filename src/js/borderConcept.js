@@ -529,7 +529,7 @@ Overlap.Border = function (){
 			var all = $("div[id^='bubbleID_" + id + "_']");
 
 			if (all.length == 0){
-				all = $("div[id^='bubbleID_" + id + "']");
+				all = $("div[id='bubbleID_" + id + "']");
 			}
 			return all;
 	}
