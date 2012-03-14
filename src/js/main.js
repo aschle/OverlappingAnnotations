@@ -16,16 +16,16 @@ $(document).ready(function() {
 
 	Overlap.categories = [{
 	  "name": "Architektur",
-	  "subs": ["[Grundlagenwissen]", "[Detailwissen]", "Stilrichtung", "Gebäude", "Gebäudeteil", "Material"]
+	  "subs": ["Überblick", "Detail", "Stilrichtung", "Gebäude", "Gebäudeteil", "Material"]
 	}, {
 	  "name": "Geschichte",
-	  "subs": ["[Grundlagenwissen]", "[Detailwissen]", "Eröffnung", "politisches Ereignis"]
+	  "subs": ["Überblick", "Detail", "Eröffnung", "politisches Ereignis"]
 	}, {
 	  "name": "Geographie",
-	  "subs": ["Kontinent", "Land", "Ort", "Stadt", "Fluss"]
+	  "subs": ["Überblick", "Detail", "Kontinent", "Land", "Standort", "Stadt", "Fluss"]
 	}, {
 	  "name": "Personendaten",
-	  "subs": ["Name", "Vorname", "Nachname", "Beruf"]
+	  "subs": ["Überblick", "Detail", "Name", "Vorname", "Nachname", "Beruf"]
 	}];
 
 	// Overlap.categories = [{
