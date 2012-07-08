@@ -5,7 +5,7 @@ Overlap.Atoms = function(){
 
 	var atomList = [];
 
-	this.addAtom = function(category, subcategory, start, end, id){
+	this.addAtom = function(category, subcategory, start, end){
 
 		atomList.push({
 			"start"				: Number(start),

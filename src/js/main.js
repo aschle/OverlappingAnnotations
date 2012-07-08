@@ -49,6 +49,7 @@ $(document).ready(function() {
 	Overlap.Atoms 				= new Overlap.Atoms();
 	Overlap.Bar 					= new Overlap.Bar();
 	Overlap.Border 				= new Overlap.Border();
+	Overlap.MischMasch		= new Overlap.MischMasch();
 	Overlap.Menu 					= new Overlap.Menu(Overlap.categories);
 	Overlap.Menu.loadMenuShort();
 	Overlap.activeConcept = Overlap.Bar;
@@ -124,6 +125,7 @@ $(document).ready(function() {
 	// Concept buttons
 	$("#barViewButton").click(function(){
 		$("#borderViewButton").removeClass("activeButton");
+		$("#mischMaschButton").removeClass("activeButton");
 		Overlap.activeConcept.reset();
 		Overlap.activeConcept = Overlap.Bar;
 		Overlap.activeConcept.run();
@@ -132,9 +134,19 @@ $(document).ready(function() {
 
 	$("#borderViewButton").click(function(){
 		$("#barViewButton").removeClass("activeButton");
+		$("#mischMaschButton").removeClass("activeButton");
 		Overlap.activeConcept.reset();
 		Overlap.activeConcept = Overlap.Border;
 		Overlap.activeConcept.run();
+		$(this).addClass("activeButton");
+	});
+
+	$("#mischMaschButton").click(function(){
+		$("#borderViewButton").removeClass("activeButton");
+		$("#barViewButton").removeClass("activeButton");
+		// Overlap.activeConcept.reset();
+		// Overlap.activeConcept = Overlap.MischMsch;
+		// Overlap.activeConcept.run();
 		$(this).addClass("activeButton");
 	});
 
