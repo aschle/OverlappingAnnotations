@@ -197,7 +197,7 @@ Overlap.Border = function (){
 						}
 					}
 
-				} // * end: decide which to bubbel ip
+				} // * end: decide which to bubbel up
 
 			} // ** end: somehow overlapping insert in level up
 
@@ -282,167 +282,169 @@ Overlap.Border = function (){
 					}
 					break;
 
-				  	case 'B':
-				  	{
-				  		// first on the left I (corner_TL)
-				  		top 		= startY - border - offset;
-							left 		= startX - border - offset;
-							height 	= endY - startY - lh + border + 2 * offset;
-							width 	= max - startX + 2 * offset - (max - endX);
+			  	case 'B':
+			  	{
+			  		// first on the left I (corner_TL)
+			  		top 		= startY - border - offset;
+						left 		= startX - border - offset;
+						height 	= endY - startY - lh + border + 2 * offset;
+						width 	= max - startX + 2 * offset - (max - endX);
 
-							addBubble(id, 1, top, left, height, width, offset, category,
-								"cornerTL", level);
+						addBubble(id, 1, top, left, height, width, offset, category,
+							"cornerTL", level);
 
-							// second on the right II
-							left 		= endX + offset;
-							height 	= endY - startY - lh + 2 * offset;
-							width 	= max - endX;
+						// second on the right II
+						left 		= endX + offset;
+						height 	= endY - startY - lh + 2 * offset;
+						width 	= max - endX;
 
-							addBubble(id, 2, top, left, height, width, offset, category,
-								"right", level);
+						addBubble(id, 2, top, left, height, width, offset, category,
+							"right", level);
 
-							// third bottom left III
-							top 		= endY - lh + border + offset;
-							left 		= startX - border - offset;
-							height 	= lh - border;
-							width 	= endX - min + 2 * offset;
+						// third bottom left III
+						top 		= endY - lh + border + offset;
+						left 		= startX - border - offset;
+						height 	= lh - border;
+						width 	= endX - min + 2 * offset;
 
-							addBubble(id, 3, top, left, height, width, offset, category,
-								"bottom", level);
-				  	}
-				  	break;
+						addBubble(id, 3, top, left, height, width, offset, category,
+							"bottom", level);
+			  	}
+			  	break;
 
-				  	case 'C':
-				   	{
-				  		// first on the top I (corner_TL)
-				  		top 		= startY - border - offset;
-							left 		= startX - border - offset;
-							height 	= lh;
-							width 	= max - startX + 2 * offset;
+			  	case 'C':
+			   	{
+			  		// first on the top I (corner_TL)
+			  		top 		= startY - border - offset;
+						left 		= startX - border - offset;
+						height 	= lh;
+						width 	= max - startX + 2 * offset;
 
-							addBubble(id, 1, top, left, height, width, offset, category,
-								"top", level);
+						addBubble(id, 1, top, left, height, width, offset, category,
+							"top", level);
 
-							// second on the left
-							top 		= startY + lh - border - offset;
-							left 		= min - border - offset;
-							height 	= endY - startY - lh + 2 * offset;
-							width 	= startX - min;
+						// second on the left
+						top 		= startY + lh - border - offset;
+						left 		= min - border - offset;
+						height 	= endY - startY - lh + 2 * offset;
+						width 	= startX - min;
 
-							addBubble(id, 2, top, left, height, width, offset, category,
-								"left", level);
+						addBubble(id, 2, top, left, height, width, offset, category,
+							"left", level);
 
-							// third bottom right
-							left 		= startX - offset;
-							top 		= startY + border + lh - border - offset;
-							height 	= endY - startY - lh + 2 * offset;
-							width 	= endX - startX + 2 * offset;
+						// third bottom right
+						left 		= startX - offset;
+						top 		= startY + border + lh - border - offset;
+						height 	= endY - startY - lh + 2 * offset;
+						width 	= endX - startX + 2 * offset;
 
-							addBubble(id, 3, top, left, height, width, offset, category,
-								"cornerBR", level);
-				  	}
-				  	break;
+						addBubble(id, 3, top, left, height, width, offset, category,
+							"cornerBR", level);
+			  	}
+			  	break;
 
-				  	case 'D':
-				  	  	{
-				  	  		// CASE I: 5 DIVs (in the middle no borders)
-				  	  		if(startX <= endX){
+			  	case 'D':
+			  	  	{
+			  	  		// CASE I: 5 DIVs (in the middle no borders)
+			  	  		if(startX <= endX){
 
-						  		// first on the left I (corner_TL)
-						  		top 		= startY + lh - border - offset;
-									left 		= min - border - offset;
-									height 	= endY - startY - lh + 2 * offset;
-									width 	= startX - min;
+					  		// first on the left I (corner_TL)
+					  		top 		= startY + lh - border - offset;
+								left 		= min - border - offset;
+								height 	= endY - startY - lh + 2 * offset;
+								width 	= startX - min;
 
-									addBubble(id, 1, top, left, height, width, offset, category,
-										"left", level);
+								addBubble(id, 1, top, left, height, width, offset, category,
+									"left", level);
 
-									// // second on top II
-									top 		= startY - border - offset;
-									left 		= startX - border - offset;
-									height 	= lh;
-									width 	= max - startX + 2 * offset - (max - endX);
+								// // second on top II
+								top 		= startY - border - offset;
+								left 		= startX - border - offset;
+								height 	= lh;
+								width 	= max - startX + 2 * offset - (max - endX);
 
-									addBubble(id, 2, top, left, height, width, offset, category,
-										"cornerTL", level);
+								addBubble(id, 2, top, left, height, width, offset, category,
+									"cornerTL", level);
 
-									// 4rd on the right III
-									left 		= endX + offset;
-									height 	= endY - startY - lh + 2 * offset;
-									width 	= max - endX;
+								// 4rd on the right III
+								left 		= endX + offset;
+								height 	= endY - startY - lh + 2 * offset;
+								width 	= max - endX;
 
-									addBubble(id, 3, top, left, height, width, offset, category,
-										"right", level);
+								addBubble(id, 3, top, left, height, width, offset, category,
+									"right", level);
 
-									// 4th on the bottom IV
-									left 		= startX - offset;
-									top 		= endY - lh + border + offset;
-									height 	= lh - border;
-									width 	= endX - startX + 2 * offset;
+								// 4th on the bottom IV
+								left 		= startX - offset;
+								top 		= endY - lh + border + offset;
+								height 	= lh - border;
+								width 	= endX - startX + 2 * offset;
 
-									addBubble(id, 4, top, left, height, width, offset, category,
-										"cornerBR", level);
+								addBubble(id, 4, top, left, height, width, offset, category,
+									"cornerBR", level);
 
-									// 5th in the middle
-									top 		= startY + lh - offset;
-									left 		= startX - offset;
-									height 	= endY - startY - 2 * lh + 2 * offset + border;
-									width 	= endX - startX + 2 * offset;
+								// 5th in the middle
+								top 		= startY + lh - offset;
+								left 		= startX - offset;
+								height 	= endY - startY - 2 * lh + 2 * offset + border;
+								width 	= endX - startX + 2 * offset;
 
-									addBubble(id, 5, top, left, height, width, offset, category,
-										"", level);
-							}
-
-							// CASE 2: 5 DIVs
-							else {
-
-								// first on the left I (corner_TL)
-						  		top 		= startY + lh - border - offset;
-									left 		= min - border - offset;
-									height 	= endY - startY - 2 * lh + 2 * offset + border;
-									width 	= endX - min + 2 * offset;
-
-									addBubble(id, 1, top, left, height, width, offset, category,
-										"cornerTL", level);
-
-									// second on top Í
-									top 		= startY - border - offset;
-									left 		= startX - border - offset;
-									height 	= lh;
-									width 	= max - startX + 2 * offset;
-
-									addBubble(id, 2, top, left, height, width, offset, category,
-										"top", level);
-
-									// 3rd on the right III
-									top 		= startY + lh - offset;
-									left 		= startX - offset;
-									height 	= endY - startY - 2 * lh + 2 * offset;
-									width 	= max - startX + 2 * offset;
-
-									addBubble(id, 3, top, left, height, width, offset, category,
-										"cornerBR", level);
-
-									// 4th on the bottom IV
-									top 		= endY - lh + border + offset;
-									left 		= min - border - offset;
-									height	= lh - border;
-									width		= endX - min + 2 * offset;
-
-									addBubble(id, 4, top, left, height, width, offset, category,
-										"bottom", level);
-
-									// 5th in the middle
-									top 		= startY + lh - border - offset;
-									left 		= endX + offset;
-									height 	= endY - startY - 2 * lh + 2 * offset;
-									width 	= startX -endX - 2 * offset;
-
-									addBubble(id, 5, top, left, height, width, offset, category,
-										"topBottom", level);
+								if (!(height < 0 || width < 0)){
+								addBubble(id, 5, top, left, height, width, offset, category,
+									"", level);
 							}
 						}
-				  	break;
+
+						// CASE 2: 5 DIVs
+						else {
+
+							// first on the left I (corner_TL)
+					  		top 		= startY + lh - border - offset;
+								left 		= min - border - offset;
+								height 	= endY - startY - 2 * lh + 2 * offset + border;
+								width 	= endX - min + 2 * offset;
+
+								addBubble(id, 1, top, left, height, width, offset, category,
+									"cornerTL", level);
+
+								// second on top Í
+								top 		= startY - border - offset;
+								left 		= startX - border - offset;
+								height 	= lh;
+								width 	= max - startX + 2 * offset;
+
+								addBubble(id, 2, top, left, height, width, offset, category,
+									"top", level);
+
+								// 3rd on the right III
+								top 		= startY + lh - offset;
+								left 		= startX - offset;
+								height 	= endY - startY - 2 * lh + 2 * offset;
+								width 	= max - startX + 2 * offset;
+
+								addBubble(id, 3, top, left, height, width, offset, category,
+									"cornerBR", level);
+
+								// 4th on the bottom IV
+								top 		= endY - lh + border + offset;
+								left 		= min - border - offset;
+								height	= lh - border;
+								width		= endX - min + 2 * offset;
+
+								addBubble(id, 4, top, left, height, width, offset, category,
+									"bottom", level);
+
+								// 5th in the middle
+								top 		= startY + lh - border - offset;
+								left 		= endX + offset;
+								height 	= endY - startY - 2 * lh + 2 * offset;
+								width 	= startX -endX - 2 * offset;
+
+								addBubble(id, 5, top, left, height, width, offset, category,
+									"topBottom", level);
+						}
+					}
+				  break;
 				}
 			}
 		}
