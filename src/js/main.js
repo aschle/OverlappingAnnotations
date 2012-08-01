@@ -144,9 +144,9 @@ $(document).ready(function() {
 	$("#mischMaschButton").click(function(){
 		$("#borderViewButton").removeClass("activeButton");
 		$("#barViewButton").removeClass("activeButton");
-		// Overlap.activeConcept.reset();
-		// Overlap.activeConcept = Overlap.MischMsch;
-		// Overlap.activeConcept.run();
+		Overlap.activeConcept.reset();
+		Overlap.activeConcept = Overlap.MischMasch;
+		Overlap.activeConcept.run();
 		$(this).addClass("activeButton");
 	});
 
