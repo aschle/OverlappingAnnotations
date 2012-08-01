@@ -12,6 +12,7 @@
 @lighter: 	30%;
 @radius: 		7px;
 
+
 /* to always have a scrollbar on the right*/
 html {min-height:101%;}
 
@@ -169,7 +170,6 @@ html {min-height:101%;}
 	border-style:	solid;
 	position:			absolute;
 	z-index:			1;
-
 }
 
 .bubble.all {
@@ -242,7 +242,54 @@ html {min-height:101%;}
 	border: 		8px solid @grey;
 
 	border-bottom-right-radius: @radius;
-	border-top-left-radius: @radius;
+	border-top-left-radius: 		@radius;
 	box-shadow:    -3px 5px 20px rgba(30, 30, 40, 0.3), 3px 5px 20px rgba(30, 30, 40, 0.3), 0 10px 25px rgba(30, 30, 40, 0.2)
 
+}
+
+.shadowBG {
+	position:					absolute;
+	z-index:					0;
+	border-width:			0px;
+	background:				rgba(0, 0, 0, 0.125);
+}
+
+.shadowBG.all {
+	border-radius:							@radius;
+}
+
+.shadowBG.top {
+	border-top-left-radius:			@radius;
+	border-top-right-radius:		@radius;
+}
+
+.shadowBG.right {
+	border-top-right-radius:		@radius;
+	border-bottom-right-radius: @radius;
+}
+
+.shadowBG.bottom {
+	border-bottom-left-radius:	@radius;
+	border-bottom-right-radius: @radius;
+}
+
+.shadowBG.left {
+	border-top-left-radius:			@radius;
+	border-bottom-left-radius:	@radius;
+}
+
+.shadowBG.cornerTL {
+	border-top-left-radius: 		@radius;
+}
+
+.shadowBG.cornerTLBL {
+	border-top-left-radius: 			@radius;
+	border-bottom-left-radius:		@radius;
+}
+
+.shadowBG.cornerBR {
+	border-bottom-right-radius: 	@radius;
+}
+
+.shadowBG.topBottom {
 }
