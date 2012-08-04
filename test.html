@@ -1,0 +1,58 @@
+<div id="text">
+Das Jüdische Museum Berlin ist das größte jüdische Museum Europas. Es zeigt dem Besucher zwei Jahrtausende deutsch-jüdische Geschichte, die Hoch- und Tiefpunkte der Beziehungen zwischen Juden und Nichtjuden in Deutschland. Das Museum beherbergt eine Dauerausstellung, mehrere Wechselausstellungen, Archive und eine Bibliothek. Das Museumsgebäude in Kreuzberg verbindet den barocken Altbau des Kollegienhauses mit einem Neubau. Dieser zickzackförmige Bau geht auf einen Entwurf des amerikanischen Architekten Daniel Libeskind zurück. Werner Michael Blumenthal ist der Direktor. Die Museumseröffnung fand 2001 statt. Es gehört zu den meistbesuchten Museen Berlins
+</div>
+
+<div id="bubble" class="bg">
+</div>
+
+<div id="bigBubble" class="bg">
+</div>
+
+#text{
+width: 500px;
+}
+
+#bubble{
+    background-color: #ccc;
+    width: 100px;
+    height: 80px;
+    position: absolute;
+    top: 50px;
+    left: 100px;
+    z-index: -1;
+}
+
+#bigBubble{
+    background-color: #aaa;
+    width: 200px;
+    height: 80px;
+    position: absolute;
+    top: 70px;
+    left: 80px;
+    z-index: -2;
+}
+
+
+$("#text").mousemove(function(e){
+    var x = e.pageX;
+    var y = e.pageY;
+    var element = document.elementFromPoint(x,y);
+    console.log(element);
+    var allElements = getAllElementsAtPoint(x,y);
+});
+
+
+var getAllElementsAtPoint = function(x,y){
+    
+    // get all divs
+    var divs = $('.bg');
+    
+    divs.each(function(){
+        var t = $(this).position().top;
+        var l = $(this).position().left;
+        console.log("top: " + t + " left: " + l);
+    });
+    
+ };
+
+
