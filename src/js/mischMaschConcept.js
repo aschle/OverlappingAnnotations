@@ -869,17 +869,32 @@ Overlap.MischMasch = function (){
 
       //handlerIN
       function(){
+
         $(this).addClass("bubble_" + $(this).data("category"));
-        getAllBubbles("bubbleID", $(this).data("id")).fadeIn(600);
+        getAllBubbles("bubbleID", $(this).data("id")).fadeIn(300);
+
+        // hiding the grey background
+        getAllBubbles("shadowID", $(this).data("id")).fadeOut(
+          300,
+          function(){
+            $(this).css("display", "none");
+          });
       },
 
       //handlerOUT
       function(){
+
         $(this).removeClass("bubble_" + $(this).data("category"));
-        getAllBubbles("bubbleID", $(this).data("id")).fadeOut(600, function(){
-          $(this).css("display", "none");
-        });
+        getAllBubbles("bubbleID", $(this).data("id")).fadeOut(
+          300,
+          function(){
+            $(this).css("display", "none");
+          });
+
+        // hiding the grey background
+        getAllBubbles("shadowID", $(this).data("id")).fadeIn(300);
+
       }
-      );
+    );
   };
 };

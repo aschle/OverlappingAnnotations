@@ -117,6 +117,11 @@ $(document).ready(function() {
 			return;
 		}
 
+		// TEXT div mousover event give it to the children
+		$("#text").mousemove(function(){
+			console.log("mousemove text div");
+		});
+
 		// display the context menu
 		Overlap.Menu.showMenu(event);
 	});
