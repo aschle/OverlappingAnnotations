@@ -19,7 +19,7 @@ $(document).ready(function() {
 	  "subs": ["Überblick", "Detail", "Stilrichtung", "Gebäude", "Gebäudeteil", "Material"]
 	}, {
 	  "name": "Geschichte",
-	  "subs": ["Überblick", "Detail", "Eröffnung", "politisches Ereignis"]
+	  "subs": ["Überblick", "Detail", "Eröffnung", "politisches&nbsp;Ereignis"]
 	}, {
 	  "name": "Geographie",
 	  "subs": ["Überblick", "Detail", "Kontinent", "Land", "Standort", "Stadt", "Fluss"]
@@ -52,11 +52,11 @@ $(document).ready(function() {
 	Overlap.MischMasch		= new Overlap.MischMasch();
 	Overlap.Menu 					= new Overlap.Menu(Overlap.categories);
 	Overlap.Menu.loadMenuShort();
-	Overlap.activeConcept = Overlap.Bar;
+	Overlap.activeConcept = Overlap.MischMasch;
 
 	Overlap.Storage				= new Overlap.Storage();
 
-	$("#barViewButton").addClass("activeButton");
+	$("#mischMaschButton").addClass("activeButton");
 
 
 	// *** ALL USER INTERACTION (Clicking, Buttons, usw.)
@@ -109,18 +109,12 @@ $(document).ready(function() {
 		// show the selected text to the user
 		$("#text").selection(Overlap.savedClick["start"],
 			Overlap.savedClick["end"]);
-		console.log(Overlap.savedClick);
 
 		if(Overlap.savedClick["end"] < Overlap.savedClick["start"]){
 			Overlap.Menu.hideMenu();
 			Overlap.activeConcept.run();
 			return;
 		}
-
-		// TEXT div mousover event give it to the children
-		$("#text").mousemove(function(){
-			console.log("mousemove text div");
-		});
 
 		// display the context menu
 		Overlap.Menu.showMenu(event);
@@ -158,7 +152,6 @@ $(document).ready(function() {
 	Overlap.textX = 250;
 	// Does not work: $("#text").position().left;
 	Overlap.textY	= $("#text").position().top;
-
 
 	// SAVE and LOAD Button
 	$("#saveButton").click(function(){
@@ -214,4 +207,33 @@ $(document).ready(function() {
 	$("#cancelButtonLoad").click(function(){
 		$("#loadPopup").fadeOut(200);
 	});
+
+	// HOVERING OVER THE GREY DIVS IN BACKGROUND !!!!!
+	// hovering over the grey elements behind the text
+
+	// $("#text").mousemove(function(e){
+
+	// 	var divs = $(".shadowBG");
+				
+	// 	divs.each(function(){
+	// 		var id = $(this).data("id");
+	// 		Overlap.Helper.getAllBubbles("bubbleID", id).fadeOut(
+ //          300,
+ //          function(){
+ //            $(this).css("display", "none");
+ //          });
+	// 	});
+		
+ //    var allElements = Overlap.Helper.getAllElementsAtPoint(e.pageX-462, e.pageY);
+    		
+	// 	for (i in allElements){
+	// 		var id = allElements[i].data("id");
+	// 		Overlap.Helper.getAllBubbles("bubbleID", id).fadeIn(300);
+	// 		// Umrandungen einblenden
+	// 		// Umrandungen größer werden lassen wenn mehr als zwei eingeblendet
+	// 		// werden sollen			
+	// 	}
+
+	// });
+
 });

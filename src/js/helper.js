@@ -103,3 +103,49 @@ Overlap.Helper.appendRadioList = function(name){
 			$(".allInStorage").append(data);
 		}
 }
+
+
+Overlap.Helper.getAllElementsAtPoint = function(x,y){
+
+  var divs = $(".shadowBG");
+    
+  var elements = [];
+
+  divs.each(function(){
+    var t = $(this).position().top;
+    var l = $(this).position().left;
+    var w = $(this).width();
+    var h = $(this).height();
+
+    // console.log("t: " + t + " l: " + l + " w: " + w + " h: " + h);
+    // onsole.log("x: " + x + " y: " + y);
+
+    if (x >= l && x <= (l + w) && y >= t && y <= (t + h) ){
+      // console.log($(this));
+      elements.push($(this));
+    }
+  });
+
+  return elements;
+}
+
+Overlap.Helper.getAllBubbles = function(type, id){
+
+      var all = $("div[id^='" + type + "_" + id + "_']");
+
+      if (all.length == 0){
+        all = $("div[id='" + type + "_" + id + "']");
+      }
+      return all;
+  }
+
+Overlap.Helper.deleteBarWithId = function(list, id){
+  for (i in list){
+    if (list[i] == id){
+      list.splice(i,1);
+    }
+  }
+  //return list;
+}
+
+

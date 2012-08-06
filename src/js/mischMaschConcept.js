@@ -4,40 +4,46 @@ Overlap.MischMasch = function (){
 
   // the global atom list
   var atomList                = Overlap.Atoms.getAtomList();
-
   // startEnd list for positioning the bars
   var atomStartEndListBar     = [];
-  // startEnd list for positioning the bubbles
-  var atomStartEndListBubble  = [];
+  // startEnd list for positioning the borders
+  var atomStartEndListBorder  = [];
   // column list for the bars, which bar goes in which column
-  var columnList            = [];
+  var columnList              = [];
+  // list holding all atoms, which need to be dosplayed additionally as borders
+  var borderList              = [];
+  // level list for the borders
+  var levelList               = [];
+  // for displaying the category -> subcategory
+  var overlay                 = null;
 
   /* Main method */
   this.run = function(){
     this.reset();
     letterToPixelPositionBar();
-    letterToPixelPositionBubble();
-    render();
+    letterToPixelPositionBorder();
+    renderBars();
     display();
+    //displayBorders();
   };
 
-  /* The reset function removes all existing Bars, also all needed
-  global variables need to be reset, because they are going to be
-  recalculated. */
+  /* The reset function removes all existing Bars, Borders, Shadows, also all needed global variables need to be reset, because they are going to be recalculated. */
   this.reset = function(){
 
     $(".bar").remove();
-    $(".shadowBG").remove();
     $(".bubble").remove();
+    $(".shadowBG").remove();
+    $("div[id^='overlay_']").remove();
 
     atomList                = Overlap.Atoms.getAtomList();
     atomStartEndListBar     = [];
-    atomStartEndListBubble  = [];
+    atomStartEndListBorder  = [];
     columnList              = [];
+    levelList               = [];
+    borderList              = [];
   };
 
-  /* Uses the atomList to calculate the position of each bar.
-  */
+  /* Uses the atomList to calculate the position of each bar. */
   var letterToPixelPositionBar = function(){
 
     for(atom in atomList){
@@ -72,7 +78,7 @@ Overlap.MischMasch = function (){
     }
   };
 
-  var letterToPixelPositionBubble = function(){
+  var letterToPixelPositionBorder = function(){
 
     for(atom in atomList){
 
@@ -124,7 +130,7 @@ Overlap.MischMasch = function (){
         }
       }
 
-      atomStartEndListBubble.push({
+      atomStartEndListBorder.push({
         "startX"      : startX,
         "startY"      : startY,
         "endX"        : endX,
@@ -137,29 +143,9 @@ Overlap.MischMasch = function (){
   };
 
   // *** calculating the columns
-  var render = function(){
+  var renderBars = function(){
     for(index in atomStartEndListBar){
       insertBySizeASC(index, 0);
-    }
-  };
-
-  var insertFirstFit = function(atomId, columnId){
-
-    if (columnList[columnId] == null){
-      columnList.push([atomId]);
-    }
-    else {
-
-      var overlapList = getAllOverlaps(atomId, columnId);
-
-      if(overlapList.length == 0) {
-        columnList[columnId].push(atomId);
-      }
-      else {
-        if(overlapList.length >= 1) {
-          insertFirstFit(atomId, columnId + 1);
-        }
-      }
     }
   };
 
@@ -241,6 +227,44 @@ Overlap.MischMasch = function (){
     return overlapList;
   };
 
+  var getAllOverlapsBorder = function(atomId, levelId){
+
+    var overlapList = [];
+
+    var aStart  = atomList[atomId].start;
+    var aEnd    = atomList[atomId].end;
+
+    // check for all atoms in the level the overlpping type:
+    for (l in levelList[levelId]){
+
+      var lStart  = atomList[levelList[levelId][l]].start;
+      var lEnd    = atomList[levelList[levelId][l]].end;
+
+      // No overlap:
+      if(lEnd < aStart || aEnd < lStart){
+        continue;
+      }
+
+      // Identity:
+      if (aStart == lStart && aEnd == lEnd){
+        overlapList.push({"type": 0, "index": l, "atomId": levelList[levelId][l]});
+        continue;
+      }
+
+      // Overlap:
+      if( (lStart < aStart && lEnd > aStart && lEnd < aEnd) ||
+        (lEnd > aEnd && lStart > aStart && lStart < aEnd)){
+
+        overlapList.push({"type": 1, "index": l, "atomId": levelList[levelId][l]});
+        continue;
+      }
+
+      // else: Inclusion
+      overlapList.push({"type": 2, "index": l, "atomId": levelList[levelId][l]});
+    }
+    return overlapList;
+  }
+
   var displayShadows = function(){
 
     var min     = $("#text").position().left;
@@ -251,10 +275,10 @@ Overlap.MischMasch = function (){
 
     var left, top, height, width;
 
-    for(id in atomStartEndListBubble){
+    for(id in atomStartEndListBorder){
         
         var bubble      = atomList[id];
-        var coordinates = atomStartEndListBubble[id];
+        var coordinates = atomStartEndListBorder[id];
         var type        = coordinates.type;
         var category    = atomList[id].category;
         var startX      = coordinates.startX;
@@ -406,7 +430,6 @@ Overlap.MischMasch = function (){
                 left    = startX - offset;
                 height  = endY - startY - 2 * lh + 2 * offset + border;
                 width   = endX - startX + 2 * offset;
-                console.log(height, width);
 
                 if (!(height < 0 || width < 0)){
                   addBubble(id, 5, top, left, height, width, offset, category,
@@ -512,16 +535,6 @@ Overlap.MischMasch = function (){
     }
   };
 
-  var getAllBubbles = function(type, id){
-
-      var all = $("div[id^='" + type + "_" + id + "_']");
-
-      if (all.length == 0){
-        all = $("div[id='" + type + "_" + id + "']");
-      }
-      return all;
-  };
-
   var addBubbleBorder = function(id, subId, top, left, height, width, offset, category, bubbleClass, level){
 
     var bubble = null;
@@ -545,7 +558,6 @@ Overlap.MischMasch = function (){
       bubble.addClass(bubbleClass);
       bubble.addClass("bubble_" + category);
       bubble.data({"id":id, "category":category});
-      bubble.css("display", "none");
 
     } else{
 
@@ -565,245 +577,16 @@ Overlap.MischMasch = function (){
       bubble.addClass(bubbleClass);
       bubble.addClass("bubble_" + category);
       bubble.data({"id":id, "subId": subId, "category":category});
-      bubble.css("display", "none");
     }
   }
-
-  var createAllBorders = function(){
-
-    var min     = $("#text").position().left;
-    var max     = $("#text").position().left + $("#text").width();
-    var h       = 16; // TODO: why 16px?
-    var lh      = 21;  // TODO: why 21?
-    var border  = 2;
-
-    var left, top, height, width;
-
-    for (id in atomStartEndListBubble){
-
-      var bubble      = atomList[id];
-      var coordinates = atomStartEndListBubble[id];
-      var type        = coordinates.type;
-      var category    = atomList[id].category;
-      var startX      = coordinates.startX;
-      var startY      = coordinates.startY;
-      var endX        = coordinates.endX;
-      var endY        = coordinates.endY;
-      var level       = 0;
-
-      var offset = 0;
-
-      switch (type)
-      {
-        case 'X': case 'A': // one line or block
-        {
-          top     = startY - border - offset;
-          left    = startX - border - offset;
-          height  = endY - startY + 2 * offset;
-          width   = endX - startX + 2 * offset;
-
-          addBubbleBorder(id, null, top, left, height, width, offset, category,
-            "all", level);
-        }
-        break;
-
-        case 'Y': // two lines, but seperate
-        {
-          // first on the right
-          top     = startY - border - offset;
-          left    = startX - border - offset;
-          height  = h + 2 * offset;
-          width   = max - startX + offset;
-
-          addBubbleBorder(id, 1, top, left, height, width, offset, category,
-            "left", level);
-
-          // second on the left
-          top   = endY - h - border - offset;
-          left  = min;
-          width = endX - min + offset;
-
-          addBubbleBorder(id, 2, top, left, height, width, offset, category,
-            "right", level);
-        }
-        break;
-
-        case 'B':
-        {
-          // first on the left I (corner_TL)
-          top     = startY - border - offset;
-          left    = startX - border - offset;
-          height  = endY - startY - lh + border + 2 * offset;
-          width   = max - startX + 2 * offset - (max - endX);
-
-          addBubbleBorder(id, 1, top, left, height, width, offset, category,
-            "cornerTL", level);
-
-          // second on the right II
-          left    = endX + offset;
-          height  = endY - startY - lh + 2 * offset;
-          width   = max - endX;
-
-          addBubbleBorder(id, 2, top, left, height, width, offset, category,
-            "right", level);
-
-          // third bottom left III
-          top     = endY - lh + border + offset;
-          left    = startX - border - offset;
-          height  = lh - border;
-          width   = endX - min + 2 * offset;
-
-          addBubbleBorder(id, 3, top, left, height, width, offset, category,
-            "bottom", level);
-        }
-        break;
-
-        case 'C':
-        {
-          // first on the top I (corner_TL)
-          top     = startY - border - offset;
-          left    = startX - border - offset;
-          height  = lh;
-          width   = max - startX + 2 * offset;
-
-          addBubbleBorder(id, 1, top, left, height, width, offset, category,
-            "top", level);
-
-          // second on the left
-          top     = startY + lh - border - offset;
-          left    = min - border - offset;
-          height  = endY - startY - lh + 2 * offset;
-          width   = startX - min;
-
-          addBubbleBorder(id, 2, top, left, height, width, offset, category,
-            "left", level);
-
-          // third bottom right
-          left    = startX - offset;
-          top     = startY + border + lh - border - offset;
-          height  = endY - startY - lh + 2 * offset;
-          width   = endX - startX + 2 * offset;
-
-          addBubbleBorder(id, 3, top, left, height, width, offset, category,
-            "cornerBR", level);
-        }
-        break;
-
-        case 'D':
-            {
-              // CASE I: 5 DIVs (in the middle no borders)
-              if(startX <= endX){
-
-              // first on the left I (corner_TL)
-              top     = startY + lh - border - offset;
-              left    = min - border - offset;
-              height  = endY - startY - lh + 2 * offset;
-              width   = startX - min;
-
-              addBubbleBorder(id, 1, top, left, height, width, offset, category,
-                "left", level);
-
-              // // second on top II
-              top     = startY - border - offset;
-              left    = startX - border - offset;
-              height  = lh;
-              width   = max - startX + 2 * offset - (max - endX);
-
-              addBubbleBorder(id, 2, top, left, height, width, offset, category,
-                "cornerTL", level);
-
-              // 4rd on the right III
-              left    = endX + offset;
-              height  = endY - startY - lh + 2 * offset;
-              width   = max - endX;
-
-              addBubbleBorder(id, 3, top, left, height, width, offset, category,
-                "right", level);
-
-              // 4th on the bottom IV
-              left    = startX - offset;
-              top     = endY - lh + border + offset;
-              height  = lh - border;
-              width   = endX - startX + 2 * offset;
-
-              addBubbleBorder(id, 4, top, left, height, width, offset, category,
-                "cornerBR", level);
-
-              // 5th in the middle
-              top     = startY + lh - offset;
-              left    = startX - offset;
-              height  = endY - startY - 2 * lh + 2 * offset + border;
-              width   = endX - startX + 2 * offset;
-
-              if (!(height < 0 || width < 0)){
-              addBubbleBorder(id, 5, top, left, height, width, offset, category,
-                "", level);
-            }
-          }
-
-          // CASE 2: 5 DIVs
-          else {
-
-            // first on the left I (corner_TL)
-              top     = startY + lh - border - offset;
-              left    = min - border - offset;
-              height  = endY - startY - 2 * lh + 2 * offset + border;
-              width   = endX - min + 2 * offset;
-
-              addBubbleBorder(id, 1, top, left, height, width, offset, category,
-                "cornerTL", level);
-
-              // second on top Í
-              top     = startY - border - offset;
-              left    = startX - border - offset;
-              height  = lh;
-              width   = max - startX + 2 * offset;
-
-              addBubbleBorder(id, 2, top, left, height, width, offset, category,
-                "top", level);
-
-              // 3rd on the right III
-              top     = startY + lh - offset;
-              left    = startX - offset;
-              height  = endY - startY - 2 * lh + 2 * offset;
-              width   = max - startX + 2 * offset;
-
-              addBubbleBorder(id, 3, top, left, height, width, offset, category,
-                "cornerBR", level);
-
-              // 4th on the bottom IV
-              top     = endY - lh + border + offset;
-              left    = min - border - offset;
-              height  = lh - border;
-              width   = endX - min + 2 * offset;
-
-              addBubbleBorder(id, 4, top, left, height, width, offset, category,
-                "bottom", level);
-
-              // 5th in the middle
-              top     = startY + lh - border - offset;
-              left    = endX + offset;
-              height  = endY - startY - 2 * lh + 2 * offset;
-              width   = startX -endX - 2 * offset;
-
-              addBubbleBorder(id, 5, top, left, height, width, offset, category,
-                "topBottom", level);
-          }
-        }
-      break;
-    }
-  }
-}
 
   var display = function(){
 
     // show all shadows
     displayShadows();
-    // create all boders (needed for hovering) but hide them all
-    createAllBorders();
 
     // in columnList are only IDs
-
+    // show all bars
     for (i in columnList){
       for (j in columnList[i]){
 
@@ -831,11 +614,13 @@ Overlap.MischMasch = function (){
         $("#barID_" + barId).data("id", barId);
         $("#barID_" + barId).data("category", atomList[barId].category);
         $("#barID_" + barId).data("subCategory", atomList[barId].subcategory);
+        $("#barID_" + barId).data("clicked", false);
 
       }
     }
 
-    // delete on rightclick
+    // ALL THE BAR CLICKING
+    // delete bars on rightclick
     $("div.bar").mousedown(function(event){
       if( event.button == 2 ) {
         var bar = $(this);
@@ -846,7 +631,7 @@ Overlap.MischMasch = function (){
         });
 
         // delete also the shadow
-        var all = getAllBubbles("shadowID", bar.data("id"));
+        var all = Overlap.Helper.getAllBubbles("shadowID", bar.data("id"));
         all.fadeOut(600, function(){
           $(this).remove();
           Overlap.MischMasch.run();
@@ -854,47 +639,399 @@ Overlap.MischMasch = function (){
         
 
         //delete also the border
-        getAllBubbles("bubbleID", bar.data("id")).fadeOut(600, function(){
+        Overlap.Helper.getAllBubbles("bubbleID", bar.data("id")).fadeOut(600, function(){
           $(this).remove();
           Overlap.MischMasch.run();
         });
 
         return false; 
       }
+
+      // left click on bar
+      if( event.button == 0){
+
+        // if bar was already clicked
+        if ($(this).data("activated")){
+          $(this).data("activated", false);
+        }
+        // if bar was not clicked
+        else{
+          $(this).data("activated", true);
+        }
+
+      }
       return true;
     });
 
+    // HOVERING A BAR
     // making the bar a littel bigger while hovering and also showing the boarder of that textatom
     $("div.bar").hover(
 
       //handlerIN
       function(){
 
-        $(this).addClass("bubble_" + $(this).data("category"));
-        getAllBubbles("bubbleID", $(this).data("id")).fadeIn(300);
+        var id         = $(this).data("id");
+        var activated  = $(this).data("activated");
 
-        // hiding the grey background
-        getAllBubbles("shadowID", $(this).data("id")).fadeOut(
-          300,
-          function(){
-            $(this).css("display", "none");
+        // only react on hovering if bar is not activated
+        if (!activated) {
+          $(this).addClass("bubble_" + $(this).data("category"));
+          // create and show the border
+          borderList.push(id);
+          console.log("IN: " + borderList);
+          displayBorders();
+
+          // hiding the grey background
+          Overlap.Helper.getAllBubbles("shadowID", id).fadeOut(
+            300,
+            function(){
+             $(this).css("display", "none");
           });
+        }        
+   
+        // showing the overlay (category > subcategory)
+        var top   = $(this).position().top;
+        var left  = parseInt($(".container").css("margin-left").replace("px", "")) + parseInt($(".twelve.columns.omega").position().left) + parseInt($(".twelve.columns.omega").width());
+        overlay   = new Overlap.Overlay(id, top, left);
+        overlay.show();
       },
 
       //handlerOUT
       function(){
 
-        $(this).removeClass("bubble_" + $(this).data("category"));
-        getAllBubbles("bubbleID", $(this).data("id")).fadeOut(
+        var id        = $(this).data("id");
+        var activated = $(this).data("activated");
+
+        // only remove border if bar is not activated
+        if(!activated){
+          $(this).removeClass("bubble_" + $(this).data("category"));
+          Overlap.Helper.getAllBubbles("bubbleID", id).fadeOut(
           300,
           function(){
-            $(this).css("display", "none");
+            $(this).remove();
           });
 
-        // hiding the grey background
-        getAllBubbles("shadowID", $(this).data("id")).fadeIn(300);
+          Overlap.Helper.getAllBubbles("shadowID", id).fadeIn(300);
+          Overlap.Helper.deleteBarWithId(borderList, id); 
+        }
 
+        // hiding the overlay
+        overlay.hide();
+
+        console.log("out: " + borderList);
       }
     );
   };
+
+  var displayBorders = function(){
+
+    levelList = [];
+
+    // adding all borders in boderList to the levelList
+    // *** calculating the level
+    for(index in borderList){
+      insertBorders(borderList[index], 0);
+    }
+
+    console.log("LL: " + levelList);
+
+    // display the borders
+    var min     = $("#text").position().left;
+    var max     = $("#text").position().left + $("#text").width();
+    var h       = 16; // TODO: why 16px?
+    var lh      = 21;  // TODO: why 21?
+    var border  = 2;
+
+    var left, top, height, width;
+
+    for (i in levelList){
+      for (j in levelList[i]) {
+
+        var id          = levelList[i][j];
+        var bubble      = atomList[id];
+        var coordinates = atomStartEndListBorder[id];
+        var type        = coordinates.type;
+        var category    = atomList[id].category;
+        var startX      = coordinates.startX;
+        var startY      = coordinates.startY;
+        var endX        = coordinates.endX;
+        var endY        = coordinates.endY;
+        var level       = i;
+
+        var offset = i * 2 * border;
+
+        switch (type)
+        {
+          case 'X': case 'A': // one line or block
+          {
+            top     = startY - border - offset;
+            left    = startX - border - offset;
+            height  = endY - startY + 2 * offset;
+            width   = endX - startX + 2 * offset;
+
+            addBubbleBorder (id, null, top, left, height, width, offset, category,
+              "all", level);
+          }
+          break;
+
+          case 'Y': // two lines, but seperate
+          {
+            // first on the right
+            top     = startY - border - offset;
+            left    = startX - border - offset;
+            height  = h + 2 * offset;
+            width   = max - startX + offset;
+
+            addBubbleBorder(id, 1, top, left, height, width, offset, category,
+              "left", level);
+
+            // second on the left
+            top   = endY - h - border - offset;
+            left  = min;
+            width = endX - min + offset;
+
+            addBubbleBorder(id, 2, top, left, height, width, offset, category,
+              "right", level);
+          }
+          break;
+
+          case 'B':
+          {
+            // first on the left I (corner_TL)
+            top     = startY - border - offset;
+            left    = startX - border - offset;
+            height  = endY - startY - lh + border + 2 * offset;
+            width   = max - startX + 2 * offset - (max - endX);
+
+            addBubbleBorder(id, 1, top, left, height, width, offset, category,
+              "cornerTL", level);
+
+            // second on the right II
+            left    = endX + offset;
+            height  = endY - startY - lh + 2 * offset;
+            width   = max - endX;
+
+            addBubbleBorder(id, 2, top, left, height, width, offset, category,
+              "right", level);
+
+            // third bottom left III
+            top     = endY - lh + border + offset;
+            left    = startX - border - offset;
+            height  = lh - border;
+            width   = endX - min + 2 * offset;
+
+            addBubbleBorder(id, 3, top, left, height, width, offset, category,
+              "bottom", level);
+          }
+          break;
+
+          case 'C':
+          {
+            // first on the top I (corner_TL)
+            top     = startY - border - offset;
+            left    = startX - border - offset;
+            height  = lh;
+            width   = max - startX + 2 * offset;
+
+            addBubbleBorder(id, 1, top, left, height, width, offset, category,
+              "top", level);
+
+            // second on the left
+            top     = startY + lh - border - offset;
+            left    = min - border - offset;
+            height  = endY - startY - lh + 2 * offset;
+            width   = startX - min;
+
+            addBubbleBorder(id, 2, top, left, height, width, offset, category,
+              "left", level);
+
+            // third bottom right
+            left    = startX - offset;
+            top     = startY + border + lh - border - offset;
+            height  = endY - startY - lh + 2 * offset;
+            width   = endX - startX + 2 * offset;
+
+            addBubbleBorder(id, 3, top, left, height, width, offset, category,
+              "cornerBR", level);
+          }
+          break;
+
+          case 'D':
+              {
+                // CASE I: 5 DIVs (in the middle no borders)
+                if(startX <= endX){
+
+                // first on the left I (corner_TL)
+                top     = startY + lh - border - offset;
+                left    = min - border - offset;
+                height  = endY - startY - lh + 2 * offset;
+                width   = startX - min;
+
+                addBubbleBorder(id, 1, top, left, height, width, offset, category,
+                  "left", level);
+
+                // // second on top II
+                top     = startY - border - offset;
+                left    = startX - border - offset;
+                height  = lh;
+                width   = max - startX + 2 * offset - (max - endX);
+
+                addBubbleBorder(id, 2, top, left, height, width, offset, category,
+                  "cornerTL", level);
+
+                // 4rd on the right III
+                left    = endX + offset;
+                height  = endY - startY - lh + 2 * offset;
+                width   = max - endX;
+
+                addBubbleBorder(id, 3, top, left, height, width, offset, category,
+                  "right", level);
+
+                // 4th on the bottom IV
+                left    = startX - offset;
+                top     = endY - lh + border + offset;
+                height  = lh - border;
+                width   = endX - startX + 2 * offset;
+
+                addBubbleBorder(id, 4, top, left, height, width, offset, category,
+                  "cornerBR", level);
+
+                // 5th in the middle
+                top     = startY + lh - offset;
+                left    = startX - offset;
+                height  = endY - startY - 2 * lh + 2 * offset + border;
+                width   = endX - startX + 2 * offset;
+
+                if (!(height < 0 || width < 0)){
+                addBubbleBorder(id, 5, top, left, height, width, offset, category,
+                  "", level);
+              }
+            }
+
+            // CASE 2: 5 DIVs
+            else {
+
+              // first on the left I (corner_TL)
+                top     = startY + lh - border - offset;
+                left    = min - border - offset;
+                height  = endY - startY - 2 * lh + 2 * offset + border;
+                width   = endX - min + 2 * offset;
+
+                addBubbleBorder(id, 1, top, left, height, width, offset, category,
+                  "cornerTL", level);
+
+                // second on top Í
+                top     = startY - border - offset;
+                left    = startX - border - offset;
+                height  = lh;
+                width   = max - startX + 2 * offset;
+
+                addBubbleBorder(id, 2, top, left, height, width, offset, category,
+                  "top", level);
+
+                // 3rd on the right III
+                top     = startY + lh - offset;
+                left    = startX - offset;
+                height  = endY - startY - 2 * lh + 2 * offset;
+                width   = max - startX + 2 * offset;
+
+                addBubbleBorder(id, 3, top, left, height, width, offset, category,
+                  "cornerBR", level);
+
+                // 4th on the bottom IV
+                top     = endY - lh + border + offset;
+                left    = min - border - offset;
+                height  = lh - border;
+                width   = endX - min + 2 * offset;
+
+                addBubbleBorder(id, 4, top, left, height, width, offset, category,
+                  "bottom", level);
+
+                // 5th in the middle
+                top     = startY + lh - border - offset;
+                left    = endX + offset;
+                height  = endY - startY - 2 * lh + 2 * offset;
+                width   = startX -endX - 2 * offset;
+
+                addBubbleBorder(id, 5, top, left, height, width, offset, category,
+                  "topBottom", level);
+            }
+          }
+          break;
+        }
+      }
+    }
+
+  };
+
+  var insertBorders = function(atomId, levelId){
+    console.log("atomID: " + atomId);
+    // *** if this level does not exist: add a new one
+    if (levelList[levelId] == null){
+      levelList.push([atomId]);
+    }
+
+    // *** find a fitting level
+    else {
+
+      var overlapList = getAllOverlapsBorder(atomId, levelId);
+
+      if(overlapList.length == 0){
+        levelList[levelId].push(atomId);
+      }
+      else{
+        // * more than one overlap: bubble up
+        if(overlapList.length > 1){
+          insertBorders(atomId, levelId + 1);
+        }
+        // * only one overlap: decide which to bubble, depending on the
+        // overlap type
+        else {
+
+          var type    = overlapList[0].type;
+          var index   = overlapList[0].index;
+          var id      = overlapList[0].atomId;
+          var aStart  = atomList[atomId].start;
+          var aEnd    = atomList[atomId].end;
+          var lAtom   = atomList[id];
+
+          // (0) Identity: does not matter which bubbles
+          if (type == 0){
+            insertBorders(atomId, levelId + 1);
+            return;
+          }
+
+          // (1) Overlap: longer one bubbles up
+          if(type == 1){
+            // check which one is longer
+            if(aEnd - aStart >
+              lAtom.end - lAtom.start){
+              insertBorders(atomId, levelId + 1);
+            } else {
+              var removedItem = levelList[levelId].splice(index, 1);
+              levelList[levelId].push(atomId);
+              insertBorders(removedItem[0], 0);
+            }
+          }
+
+          // (2) Inclusion: longer on bubbles up
+          if(type == 2){
+            // check which one is longer
+            if(aEnd - aStart >
+              lAtom.end - lAtom.start){
+              insertBorders(atomId, levelId + 1);
+            } else {
+              var removedItem = levelList[levelId].splice(index, 1);
+              levelList[levelId].push(atomId);
+              insertBorders(removedItem[0], 0);
+            }
+          }
+
+        } // * end: decide which to bubbel up
+
+      } // ** end: somehow overlapping insert in level up
+
+    } // *** end: find a fitting level
+  }
+
 };

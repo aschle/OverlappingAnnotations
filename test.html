@@ -39,22 +39,22 @@ width: 500px;
 
 
 <script type="text/javascript">
+
+var divs;
+
 $(document).ready(function(){
 
+  divs = $(".bg");
+
 	$("#text").mousemove(function(e){
-		
-		var divs = $(".bg");
+				
 		divs.each(function(){
 			$(this).removeClass("border");		
 		});
 		
-		var x = e.pageX;
-    var y = e.pageY;
-    var allElements = getAllElementsAtPoint(x,y);
+    var allElements = getAllElementsAtPoint(e.pageX,e.pageY);
 		
 		for (i in allElements){
-			console.log(allElements[i]);
-			// add css class to all divs (border class)
 			allElements[i].addClass("border");		
 		}
 
@@ -63,9 +63,6 @@ $(document).ready(function(){
 
 var getAllElementsAtPoint = function(x,y){
     
-	// get all divs
-	var divs = $(".bg");
-
 	var elements = [];
 
 	divs.each(function(){
@@ -73,7 +70,7 @@ var getAllElementsAtPoint = function(x,y){
 		var l = $(this).position().left;
 		var w = $(this).width();
 		var h = $(this).height();	
-		//console.log("top: " + t + " left: " + l + " height: " + h + " width: " + w);
+
 		if (x >= l && x <= (l + w) && y >= t && y <= (t + h) ){
 			elements.push($(this));
 		}

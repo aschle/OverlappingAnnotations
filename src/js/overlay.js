@@ -6,20 +6,20 @@ Overlap.Overlay = function (id, top, left) {
 	var cat 	= Overlap.categories[atom.category].name;
 	var subcat 	= Overlap.categories[atom.category].subs[atom.subcategory];
 
-	var data 	=	"<h5 style='display:inline'> "
-					+ cat + " </h5> ▶ " + subcat;
+	var data 	=	"<small> "
+					+ cat + "<span class='font_" + atom.category + "'> ▶ </span>" + subcat + "</small>";
 
 	// adding it to the body because to have it always on one line
 	$("body").append(
-		'<div class="popup shadow" id="overlay_' + id + '">' + data + '</div>'
+		'<div class="tooltip" id="overlay_' + id + '">' + data + '</div>'
 		);
 
 	var overlay	= $("#overlay_" + id);
 
 	overlay.css({
 		"display"	: "none",
-		"top"			: top - overlay.outerHeight() - 5,
-		"left"		: left
+		"top"			: top - 3,
+		"left"		: left + 20
 	});
 
 	this.show = function(id) {

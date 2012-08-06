@@ -103,22 +103,14 @@ Overlap.Menu = function (categories) {
   /* Loads the category menu. (top #menu) */
   this.loadMenuShort = function(){
     for (id in categories) {
-      var headerString = "<h5>" + categories[id].name + "</h5><ul style='border-bottom:1px dashed #FFF'><small>";
-      var count = 0;
+      var headerString = "<h5>" + categories[id].name + "</h5>";
+      headerString += "<ul><small>";
+
       for (subId in categories[id].subs) {
-        
-        if (count == 2){
-          headerString += "</ul></small>";
-          headerString += "<ul><small style='text-align: justify'>";
-          headerString += categories[id]["subs"][subId] + " ";
-        } else{
-          if(count == 1){
-            headerString += '<strong>·</strong> ';
-          }
-          headerString += categories[id]["subs"][subId] + " ";
-        }
-        count += 1;
+        headerString += "<span class='boxing'>" + categories[id]["subs"][subId] + "</span>";
+        headerString += " ";   
     }
+
     headerString += "</small></ul>";
     $("#c_" + id).html(headerString);
     }
