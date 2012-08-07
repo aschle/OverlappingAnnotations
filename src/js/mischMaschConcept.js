@@ -691,7 +691,7 @@ Overlap.MischMasch = function (){
    
         // showing the overlay (category > subcategory)
         var top   = $(this).position().top;
-        var left  = parseInt($(".container").css("margin-left").replace("px", "")) + parseInt($(".twelve.columns.omega").position().left) + parseInt($(".twelve.columns.omega").width());
+        var left  = parseInt($(".container").position().left) + parseInt($(".container").width());
         overlay   = new Overlap.Overlay(id, top, left);
         overlay.show();
       },

@@ -19,7 +19,7 @@ Overlap.Overlay = function (id, top, left) {
 	overlay.css({
 		"display"	: "none",
 		"top"			: top - 3,
-		"left"		: left + 20
+		"left"		: left
 	});
 
 	this.show = function(id) {
