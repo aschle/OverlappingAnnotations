@@ -650,13 +650,18 @@ Overlap.MischMasch = function (){
       // left click on bar
       if( event.button == 0){
 
-        // if bar was already clicked
+        // if bar was already activated
         if ($(this).data("activated")){
           $(this).data("activated", false);
+          $(this).removeClass("activatedBar");
+          $(this).addClass("bubble_" + $(this).data("category"))
         }
-        // if bar was not clicked
+        // if bar was not activated
         else{
           $(this).data("activated", true);
+          $(this).removeClass("bubble_" + $(this).data("category"));
+          $(this).addClass("activatedBar");
+
         }
 
       }
@@ -678,7 +683,6 @@ Overlap.MischMasch = function (){
           $(this).addClass("bubble_" + $(this).data("category"));
           // create and show the border
           borderList.push(id);
-          console.log("IN: " + borderList);
           displayBorders();
 
           // hiding the grey background
@@ -701,10 +705,11 @@ Overlap.MischMasch = function (){
 
         var id        = $(this).data("id");
         var activated = $(this).data("activated");
+        var cat       = $(this).data("category");
 
         // only remove border if bar is not activated
         if(!activated){
-          $(this).removeClass("bubble_" + $(this).data("category"));
+          $(this).removeClass("bubble_" + cat);
           Overlap.Helper.getAllBubbles("bubbleID", id).fadeOut(
           300,
           function(){
@@ -712,13 +717,14 @@ Overlap.MischMasch = function (){
           });
 
           Overlap.Helper.getAllBubbles("shadowID", id).fadeIn(300);
-          Overlap.Helper.deleteBarWithId(borderList, id); 
+          Overlap.Helper.deleteBarWithId(borderList, id);
+
+          $(this).removeClass("activatedBar");;
         }
 
         // hiding the overlay
         overlay.hide();
-
-        console.log("out: " + borderList);
+        displayBorders();
       }
     );
   };
@@ -732,8 +738,6 @@ Overlap.MischMasch = function (){
     for(index in borderList){
       insertBorders(borderList[index], 0);
     }
-
-    console.log("LL: " + levelList);
 
     // display the borders
     var min     = $("#text").position().left;
@@ -965,7 +969,6 @@ Overlap.MischMasch = function (){
   };
 
   var insertBorders = function(atomId, levelId){
-    console.log("atomID: " + atomId);
     // *** if this level does not exist: add a new one
     if (levelList[levelId] == null){
       levelList.push([atomId]);
