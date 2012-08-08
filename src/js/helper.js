@@ -107,6 +107,14 @@ Overlap.Helper.appendRadioList = function(name){
 
 Overlap.Helper.getAllElementsAtPoint = function(x,y){
 
+  // posotion().left of mouseposition needs some offset
+  // the (top|left) position of the mouse is (320|722)
+  // the (top|left) of a div is (322|250)
+  // so we need to handle the offset
+
+  var mouseX = x - (722 - 250);
+  var mouseY = y;
+
   var divs = $(".shadowBG");
     
   var elements = [];
@@ -120,7 +128,7 @@ Overlap.Helper.getAllElementsAtPoint = function(x,y){
     // console.log("t: " + t + " l: " + l + " w: " + w + " h: " + h);
     // onsole.log("x: " + x + " y: " + y);
 
-    if (x >= l && x <= (l + w) && y >= t && y <= (t + h) ){
+    if (mouseX >= l && mouseX <= (l + w) && mouseY >= t && mouseY <= (t + h) ){
       // console.log($(this));
       elements.push($(this));
     }

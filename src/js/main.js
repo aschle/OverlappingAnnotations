@@ -211,29 +211,39 @@ $(document).ready(function() {
 	// HOVERING OVER THE GREY DIVS IN BACKGROUND !!!!!
 	// hovering over the grey elements behind the text
 
-	// $("#text").mousemove(function(e){
+	$("#text").mousemove(function(e){
 
-	// 	var divs = $(".shadowBG");
+		//console.log("TEXTLR: ",  $("#text").position().top, $("#text").position().left);
+
+		var divs = $(".shadowBG");
+
+
 				
-	// 	divs.each(function(){
-	// 		var id = $(this).data("id");
-	// 		Overlap.Helper.getAllBubbles("bubbleID", id).fadeOut(
- //          300,
- //          function(){
- //            $(this).css("display", "none");
- //          });
-	// 	});
-		
- //    var allElements = Overlap.Helper.getAllElementsAtPoint(e.pageX-462, e.pageY);
-    		
-	// 	for (i in allElements){
-	// 		var id = allElements[i].data("id");
-	// 		Overlap.Helper.getAllBubbles("bubbleID", id).fadeIn(300);
-	// 		// Umrandungen einblenden
-	// 		// Umrandungen größer werden lassen wenn mehr als zwei eingeblendet
-	// 		// werden sollen			
-	// 	}
+		divs.each(function(){
+			var t = $(this).position().top;
+			var l = $(this).position().left;
+			//console.log("DIV", t, l);
 
-	// });
+			var id = $(this).data("id");
+			Overlap.Helper.getAllBubbles("bubbleID", id).fadeOut(
+          300,
+          function(){
+            $(this).css("display", "none");
+          });
+		});
+		
+		//console.log(e.pageX, e.pageY);
+    var allElements = Overlap.Helper.getAllElementsAtPoint(e.pageX, e.pageY);
+
+
+    console.log(allElements);
+    		
+		for (i in allElements){
+			var id = allElements[i].data("id");
+			Overlap.Helper.getAllBubbles("bubbleID", id).fadeIn(300);
+			// TODO: XXX
+		}
+
+	});
 
 });
