@@ -10,7 +10,7 @@ Overlap.MischMasch = function (){
   var atomStartEndListBorder  = [];
   // column list for the bars, which bar goes in which column
   var columnList              = [];
-  // list holding all atoms, which need to be dosplayed additionally as borders
+  // list holding all atoms, which need to be displayed additionally as borders
   var borderList              = [];
   // level list for the borders
   var levelList               = [];
@@ -552,7 +552,7 @@ Overlap.MischMasch = function (){
         "left"   : left,
         "height" : height,
         "width"  : width,
-        "z-index": (100 - level)
+        "z-index": (-100 - level)
       });
 
       bubble.addClass(bubbleClass);
@@ -571,7 +571,7 @@ Overlap.MischMasch = function (){
         "left"  : left,
         "height": height,
         "width" : width,
-        "z-index": (100 - level)
+        "z-index": (-100 - level)
       });
 
       bubble.addClass(bubbleClass);
@@ -622,6 +622,7 @@ Overlap.MischMasch = function (){
     // ALL THE BAR CLICKING
     // delete bars on rightclick
     $("div.bar").mousedown(function(event){
+
       if( event.button == 2 ) {
         var bar = $(this);
         Overlap.Atoms.removeAtomWithId(bar.data("id"));
@@ -663,7 +664,7 @@ Overlap.MischMasch = function (){
           $(this).addClass("activatedBar");
 
         }
-
+        return false; 
       }
       return true;
     });
@@ -674,59 +675,71 @@ Overlap.MischMasch = function (){
 
       //handlerIN
       function(){
-
-        var id         = $(this).data("id");
-        var activated  = $(this).data("activated");
-
-        // only react on hovering if bar is not activated
-        if (!activated) {
-          $(this).addClass("bubble_" + $(this).data("category"));
-          // create and show the border
-          borderList.push(id);
-          displayBorders();
-
-          // hiding the grey background
-          Overlap.Helper.getAllBubbles("shadowID", id).fadeOut(
-            300,
-            function(){
-             $(this).css("display", "none");
-          });
-        }        
-   
-        // showing the overlay (category > subcategory)
-        var top   = $(this).position().top;
-        var left  = parseInt($(".container").position().left) + parseInt($(".container").width());
-        overlay   = new Overlap.Overlay(id, top, left);
-        overlay.show();
+        Overlap.MischMasch.hoverBarIN($(this));
       },
 
       //handlerOUT
       function(){
-
-        var id        = $(this).data("id");
-        var activated = $(this).data("activated");
-        var cat       = $(this).data("category");
-
-        // only remove border if bar is not activated
-        if(!activated){
-          $(this).removeClass("bubble_" + cat);
-          Overlap.Helper.getAllBubbles("bubbleID", id).fadeOut(
-          300,
-          function(){
-            $(this).remove();
-          });
-
-          Overlap.Helper.getAllBubbles("shadowID", id).fadeIn(300);
-          Overlap.Helper.deleteBarWithId(borderList, id);
-
-          $(this).removeClass("activatedBar");;
-        }
-
-        // hiding the overlay
-        overlay.hide();
-        displayBorders();
+        Overlap.MischMasch.hoverBarOUT($(this));      
       }
     );
+  };
+
+  this.hoverBarIN = function(element){
+
+    var id         = element.data("id");
+    var activated  = element.data("activated");
+
+    // only react on hovering if bar is not activated
+    if (!activated) {
+      element.addClass("bubble_" + element.data("category"));
+      // create and show the border
+      borderList.push(id);
+      displayBorders();
+
+      // hiding the grey background
+      Overlap.Helper.getAllBubbles("shadowID", id).fadeOut(
+        200,
+        function(){
+          $(this).css("display", "");
+          $(this).css("background", "rgba(255, 255, 255, 0.125)");
+      });
+    }        
+
+    // showing the overlay (category > subcategory)
+    var top   = element.position().top;
+    var left  = parseInt($(".container").position().left) + parseInt($(".container").width());
+    overlay   = new Overlap.Overlay(id, top, left);
+    overlay.show();
+  };
+
+  this.hoverBarOUT = function(element){
+
+    var id        = element.data("id");
+    var activated = element.data("activated");
+    var cat       = element.data("category");
+
+    // only remove border if bar is not activated
+    if(!activated){
+      element.removeClass("bubble_" + cat);
+      Overlap.Helper.getAllBubbles("bubbleID", id).fadeOut(
+      200,
+      function(){
+        $(this).remove();
+      });
+
+      Overlap.Helper.getAllBubbles("shadowID", id).css("display", "none")
+      Overlap.Helper.getAllBubbles("shadowID", id).css("background", "rgba(0, 0, 0, 0.125)")
+      Overlap.Helper.getAllBubbles("shadowID", id).fadeIn(200);
+      Overlap.Helper.deleteBarWithId(borderList, id);
+
+      element.removeClass("activatedBar");
+    }
+
+    // hiding the overlay
+    overlay.hide();
+    displayBorders();
+
   };
 
   var displayBorders = function(){

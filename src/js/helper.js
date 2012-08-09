@@ -129,8 +129,7 @@ Overlap.Helper.getAllElementsAtPoint = function(x,y){
     // onsole.log("x: " + x + " y: " + y);
 
     if (mouseX >= l && mouseX <= (l + w) && mouseY >= t && mouseY <= (t + h) ){
-      // console.log($(this));
-      elements.push($(this));
+      elements.push($(this).data("id"));
     }
   });
 
@@ -155,5 +154,9 @@ Overlap.Helper.deleteBarWithId = function(list, id){
   }
   //return list;
 }
+
+Overlap.Helper.diff = function(array1, array2) {
+    return array1.filter(function(i) {return !(array2.indexOf(i) > -1);});
+};
 
 

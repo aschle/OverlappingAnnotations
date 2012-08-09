@@ -1,3 +1,4 @@
+
 $(document).ready(function() {
 
 	// Overlap.categories = [{
@@ -55,6 +56,8 @@ $(document).ready(function() {
 	Overlap.activeConcept = Overlap.MischMasch;
 
 	Overlap.Storage				= new Overlap.Storage();
+
+	Overlap.activeBorderL = [];
 
 	$("#mischMaschButton").addClass("activeButton");
 
@@ -213,37 +216,22 @@ $(document).ready(function() {
 
 	$("#text").mousemove(function(e){
 
-		//console.log("TEXTLR: ",  $("#text").position().top, $("#text").position().left);
+    var newActiveBorderL = Overlap.Helper.getAllElementsAtPoint(e.pageX, e.pageY);
 
-		var divs = $(".shadowBG");
+  	var outList = Overlap.Helper.diff(Overlap.activeBorderL, newActiveBorderL);
+  	var inList	= Overlap.Helper.diff(newActiveBorderL, Overlap.activeBorderL);
 
+  	console.log("divsatPoint: " + newActiveBorderL + " in: " + inList + " out: " + outList);
 
-				
-		divs.each(function(){
-			var t = $(this).position().top;
-			var l = $(this).position().left;
-			//console.log("DIV", t, l);
+     for (i in inList){
+     	Overlap.MischMasch.hoverBarIN($("#barID_" + inList[i]));
+     }
 
-			var id = $(this).data("id");
-			Overlap.Helper.getAllBubbles("bubbleID", id).fadeOut(
-          300,
-          function(){
-            $(this).css("display", "none");
-          });
-		});
-		
-		//console.log(e.pageX, e.pageY);
-    var allElements = Overlap.Helper.getAllElementsAtPoint(e.pageX, e.pageY);
+     for (i in outList){
+     	Overlap.MischMasch.hoverBarOUT($("#barID_" + outList[i]));
+     }
 
-
-    console.log(allElements);
-    		
-		for (i in allElements){
-			var id = allElements[i].data("id");
-			Overlap.Helper.getAllBubbles("bubbleID", id).fadeIn(300);
-			// TODO: XXX
-		}
-
+    Overlap.activeBorderL = newActiveBorderL.slice();
 	});
 
 });
