@@ -214,7 +214,7 @@ $(document).ready(function() {
 	// HOVERING OVER THE GREY DIVS IN BACKGROUND !!!!!
 	// hovering over the grey elements behind the text
 
-	$("#text").mousemove(function(e){
+	$(".container").mousemove(function(e){
 
     var newActiveBorderL = Overlap.Helper.getAllElementsAtPoint(e.pageX, e.pageY);
 
