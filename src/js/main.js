@@ -221,9 +221,10 @@ $(document).ready(function() {
   	var outList = Overlap.Helper.diff(Overlap.activeBorderL, newActiveBorderL);
   	var inList	= Overlap.Helper.diff(newActiveBorderL, Overlap.activeBorderL);
 
-  	console.log("divsatPoint: " + newActiveBorderL + " in: " + inList + " out: " + outList);
+  	//console.log("divsatPoint: " + newActiveBorderL + " in: " + inList + " out: " + outList);
 
      for (i in inList){
+     	// oO direct reference to MischMasch concept in main.js
      	Overlap.MischMasch.hoverBarIN($("#barID_" + inList[i]));
      }
 
