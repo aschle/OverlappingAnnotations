@@ -732,7 +732,7 @@ Overlap.MischMasch = function (){
     }
 
     // hiding the overlay
-    overlay.hide();
+    Overlap.Helper.getAllBubbles("overlay", id).hide();
     displayBorders();
 
   };

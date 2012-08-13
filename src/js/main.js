@@ -232,6 +232,7 @@ $(document).ready(function() {
 	   }
 
 	   for (i in outList){
+	   	console.log("ausblenden " + i)
 	   	Overlap.MischMasch.hoverBarOUT($("#barID_" + outList[i]));
 	   }
 
