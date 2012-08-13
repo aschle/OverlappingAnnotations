@@ -231,6 +231,8 @@ Overlap.MischMasch = function (){
 
     var overlapList = [];
 
+    if(!atomList[atomId])
+      console.log("OOOOOOHa")
     var aStart  = atomList[atomId].start;
     var aEnd    = atomList[atomId].end;
 
@@ -698,12 +700,8 @@ Overlap.MischMasch = function (){
       displayBorders();
 
       // hiding the grey background
-      Overlap.Helper.getAllBubbles("shadowID", id).fadeOut(
-        200,
-        function(){
-          $(this).css("display", "");
-          $(this).css("background", "rgba(255, 255, 255, 0.125)");
-      });
+      Overlap.Helper.getAllBubbles("shadowID", id).css("display", "");
+      Overlap.Helper.getAllBubbles("shadowID", id).css("background", "rgba(255, 255, 255, 0.125)");
     }        
 
     // showing the overlay (category > subcategory)
@@ -722,15 +720,12 @@ Overlap.MischMasch = function (){
     // only remove border if bar is not activated
     if(!activated){
       element.removeClass("bubble_" + cat);
-      Overlap.Helper.getAllBubbles("bubbleID", id).fadeOut(
-      200,
-      function(){
-        $(this).remove();
-      });
+      Overlap.Helper.getAllBubbles("bubbleID", id).remove();
 
       Overlap.Helper.getAllBubbles("shadowID", id).css("display", "none")
       Overlap.Helper.getAllBubbles("shadowID", id).css("background", "rgba(0, 0, 0, 0.125)")
-      Overlap.Helper.getAllBubbles("shadowID", id).fadeIn(200);
+      Overlap.Helper.getAllBubbles("shadowID", id).css("display", "");
+
       Overlap.Helper.deleteBarWithId(borderList, id);
 
       element.removeClass("activatedBar");
