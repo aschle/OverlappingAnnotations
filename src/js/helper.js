@@ -158,5 +158,3 @@ Overlap.Helper.deleteBarWithId = function(list, id){
 Overlap.Helper.diff = function(array1, array2) {
     return array1.filter(function(i) {return !(array2.indexOf(i) > -1);});
 };
-
-

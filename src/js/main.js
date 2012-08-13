@@ -216,28 +216,27 @@ $(document).ready(function() {
 
 	$(".container").mousemove(function(e){
 
-    var newActiveBorderL = Overlap.Helper.getAllElementsAtPoint(e.pageX, e.pageY);
+		var newActiveBorderL = Overlap.Helper.getAllElementsAtPoint(e.pageX, e.pageY);
 
-  	var outList = Overlap.Helper.diff(Overlap.activeBorderL, newActiveBorderL);
-  	var inList	= Overlap.Helper.diff(newActiveBorderL, Overlap.activeBorderL);
+		var outList = Overlap.Helper.diff(Overlap.activeBorderL, newActiveBorderL);
+		var inList	= Overlap.Helper.diff(newActiveBorderL, Overlap.activeBorderL);
 
-  	//if(newActiveBorderL.length > 0)
-  	//	console.log("divsatPoint: " + newActiveBorderL);
-  	if(inList.length > 0)
-  		console.log("inList: " + inList);
-  	if(outList.length > 0)
-  		console.log("outList: " + outList);
+		if(inList.length > 0)
+			console.log("inList: " + inList);
+		if(outList.length > 0)
+			console.log("outList: " + outList);
 
-     for (i in inList){
-     	// oO direct reference to MischMasch concept in main.js
-     	Overlap.MischMasch.hoverBarIN($("#barID_" + inList[i]));
-     }
+	   for (i in inList){
+	   	// oO direct reference to MischMasch concept in main.js
+	   		Overlap.MischMasch.hoverBarIN($("#barID_" + inList[i]));
+	   }
 
-     for (i in outList){
-     	Overlap.MischMasch.hoverBarOUT($("#barID_" + outList[i]));
-     }
+	   for (i in outList){
+	   	Overlap.MischMasch.hoverBarOUT($("#barID_" + outList[i]));
+	   }
 
-    Overlap.activeBorderL = newActiveBorderL.slice();
+	  Overlap.activeBorderL = newActiveBorderL.slice();
+
 	});
 
 });
