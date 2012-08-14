@@ -226,22 +226,24 @@ $(document).ready(function() {
 		if(outList.length > 0)
 			console.log("outList: " + outList);
 
-	   for (i in inList){
-	   	// oO direct reference to MischMasch concept in main.js
+	   for (index in inList){
+	   		
+	   		var tid = inList[index];
 	   		var timer = setTimeout(
-	   			function(){
-	   				console.log("timer happened!");
-	   				Overlap.MischMasch.hoverBarIN($("#barID_" + inList[i]));
-	   			},
-	   			1000
-	   			);
+	   			function(sv) {
+		   			return function(){
+		   				// oO direct reference to MischMasch concept in main.js
+		   				Overlap.MischMasch.hoverBarIN($("#barID_" + sv));
+		   			}
+		   		}(tid), 1000);
 
-	   		$("#barID_" + inList[i]).data("timer", timer);
+	   		$("#barID_" + tid).data("timer", timer);
 	   		
 	   }
 
 	   for (i in outList){
 	   	clearTimeout($("#barID_" + outList[i]).data("timer"));
+	   	// oO direct reference to MischMasch concept in main.js
 	   	Overlap.MischMasch.hoverBarOUT($("#barID_" + outList[i]));
 	   }
 
