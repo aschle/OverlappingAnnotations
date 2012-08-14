@@ -228,11 +228,20 @@ $(document).ready(function() {
 
 	   for (i in inList){
 	   	// oO direct reference to MischMasch concept in main.js
-	   		Overlap.MischMasch.hoverBarIN($("#barID_" + inList[i]));
+	   		var timer = setTimeout(
+	   			function(){
+	   				console.log("timer happened!");
+	   				Overlap.MischMasch.hoverBarIN($("#barID_" + inList[i]));
+	   			},
+	   			1000
+	   			);
+
+	   		$("#barID_" + inList[i]).data("timer", timer);
+	   		
 	   }
 
 	   for (i in outList){
-	   	console.log("ausblenden " + i)
+	   	clearTimeout($("#barID_" + outList[i]).data("timer"));
 	   	Overlap.MischMasch.hoverBarOUT($("#barID_" + outList[i]));
 	   }
 
