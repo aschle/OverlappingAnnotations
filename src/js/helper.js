@@ -146,7 +146,7 @@ Overlap.Helper.getAllBubbles = function(type, id){
       return all;
   }
 
-Overlap.Helper.deleteBarWithId = function(list, id){
+Overlap.Helper.deleteElementFromList = function(list, id){
   for (i in list){
     if (list[i] == id){
       list.splice(i,1);

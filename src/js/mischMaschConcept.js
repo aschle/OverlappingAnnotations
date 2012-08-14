@@ -16,6 +16,8 @@ Overlap.MischMasch = function (){
   var levelList               = [];
   // for displaying the category -> subcategory
   var overlay                 = null;
+  // Map of overlays
+  var overlayMap              = {};
 
   /* Main method */
   this.run = function(){
@@ -708,7 +710,10 @@ Overlap.MischMasch = function (){
     var top   = element.position().top;
     var left  = parseInt($(".container").position().left) + parseInt($(".container").width()) + parseInt($(".container").css("margin-left").replace("px", ""));
     overlay   = new Overlap.Overlay(id, top, left);
-    overlay.show();
+    
+    // adding overlay to overlayList
+    overlayMap[id] = overlay;
+    displayOverlays();
   };
 
   this.hoverBarOUT = function(element){
@@ -726,15 +731,52 @@ Overlap.MischMasch = function (){
       Overlap.Helper.getAllBubbles("shadowID", id).css("background", "rgba(0, 0, 0, 0.125)")
       Overlap.Helper.getAllBubbles("shadowID", id).css("display", "");
 
-      Overlap.Helper.deleteBarWithId(borderList, id);
+      Overlap.Helper.deleteElementFromList(borderList, id);
 
       element.removeClass("activatedBar");
     }
 
-    // hiding the overlay
-    Overlap.Helper.getAllBubbles("overlay", id).hide();
-    displayBorders();
+    // hiding the overlay only if shown (could be not shown in case of early exit from div)
+    if(overlayMap[id]) {
+      overlayMap[id].hide();
+      delete overlayMap[id];
+      displayOverlays();
+    }
 
+    // hide the borders
+    displayBorders();
+  };
+
+  var displayOverlays = function(){
+
+    var array = [];
+    for (var key in overlayMap){
+      array.push(overlayMap[key]);
+    }
+
+    // quick and dirty bubble sort *)
+    for (var n = array.length; n > 1; n = n - 1){
+      for(var i = 0; i < n - 1; i = i + 1){
+        var ai = array[i];
+        var aj = array[i + 1];
+        if((ai.overlayTop > aj.overlayTop) || 
+          ((ai.overlayTop == aj.overlayTop) && (atomList[ai.overlayId].start > atomList[aj.overlayId].start))) {
+          var temp    = array[i];
+          array[i]    = array[i+1];
+          array[i+1]  = temp;
+        }
+      }
+    }
+
+    var lastTop = -1000000; // find better solution!
+    for (var index in array) {
+      var ol = array[index];
+      var top = ol.overlayTop;
+      var newtop = (top < lastTop + 21) ? lastTop + 21 : top;
+      ol.setTopAndHide(newtop);        
+      ol.show();
+      lastTop = newtop;
+    }
   };
 
   var displayBorders = function(){
